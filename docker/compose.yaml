@@ -10,7 +10,7 @@ services:
     command:
       - serve
       - --local
-      - /data
+      - /workspace/accrl-training
       - --port
       - "10000"
       - --devices
@@ -20,7 +20,7 @@ services:
     ports:
       - "${FIBSERVE_PORT:-10000}:10000"
     volumes:
-      - ../data/datasets:/data:ro
+      - ${PTXBENCH_TRACESET_ROOT:?Set PTXBENCH_TRACESET_ROOT to a FlashInfer Trace dataset}:/workspace/accrl-training:ro
       - ../.ptxbench/cache/fibserve:/root/.cache/flashinfer_bench
     gpus: all
     init: true

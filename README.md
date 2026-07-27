@@ -32,11 +32,17 @@ All ported scripts accept these environment variables:
 ```bash
 export PTXBENCH_ROOT=/home/ubuntu/PTXBench
 export PTXBENCH_DATA_ROOT="$PTXBENCH_ROOT/data"
+export PTXBENCH_TRACESET_ROOT=/home/ubuntu/accrl-training
 export MINI_PTX_AGENT_ROOT="$PTXBENCH_ROOT/packages/mini-ptx-agent"
 ```
 
 `PTXBENCH_DATA_ROOT` may temporarily point at an existing AccRL-exps tree while
 the public Hugging Face datasets are being prepared.
+
+`PTXBENCH_TRACESET_ROOT` is different: it must point to a FlashInfer Trace
+dataset containing `definitions/` and `workloads/`. Compose mounts this dataset
+read-only at `/workspace/accrl-training` inside FIBServe. The dataset remains
+outside the Git checkout and is never copied into a Docker image.
 
 ## Development setup
 
@@ -65,6 +71,8 @@ docker build -f docker/Dockerfile.eval -t ptxbench-eval:dev .
 Build and start FIBServe:
 
 ```bash
+test -d "$PTXBENCH_TRACESET_ROOT/definitions"
+test -d "$PTXBENCH_TRACESET_ROOT/workloads"
 docker compose -f docker/compose.yaml up --build fibserve
 ```
 

@@ -51,3 +51,10 @@ def test_path_resolver_uses_repo_layout() -> None:
     assert paths.mini_ptx_agent_root == MINI_ROOT
     assert paths.multiturn_root == MINI_ROOT / "fib_runtime" / "multiturn"
     assert paths.config_root == ROOT / "configs"
+
+
+def test_compose_uses_explicit_read_only_traceset_mount() -> None:
+    compose = (ROOT / "docker" / "compose.yaml").read_text()
+    assert "PTXBENCH_TRACESET_ROOT:?" in compose
+    assert ":/workspace/accrl-training:ro" in compose
+    assert "- /workspace/accrl-training" in compose
