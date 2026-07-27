@@ -4,7 +4,7 @@ set -euo pipefail
 # Repair filtered reasoning rows before building the final full parquet.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../ptxbench_paths.sh"
+source "$SCRIPT_DIR/paths.sh"
 
 PROJECT="$PTXBENCH_FIXIT_PROJECT"
 SYNTH_CONFIG="$PROJECT/qwen36-27b-fixit-v6-config.yaml"

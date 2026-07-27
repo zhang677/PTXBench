@@ -11,7 +11,7 @@ from types import SimpleNamespace
 ROOT = Path(__file__).resolve().parents[1]
 MINI_ROOT = ROOT / "packages" / "mini-ptx-agent"
 CONSTRUCT_ROOT = MINI_ROOT / "fib_runtime" / "multiturn" / "construct_eval_scripts"
-FIXIT_ROOT = CONSTRUCT_ROOT / "fixit-v6-scripts"
+FIXIT_ROOT = ROOT / "experiments" / "fixit-v6"
 SFT_V4_ROOT = ROOT / "experiments" / "sft-v4"
 
 
@@ -63,6 +63,23 @@ def test_path_resolver_uses_repo_layout() -> None:
     assert paths.mini_ptx_agent_root == MINI_ROOT
     assert paths.multiturn_root == MINI_ROOT / "fib_runtime" / "multiturn"
     assert paths.config_root == ROOT / "configs"
+    assert paths.fixit_v6_root == ROOT / "experiments" / "fixit-v6"
+
+
+def test_construct_eval_directory_contains_only_shared_implementation() -> None:
+    expected = {
+        "README.md",
+        "fixit_downstream_process.py",
+        "ptxbench_paths.sh",
+        "watch_eval_audit.py",
+        "watch_eval_common.sh",
+    }
+    actual = {
+        str(path.relative_to(CONSTRUCT_ROOT))
+        for path in CONSTRUCT_ROOT.rglob("*")
+        if path.is_file() and "__pycache__" not in path.parts
+    }
+    assert actual == expected
 
 
 def test_compose_uses_explicit_read_only_traceset_mounts() -> None:

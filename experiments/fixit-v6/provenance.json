@@ -86,6 +86,7 @@
     "packages/mini-ptx-agent/accrl/utils/code_utils.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/fix_kernels/synthesize_pair_reasoning_openrouter.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/fix_kernels/resynthesize_filtered_reasonings_openrouter.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/README.md",
     "packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/fixit_downstream_process.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/ptxbench_paths.sh",
     "packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/watch_eval_common.sh",

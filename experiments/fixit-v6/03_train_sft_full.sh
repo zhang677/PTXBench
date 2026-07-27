@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../ptxbench_paths.sh"
+source "$SCRIPT_DIR/paths.sh"
 
 PROJECT="$PTXBENCH_FIXIT_PROJECT"
 PARQUET="$PROJECT/data/qwen36-27b-fixit-v6-full.parquet"

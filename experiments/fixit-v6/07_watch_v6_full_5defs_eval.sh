@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Script 06 serves the matching checkpoint as MODEL_NAME on localhost:30052.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/../ptxbench_paths.sh"
+source "$SCRIPT_DIR/paths.sh"
 
 PROJECT="${PROJECT:-$PTXBENCH_FIXIT_PROJECT}"
 RUNS_DIR="$PROJECT/runs"

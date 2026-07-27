@@ -6,7 +6,7 @@ PTXBENCH_ROOT="${PTXBENCH_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
 MINI_PTX_AGENT_ROOT="${MINI_PTX_AGENT_ROOT:-$PTXBENCH_ROOT/packages/mini-ptx-agent}"
 PTXBENCH_DATA_ROOT="${PTXBENCH_DATA_ROOT:-$PTXBENCH_ROOT/data}"
 CONSTRUCT_ROOT="$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts"
-FIXIT_ROOT="$CONSTRUCT_ROOT/fixit-v6-scripts"
+FIXIT_ROOT="$PTXBENCH_ROOT/experiments/fixit-v6"
 WATCHER="${FIXIT_V6_WATCHER:-$FIXIT_ROOT/05_watch_v6_full_5defs_eval.sh}"
 
 usage() {

@@ -1,5 +1,0 @@
-g,workers,max_profiles,log_path,planned_trajectories,first_pass_completed,first_pass_start_utc,first_pass_end_utc,first_pass_elapsed_seconds,first_pass_throughput_per_hour,experiment_start_utc,experiment_end_utc,experiment_elapsed_seconds,whole_experiment_throughput_per_hour,all_completion_events,retry_completion_events
-2,48,2,raw_logs/profile-w48-g2.txt,80,80,2026-07-26T03:48:31Z,2026-07-26T12:10:45Z,30134,9.557311,2026-07-26T03:47:16Z,2026-07-26T12:15:49Z,30513,9.438600,80,0
-4,48,4,raw_logs/profile-w48.txt,80,80,2026-07-25T06:24:41Z,2026-07-25T13:45:36Z,26455,10.886411,2026-07-25T06:23:29Z,2026-07-25T13:50:40Z,26831,10.733853,80,0
-6,48,6,raw_logs/profile-w48-g6.txt,80,80,2026-07-26T03:45:44Z,2026-07-26T11:06:09Z,26425,10.898770,2026-07-26T03:44:26Z,2026-07-26T11:11:13Z,26807,10.743463,80,0
-8,48,8,raw_logs/profile-w48-g8.txt,80,80,2026-07-26T02:03:43Z,2026-07-26T09:14:45Z,25862,11.136030,2026-07-26T02:02:30Z,2026-07-26T09:19:49Z,26239,10.976028,80,0

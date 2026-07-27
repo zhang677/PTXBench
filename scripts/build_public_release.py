@@ -102,7 +102,7 @@ def release_files(available: set[str]) -> list[str]:
         selected.update(prompt_fragments(provenance))
         if provenance_path.parent.name == "fixit-v6":
             selected.update(
-                f"packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/fixit-v6-scripts/{stage}"
+                f"experiments/fixit-v6/{stage}"
                 for stage in provenance["ordered_stages"]
             )
 

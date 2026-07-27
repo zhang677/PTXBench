@@ -3,8 +3,8 @@
 PTXBench is an open-source workspace for building and evaluating PTX/CUDA
 kernel agents. It contains:
 
-- **mini-ptx-agent**: the agent, prompt, Fixit, distillation-inspection, and
-  benchmark workflows ported from AccRL.
+- **mini-ptx-agent**: the reusable agent, prompt, distillation-inspection, and
+  benchmark implementation ported from AccRL.
 - **FIBServe**: the GPU compilation, correctness, profiling, and evaluation
   service derived from FlashInfer Bench.
 - **mini-swe-agent 2.4.6**: an external, exactly pinned Python dependency used
@@ -85,11 +85,10 @@ docker compose -f docker/compose.yaml up --build fibserve
 The public experiment index starts at [`experiments/README.md`](experiments/README.md).
 The source/data boundary and release procedure are documented in
 [`RELEASING.md`](RELEASING.md).
-Fixit-v6's implementation lives at:
-
-```text
-packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/fixit-v6-scripts
-```
+For Fixit-v6, use
+[`experiments/fixit-v6/README.md`](experiments/fixit-v6/README.md) as the
+single start page. Its numbered launchers are the supported user interface;
+the files under `packages/` are shared implementation details.
 
 Use `scripts/smoke_fixit_v6.sh --check` for a non-mutating dependency and
 configuration preflight.
