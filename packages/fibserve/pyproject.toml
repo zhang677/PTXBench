@@ -34,11 +34,14 @@ dev = [
 ]
 serve = [
   "fastapi>=0.100.0",
+  "httpx>=0.27.0",
   "uvicorn[standard]>=0.20.0",
 ]
 
 [project.scripts]
+flashinfer-bench = "flashinfer_bench.cli.main:cli"
 fibserve = "flashinfer_bench.cli.main:cli"
+fibserve-dispatcher = "flashinfer_bench.serve.dispatcher:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

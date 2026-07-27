@@ -7,22 +7,16 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.fibserve
     image: ptxbench/fibserve:dev
-    command:
-      - serve
-      - --local
-      - /workspace/accrl-training
-      - /workspace/accrl-training-heavy
-      - --port
-      - "10000"
-      - --host
-      - 0.0.0.0
-      - --timeout
-      - ${FIB_TIMEOUT:-30}
-      - --config
-      - /workspace/PTXBench/packages/fibserve/acc_config.yaml
-      - --devices
-      - ${FIB_DEVICES:-cuda:0,cuda:1}
     environment:
+      BASE_PORT: ${FIB_BACKEND_BASE_PORT:-40001}
+      BENCH_ROOT: /workspace/PTXBench/packages/fibserve
+      CONFIG_PATH: /workspace/PTXBench/packages/fibserve/acc_config.yaml
+      DATASET_ROOTS: /workspace/accrl-training:/workspace/accrl-training-heavy
+      DEVICES: ${FIB_DEVICES:-cuda:0,cuda:1}
+      DISPATCH_PORT: "10000"
+      HOST: 0.0.0.0
+      TIMEOUT: ${FIB_TIMEOUT:-30}
+      TMUX_PREFIX: fib-serve
       TVM_FFI_CUDA_ARCH_LIST: ${TVM_FFI_CUDA_ARCH_LIST:-9.0a}
     ports:
       - "${FIBSERVE_PORT:-10000}:10000"
@@ -39,7 +33,14 @@ services:
           - gpu
     init: true
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:10000/health"]
+      test:
+        - CMD
+        - python
+        - -c
+        - >-
+          import json, urllib.request;
+          data=json.load(urllib.request.urlopen("http://localhost:10000/health", timeout=5));
+          assert data["status"] == "ok" and data["backends"] and all(item["healthy"] for item in data["backends"])
       interval: 10s
       timeout: 5s
       retries: 30

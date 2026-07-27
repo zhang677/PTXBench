@@ -14,6 +14,7 @@ RUN apt-get update \
         gpg-agent \
         ninja-build \
         software-properties-common \
+        tmux \
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -31,10 +32,12 @@ COPY pyproject.toml uv.lock README.md ./
 COPY packages packages
 
 RUN uv sync --frozen --package fibserve --extra serve --no-dev \
+    && chmod +x \
+        packages/fibserve/scripts/launch_fib_serve_dispatcher.sh \
+        packages/fibserve/scripts/run_fibserve_dispatcher_container.sh \
     && rm -rf "$UV_CACHE_DIR"
 
 ENV PATH="/workspace/PTXBench/.venv/bin:${PATH}"
 EXPOSE 10000
 
-ENTRYPOINT ["fibserve"]
-CMD ["serve", "--local", "/data", "--port", "10000", "--devices", "cuda:0,cuda:1"]
+ENTRYPOINT ["/workspace/PTXBench/packages/fibserve/scripts/run_fibserve_dispatcher_container.sh"]
