@@ -1,0 +1,63 @@
+[
+  {
+    "definition": "mha_bwd_d128",
+    "workload": {
+      "axes": {
+        "B": 4,
+        "H": 48,
+        "S": 4096,
+        "d": 128
+      },
+      "inputs": {
+        "Q": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "Q"
+        },
+        "K": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "K"
+        },
+        "V": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "V"
+        },
+        "O": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "O"
+        },
+        "dO": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "dO"
+        },
+        "L": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "L"
+        }
+      },
+      "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+      "outputs": null
+    },
+    "solution": "eval_kernel_ed027e83",
+    "evaluation": {
+      "status": "RUNTIME_ERROR",
+      "environment": {
+        "hardware": "NVIDIA H100 80GB HBM3",
+        "libs": {
+          "torch": "2.12.1+cu130",
+          "triton": "3.7.1",
+          "cuda": "13.0"
+        }
+      },
+      "timestamp": "2026-07-02T01:34:24.886573",
+      "log": "ptxas info    : 0 bytes gmem\nptxas info    : Compiling entry function '_ZN15tvm_ffi_mha_bwd23mha_bwd_kernel_pass3_dQE14CUtensorMap_stS0_S0_S0_PKfS2_Pfi' for 'sm_90a'\nptxas info    : Function properties for _ZN15tvm_ffi_mha_bwd23mha_bwd_kernel_pass3_dQE14CUtensorMap_stS0_S0_S0_PKfS2_Pfi\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 246 registers, used 1 barriers\nptxas info    : Compile time = 178.872 ms\nptxas info    : Compiling entry function '_ZN15tvm_ffi_mha_bwd23mha_bwd_kernel_pass2_dKE14CUtensorMap_stS0_S0_S0_PKfS2_Pfi' for 'sm_90a'\nptxas info    : Function properties for _ZN15tvm_ffi_mha_bwd23mha_bwd_kernel_pass2_dKE14CUtensorMap_stS0_S0_S0_PKfS2_Pfi\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 249 registers, used 1 barriers\nptxas info    : Compile time = 175.171 ms\nptxas info    : Compiling entry function '_ZN15tvm_ffi_mha_bwd23mha_bwd_kernel_pass1_dVE14CUtensorMap_stS0_S0_S0_PKfS2_Pfi' for 'sm_90a'\nptxas info    : Function properties for _ZN15tvm_ffi_mha_bwd23mha_bwd_kernel_pass1_dVE14CUtensorMap_stS0_S0_S0_PKfS2_Pfi\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 245 registers, used 1 barriers\nptxas info    : Compile time = 175.282 ms\nptxas info    : Compiling entry function '_ZN15tvm_ffi_mha_bwd27convert_to_bf16_kernel_fastEPKfP13__nv_bfloat16m' for 'sm_90a'\nptxas info    : Function properties for _ZN15tvm_ffi_mha_bwd27convert_to_bf16_kernel_fastEPKfP13__nv_bfloat16m\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 10 registers, used 0 barriers\nptxas info    : Compile time = 1.259 ms\nptxas info    : Compiling entry function '_ZN15tvm_ffi_mha_bwd21compute_D_kernel_fastEPK13__nv_bfloat16S2_Pfii' for 'sm_90a'\nptxas info    : Function properties for _ZN15tvm_ffi_mha_bwd21compute_D_kernel_fastEPK13__nv_bfloat16S2_Pfii\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 37 registers, used 0 barriers\nptxas info    : Compile time = 7.856 ms\n\nFlashInfer CUDA debug report\n================================================================================\nsolution: eval_kernel_ed027e83\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_19bmf9b9\n\nMost precise CUDA fault\n--------------------------------------------------------------------------------\n- CUDA API reported: an illegal memory access was encountered\n  likely failing launch: kernel.cu:730\n    CUDA reports many kernel faults asynchronously at the next cudaGetLastError/cudaStreamSynchronize; inspect this launch first.\n  reported at check site: kernel.cu:731\n\nPrimary diagnostics\n--------------------------------------------------------------------------------\n- CUDA error an illegal memory access was encountered at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_ed027e83_ed027e/kernel.cu:731\n- WARNING: memcheck detected issues!\n\nSource locations\n--------------------------------------------------------------------------------\nkernel.cu:731 (reported as /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_ed027e83_ed027e/kernel.cu)\n  727:     CUDA_CHECK(cudaGetLastError());\n  728:     \n  729:     dim3 grid_conv((total_S_d + 127) / 128, 1, 1);\n  730:     convert_to_bf16_kernel_fast<<<grid_conv, 128, 0, stream>>>(dQ_fp32, dQ_ptr, total_S_d);\n> 731:     CUDA_CHECK(cudaGetLastError());\n  732:     convert_to_bf16_kernel_fast<<<grid_conv, 128, 0, stream>>>(dK_fp32, dK_ptr, total_S_d);\n  733:     CUDA_CHECK(cudaGetLastError());\n  734:     convert_to_bf16_kernel_fast<<<grid_conv, 128, 0, stream>>>(dV_fp32, dV_ptr, total_S_d);\n  735:     CUDA_CHECK(cudaGetLastError());\n\nCUDA core dumps\n--------------------------------------------------------------------------------\n- No CUDA core dump file was produced.\n\nRaw tool output\n--------------------------------------------------------------------------------\nfull_raw_log: /tmp/fib_debug/run_19bmf9b9/debug_raw.log\nRunning MEMCHECK debug pass\n========= COMPUTE-SANITIZER\n========= ERROR SUMMARY: 36 errors\nCUDA error an illegal memory access was encountered at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_ed027e83_ed027e/kernel.cu:731\nReturn code: 1\nWARNING: memcheck detected issues!\n",
+      "correctness": null,
+      "performance": null
+    }
+  }
+]

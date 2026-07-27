@@ -1,0 +1,118 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fibserve"
+dynamic = ["version"]
+description = "PTXBench GPU compilation, profiling, and evaluation service derived from FlashInfer Bench"
+readme = "README.md"
+requires-python = ">=3.10,<4.0"
+license = { text = "Apache License 2.0" }
+authors = [{ name = "FlashInfer team" }]
+keywords = ["deep-learning", "inference", "benchmark", "flashinfer", "gpu"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "torch>=2.8.0",
+  "pydantic>=2.0.0",
+  "safetensors>=0.5.0",
+  "flashinfer-python>=0.6.4",
+  "apache-tvm-ffi>=0.1.2",
+  "docstring-parser>=0.16",
+  "pyyaml>=6.0",
+  # cuDNN python frontend. Pinned <1.22 because 1.22+ targets cuDNN backend
+  # >=9.22 (Transpose / RESHAPE_MODE op in sdpa_backward); torch's bundled
+  # backend here is 9.20.0, and a newer frontend makes sdpa_backward graph
+  # build fail with CUDNN_STATUS_BAD_PARAM. Lift once the backend is >=9.22.
+  "nvidia-cudnn-frontend<1.22",
+]
+
+[project.urls]
+Homepage = "https://bench.flashinfer.ai"
+Documentation = "https://bench.flashinfer.ai/docs"
+Repository = "https://github.com/flashinfer-ai/flashinfer-bench"
+Issues = "https://github.com/flashinfer-ai/flashinfer-bench/issues"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0.0",
+  "pytest-asyncio",
+  "pytest-cov>=4.0.0",
+  "httpx",
+  "black>=22.0.0",
+  "isort>=5.0.0",
+  "mypy>=1.0.0",
+  "ruff>=0.1.0",
+  "pre-commit>=3.0.0",
+  # setuptools is required by torch cpp extension, but torch does not declare it
+  # as a dependency on python <= 3.11
+  "setuptools",
+]
+serve = ["fastapi>=0.100.0", "uvicorn[standard]>=0.20.0"]
+cuda12 = ["nvidia-cublas-cu12>=12.3", "nvidia-cudnn-cu12>=9.0"]
+
+[project.scripts]
+flashinfer-bench = "flashinfer_bench.cli.main:cli"
+fibserve = "flashinfer_bench.cli.main:cli"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["flashinfer_bench*"]
+
+[tool.setuptools.package-data]
+"flashinfer_bench" = ["py.typed"]
+"flashinfer_bench._deps.cutlass" = ["include/**"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312", "py313"]
+skip-magic-trailing-comma = true
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.ruff]
+include = ["flashinfer_bench/**/*.py", "tests/**/*.py"]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+# Never enforce `E501` (line length violations).
+ignore = ["C901", "E501", "E741", "F402", "F823", "E731"]
+# TID252: Prefer absolute imports over relative imports from parent modules
+select = ["C", "E", "F", "W", "TID252"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/*" = ["E741"]
+"flashinfer_bench/compile/builders/triton_builder.py" = ["F401"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-rA --durations=0 --ignore=3rdparty"
+markers = ["requires_torch_cuda: tests that require torch and CUDA available"]
+log_cli = true
+log_cli_level = "INFO"
+
+[tool.setuptools_scm]
+version_scheme = "python-simplified-semver"
+fallback_version = "0.0.0.dev0"
+local_scheme = "no-local-version"

@@ -1,0 +1,38 @@
+CUDA core dump analysis
+--------------------------------------------------------------------------------
+- focus: CUDA kernel 0, grid 1, block (8,0,0), thread (0,0,0), device 0, sm 0, warp 0, lane 0]
+- frame #0: kernel.cu:82
+  function: tvm_ffi_cuda::kernel_mha_bwd_dQ<<<(64,48,4),(128,1,1)>>> ()
+  source: :: "r"((uint32_t)__cvta_generic_to_shared(&bar[0])), "r"(phase));
+  inlined call site: kernel.cu:252
+  call source: mbarrier_wait_fn(bar_Q, 0);
+  interpretation: the coredump caught the GPU in a wait/barrier path. For timeout failures, inspect kernel.cu:252 and its caller before treating this as a generic CUDA core dump.
+
+Primary diagnostics
+--------------------------------------------------------------------------------
+- ERROR: memcheck timed out after 45 seconds.
+- ERROR: direct runner timed out after 30 seconds; requested CUDA user-triggered core dump before terminating it.
+
+Source locations
+--------------------------------------------------------------------------------
+kernel.cu:82
+  78:         "WAIT_%=:\n"
+  79:         "mbarrier.try_wait.parity.shared.b64 P, [%0], %1;\n"
+  80:         "@!P bra WAIT_%=;\n"
+  81:         "}\n"
+> 82:         :: "r"((uint32_t)__cvta_generic_to_shared(&bar[0])), "r"(phase));
+  83: }
+  84: 
+  85: __device__ __forceinline__ void tma_load_3d_fn(const CUtensorMap* d, uint64_t* bar, void* smem, int32_t c0, int32_t c1, int32_t c2) {
+  86:     asm volatile(
+
+kernel.cu:252
+  248:         tma_load_3d_fn(&tma_V, bar_KV_0, sV_ptr, 0, 0, bh_idx);
+  249:         tma_load_3d_fn(&tma_V, bar_KV_0, sV_ptr + 4096, 64, 0, bh_idx);
+  250:     }
+  251:     
+> 252:     mbarrier_wait_fn(bar_Q, 0);
+  253:     __syncthreads();
+  254:     
+  255:     float acc_dQ_left[32];
+  256:     float acc_dQ_right[32];

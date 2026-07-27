@@ -1,0 +1,81 @@
+{
+  "task_id": "1486aedd70c9452e9f9de1d686598813",
+  "kind": "debug",
+  "status": "completed",
+  "definition": "mha_bwd_d128",
+  "solution": "exp_007_kernel_t7_18f01fce",
+  "logs": [
+    {
+      "definition": "mha_bwd_d128",
+      "workload": {
+        "axes": {
+          "B": 4,
+          "H": 48,
+          "S": 4096,
+          "d": 128
+        },
+        "inputs": {
+          "Q": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "Q"
+          },
+          "K": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "K"
+          },
+          "V": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "V"
+          },
+          "O": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "O"
+          },
+          "dO": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "dO"
+          },
+          "L": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "L"
+          }
+        },
+        "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+        "outputs": null
+      },
+      "solution": "exp_007_kernel_t7_18f01fce",
+      "metadata": {
+        "FlashInfer CUDA debug report": {
+          "exist": true,
+          "msg": "solution: exp_007_kernel_t7_18f01fce\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_ovbidwn3"
+        },
+        "Most precise CUDA fault": {
+          "exist": true,
+          "msg": "- Out-of-range shared or local address\n  thread (0,0,0) in block (4,0,0)\n  faulting instruction: kernel.cu:31\n    at tvm_ffi_cuda::init_smem_barrier_fn(unsigned long *, unsigned int)+0x120 in kernel.cu:31\n  device frame: kernel.cu:211\n    Device Frame: void tvm_ffi_cuda::mha_bwd_kernel<(int)0>(CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, const float *, __nv_bfloat16 *, __nv_bfloat16 *, __nv_bfloat16 *, int, int, int)+0x20 in kernel.cu:211\n  interpretation: the wrapper/synchronize line may only report the asynchronous CUDA failure; inspect kernel.cu:211 and the helper at kernel.cu:31 first."
+        },
+        "CUDA core dump analysis": {
+          "exist": false,
+          "msg": "- cuda-gdb produced no source-level backtrace."
+        },
+        "Primary diagnostics": {
+          "exist": true,
+          "msg": "- CUDA error an illegal memory access was encountered at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_exp_007_kernel_t7_18f01fce_18f01f/kernel.cu:585\n- WARNING: memcheck detected issues!"
+        },
+        "Source locations": {
+          "exist": true,
+          "msg": "kernel.cu:31\n  27: namespace tvm_ffi_cuda {\n  28: \n  29: __device__ __forceinline__ void init_smem_barrier_fn(uint64_t* bar, uint32_t count) {\n  30:     asm volatile(\"mbarrier.init.shared.b64 [%0], %1;\"\n> 31:         :: \"r\"((uint32_t)__cvta_generic_to_shared(&bar[0])), \"r\"(count));\n  32: }\n  33: \n  34: __device__ __forceinline__ void fence_smem_barrier_init_fn() {\n  35:     asm volatile(\"fence.mbarrier_init.release.cluster;\\n\" ::: \"memory\");\n\nkernel.cu:211\n  207:     int phase_kv_0 = 0, phase_kv_1 = 0;\n  208:     int phase_q_0 = 0, phase_q_1 = 0;\n  209: \n  210:     if (tid == 0) {\n> 211:         init_smem_barrier_fn(&kv_bar[0], 1);\n  212:         init_smem_barrier_fn(&q_bar[0], 1);\n  213:         init_smem_barrier_fn(&q_bar[1], 1);\n  214:     }\n  215:     __syncthreads();\n\nkernel.cu:585\n  581:     config1.attrs = attrs1;\n  582:     config1.numAttrs = 1;\n  583: \n  584:     cudaFuncSetAttribute(mha_bwd_kernel<1>, cudaFuncAttributeMaxDynamicSharedMemorySize, 128*1024);\n> 585:     CUDA_CHECK(cudaLaunchKernelEx(&config1, mha_bwd_kernel<1>, tma_Q, tma_K, tma_V, tma_dO, tma_O, L_ptr, dQ_ptr, dK_ptr, dV_ptr, S, d, num_j_blocks));\n  586:     CUDA_CHECK(cudaGetLastError());\n  587:     \n  588:     CUDA_CHECK(cudaStreamSynchronize(stream));\n  589: }"
+        },
+        "CUDA core dumps": {
+          "exist": false,
+          "msg": "- No CUDA core dump file was produced."
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+[
+  {
+    "name": "kb_matmul_irregular_shapes",
+    "op_type": "matmul",
+    "description": "Matrix multiplication C = A @ B with irregular (non-power-of-2) dimensions. This problem challenges tiling and padding strategies since M, N, K are not aligned to typical tile sizes (e.g., 16, 32, 64, 128). Kernels must handle non-uniform work distribution, partial tiles at boundaries, and potentially inefficient memory access patterns. Optimizations should focus on adaptive tiling strategies, efficient boundary handling, and minimizing wasted computation from padding. This is representative of real-world workloads where dimensions are often irregular.",
+    "tags": ["source:kernelbench", "level:1", "irregular_shapes", "boundary_handling"],
+    "axes": {
+      "M": {
+        "type": "var",
+        "description": "Number of rows in A and output C (irregular)"
+      },
+      "N": {
+        "type": "var",
+        "description": "Number of columns in B and output C (irregular)"
+      },
+      "K": {
+        "type": "var",
+        "description": "Reduction dimension (irregular)"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["M", "K"],
+        "dtype": "bfloat16"
+      },
+      "B": {
+        "shape": ["K", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "C": {
+        "shape": ["M", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, B):\n    return torch.matmul(A, B)\n",
+    "workload_ranges": {
+      "M": [1023, 2049, 4097, 8205],
+      "N": [1021, 2053, 4099, 5921],
+      "K": [509, 1019, 2027, 2949]
+    }
+  }
+]

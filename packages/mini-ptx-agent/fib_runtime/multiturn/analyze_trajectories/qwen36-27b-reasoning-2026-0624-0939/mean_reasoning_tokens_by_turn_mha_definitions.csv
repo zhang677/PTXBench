@@ -1,0 +1,65 @@
+definition,definition_label,turn,group,group_label,rows,mean_reasoning_tokens
+mha_bwd_d128,MHA bwd d128,0,baseline,Before SFT,20,33576.900000
+mha_bwd_d128,MHA bwd d128,0,sft,After SFT,20,27262.800000
+mha_bwd_d128,MHA bwd d128,1,baseline,Before SFT,20,3885.550000
+mha_bwd_d128,MHA bwd d128,1,sft,After SFT,20,25538.750000
+mha_bwd_d128,MHA bwd d128,2,baseline,Before SFT,20,4031.600000
+mha_bwd_d128,MHA bwd d128,2,sft,After SFT,20,26005.650000
+mha_bwd_d128,MHA bwd d128,3,baseline,Before SFT,20,1950.550000
+mha_bwd_d128,MHA bwd d128,3,sft,After SFT,20,25567.550000
+mha_bwd_d128,MHA bwd d128,4,baseline,Before SFT,20,5717.400000
+mha_bwd_d128,MHA bwd d128,4,sft,After SFT,20,25222.050000
+mha_bwd_d128,MHA bwd d128,5,baseline,Before SFT,20,4533.650000
+mha_bwd_d128,MHA bwd d128,5,sft,After SFT,20,18821.850000
+mha_bwd_d128,MHA bwd d128,6,baseline,Before SFT,20,1447.800000
+mha_bwd_d128,MHA bwd d128,6,sft,After SFT,20,23079.500000
+mha_bwd_d128,MHA bwd d128,7,baseline,Before SFT,20,1675.500000
+mha_bwd_d128,MHA bwd d128,7,sft,After SFT,20,20120.750000
+mha_bwd_d128_causal,MHA bwd d128 causal,0,baseline,Before SFT,20,22209.100000
+mha_bwd_d128_causal,MHA bwd d128 causal,0,sft,After SFT,20,37762.300000
+mha_bwd_d128_causal,MHA bwd d128 causal,1,baseline,Before SFT,20,3307.450000
+mha_bwd_d128_causal,MHA bwd d128 causal,1,sft,After SFT,20,23482.800000
+mha_bwd_d128_causal,MHA bwd d128 causal,2,baseline,Before SFT,20,7216.750000
+mha_bwd_d128_causal,MHA bwd d128 causal,2,sft,After SFT,20,23848.550000
+mha_bwd_d128_causal,MHA bwd d128 causal,3,baseline,Before SFT,20,6494.650000
+mha_bwd_d128_causal,MHA bwd d128 causal,3,sft,After SFT,20,21566.450000
+mha_bwd_d128_causal,MHA bwd d128 causal,4,baseline,Before SFT,20,4093.550000
+mha_bwd_d128_causal,MHA bwd d128 causal,4,sft,After SFT,20,23937.650000
+mha_bwd_d128_causal,MHA bwd d128 causal,5,baseline,Before SFT,20,1700.100000
+mha_bwd_d128_causal,MHA bwd d128 causal,5,sft,After SFT,20,25761.850000
+mha_bwd_d128_causal,MHA bwd d128 causal,6,baseline,Before SFT,20,1242.800000
+mha_bwd_d128_causal,MHA bwd d128 causal,6,sft,After SFT,20,20484.400000
+mha_bwd_d128_causal,MHA bwd d128 causal,7,baseline,Before SFT,20,1506.200000
+mha_bwd_d128_causal,MHA bwd d128 causal,7,sft,After SFT,20,19808.250000
+mha_with_lse_d128,MHA fwd d128,0,baseline,Before SFT,20,17085.950000
+mha_with_lse_d128,MHA fwd d128,0,sft,After SFT,20,27372.650000
+mha_with_lse_d128,MHA fwd d128,1,baseline,Before SFT,20,7675.700000
+mha_with_lse_d128,MHA fwd d128,1,sft,After SFT,20,27050.800000
+mha_with_lse_d128,MHA fwd d128,2,baseline,Before SFT,20,4128.450000
+mha_with_lse_d128,MHA fwd d128,2,sft,After SFT,20,20740.800000
+mha_with_lse_d128,MHA fwd d128,3,baseline,Before SFT,20,4532.100000
+mha_with_lse_d128,MHA fwd d128,3,sft,After SFT,20,24511.200000
+mha_with_lse_d128,MHA fwd d128,4,baseline,Before SFT,20,4419.300000
+mha_with_lse_d128,MHA fwd d128,4,sft,After SFT,20,24581.350000
+mha_with_lse_d128,MHA fwd d128,5,baseline,Before SFT,20,4096.400000
+mha_with_lse_d128,MHA fwd d128,5,sft,After SFT,20,16019.850000
+mha_with_lse_d128,MHA fwd d128,6,baseline,Before SFT,20,2555.550000
+mha_with_lse_d128,MHA fwd d128,6,sft,After SFT,20,21305.300000
+mha_with_lse_d128,MHA fwd d128,7,baseline,Before SFT,20,4122.050000
+mha_with_lse_d128,MHA fwd d128,7,sft,After SFT,20,19920.900000
+mha_with_lse_d128_causal,MHA fwd d128 causal,0,baseline,Before SFT,20,13193.400000
+mha_with_lse_d128_causal,MHA fwd d128 causal,0,sft,After SFT,20,20870.000000
+mha_with_lse_d128_causal,MHA fwd d128 causal,1,baseline,Before SFT,20,12877.200000
+mha_with_lse_d128_causal,MHA fwd d128 causal,1,sft,After SFT,20,31495.350000
+mha_with_lse_d128_causal,MHA fwd d128 causal,2,baseline,Before SFT,20,2691.850000
+mha_with_lse_d128_causal,MHA fwd d128 causal,2,sft,After SFT,20,27840.850000
+mha_with_lse_d128_causal,MHA fwd d128 causal,3,baseline,Before SFT,20,4574.450000
+mha_with_lse_d128_causal,MHA fwd d128 causal,3,sft,After SFT,20,26557.500000
+mha_with_lse_d128_causal,MHA fwd d128 causal,4,baseline,Before SFT,20,4942.700000
+mha_with_lse_d128_causal,MHA fwd d128 causal,4,sft,After SFT,20,23648.600000
+mha_with_lse_d128_causal,MHA fwd d128 causal,5,baseline,Before SFT,20,2593.300000
+mha_with_lse_d128_causal,MHA fwd d128 causal,5,sft,After SFT,20,21906.250000
+mha_with_lse_d128_causal,MHA fwd d128 causal,6,baseline,Before SFT,20,3382.000000
+mha_with_lse_d128_causal,MHA fwd d128 causal,6,sft,After SFT,20,20920.200000
+mha_with_lse_d128_causal,MHA fwd d128 causal,7,baseline,Before SFT,20,2139.300000
+mha_with_lse_d128_causal,MHA fwd d128 causal,7,sft,After SFT,20,21170.200000

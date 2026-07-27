@@ -1,0 +1,45 @@
+[
+  {
+    "name": "kb_rectangular_matmul",
+    "op_type": "matmul",
+    "description": "Rectangular matrix multiplication C = A @ B where A is M×K and B is K×N. This represents the general matmul case with three independent dimensions. Unlike square matmul, the aspect ratios (M:K:N) significantly impact performance - tall-skinny, short-wide, and reduction-heavy cases require different optimization strategies. Key challenges: load balancing across non-square tiles, handling different M/N/K ratios, and optimizing for varying compute vs memory bottlenecks.",
+    "tags": ["source:kernelbench", "level:1", "shape:rectangular"],
+    "axes": {
+      "M": {
+        "type": "var",
+        "description": "Output rows (A rows)"
+      },
+      "K": {
+        "type": "var",
+        "description": "Reduction dimension (A cols, B rows)"
+      },
+      "N": {
+        "type": "var",
+        "description": "Output columns (B columns)"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["M", "K"],
+        "dtype": "bfloat16"
+      },
+      "B": {
+        "shape": ["K", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "C": {
+        "shape": ["M", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, B):\n    return torch.matmul(A, B)\n",
+    "workload_ranges": {
+      "M": [256, 512, 1024, 2048, 4096, 8192],
+      "K": [256, 512, 1024, 2048, 4096, 8192, 16384],
+      "N": [256, 512, 1024, 2048, 4096, 8192]
+    }
+  }
+]

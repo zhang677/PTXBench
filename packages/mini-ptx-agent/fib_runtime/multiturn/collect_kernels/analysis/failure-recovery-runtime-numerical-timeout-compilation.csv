@@ -1,0 +1,129 @@
+exp_dir,trajectory_id,failure_label,failure_turn,correct_turn,no_prior_correct,failure_speedup,correct_speedup,failure_arch_tag,correct_arch_tag
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_000,Runtime error,1,2,true,0.0,0.5198350214752019,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_000,Numerical error,5,6,false,0.0,0.6379676264358038,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_001,Numerical error,1,2,true,0.0,0.4818100776048782,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_001,Numerical error,3,4,false,0.0,0.5836784937212944,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_002,Runtime error,4,5,true,0.0,0.36969853196149177,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_003,Numerical error,1,2,true,0.0,0.3161954453687572,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_004,Runtime error,0,1,true,0.0,0.2752440993123349,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_004,Runtime error,2,3,false,0.0,0.4291134093657865,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_004,Runtime error,4,5,false,0.0,0.41349299208034723,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_006,Runtime error,1,2,true,0.0,0.7128510609847244,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_007,Runtime error,0,1,true,0.0,0.4911737612212462,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_007,Numerical error,4,5,false,0.0,0.5705094707079865,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_008,Runtime error,1,2,true,0.0,0.4459376650566165,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_009,Numerical error,1,2,true,0.0,0.472612779961506,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_010,Numerical error,2,3,true,0.0,0.3522406297065836,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_010,Numerical error,6,7,false,0.0,0.35701569780930803,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_011,Numerical error,3,4,true,0.0,0.5623787665053528,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_013,Runtime error,6,7,true,0.0,0.46919387040436233,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_014,Compilation error,0,1,true,,0.179857665936391,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0503-2313,exp_014,Runtime error,2,3,false,0.0,0.19996530283576758,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_000,Runtime error,2,3,true,0.0,0.24383642400215663,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_000,Numerical error,5,6,false,0.0,0.11254292685030505,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_001,Runtime error,0,1,true,0.0,0.22802195422084973,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_002,Compilation error,0,1,true,,0.12783512345590503,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_002,Numerical error,3,4,false,0.0,0.2566353976248708,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_002,Numerical error,6,7,false,0.0,0.24828161675468294,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_005,Numerical error,6,7,true,0.0,0.1954106004689403,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_006,Runtime error,6,7,false,0.0,0.14362497844706604,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_007,Numerical error,2,3,true,0.0,0.224768099012604,"A, H","A, H"
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_007,Runtime error,6,7,false,0.0,0.2898686184346728,"A, H","A, H"
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_009,Numerical error,1,2,true,0.0,0.24285018073218664,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_010,Compilation error,0,1,true,,0.40417260304615554,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_013,Numerical error,3,4,true,0.0,0.40117757031488244,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_013,Numerical error,6,7,false,0.0,0.24502797570885892,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_014,Numerical error,6,7,true,0.0,0.14778263256056115,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_015,Numerical error,1,2,true,0.0,0.04110037584835741,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0506-0930,exp_015,Runtime error,4,5,false,0.0,0.5194512081644476,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0529-2340,exp_001,Runtime error,2,3,true,0.0,0.4423237178884754,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0529-2340,exp_001,Runtime error,5,6,false,0.0,0.5488001557038642,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0529-2340,exp_003,Compilation error,0,1,true,,0.5991844270509635,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0529-2340,exp_003,Kernel Execution Timeout,3,4,false,0.0,0.5104567666601753,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0529-2340,exp_003,Compilation error,5,6,false,,0.4548798265719838,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0529-2340,exp_004,Runtime error,3,4,false,0.0,0.5189864009188245,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0140,exp_000,Runtime error,0,1,true,0.0,0.2924491670585398,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0140,exp_002,Numerical error,3,4,true,0.0,0.11182363444431237,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0140,exp_002,Numerical error,5,6,false,0.0,0.047670764193837076,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0140,exp_003,Compilation error,1,2,true,,0.2646580263076392,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0140,exp_003,Numerical error,6,7,false,0.0,0.2963224913016865,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0140,exp_004,Numerical error,6,7,true,0.0,0.23490529973439989,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0340,exp_000,Numerical error,1,2,false,0.0,0.3514277773203047,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0340,exp_002,Kernel Execution Timeout,1,2,true,0.0,0.17918539993107435,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0340,exp_002,Runtime error,5,6,false,0.0,0.1723062781268753,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0530-0340,exp_003,Runtime error,3,4,false,0.0,0.3290139406884958,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_000,Runtime error,0,1,true,0.0,0.3238746313409191,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_001,Numerical error,0,1,true,0.0,0.47744263067035164,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_002,Numerical error,3,4,true,0.0,0.3049046080662063,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_003,Compilation error,1,2,false,,0.10216124437597392,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_003,Compilation error,3,4,false,,0.5630823770447169,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_003,Kernel Execution Timeout,6,7,false,0.0,0.5755552392750148,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_004,Runtime error,1,2,true,0.0,0.0539774525327902,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_005,Numerical error,3,4,true,0.0,0.48859032468390995,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_005,Kernel Execution Timeout,5,6,false,0.0,0.38741016927607774,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_006,Compilation error,0,1,true,,0.29910217533146033,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_007,Runtime error,0,1,true,0.0,0.4720338248142955,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_007,Runtime error,2,3,false,0.0,0.5257891824381384,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_008,Runtime error,0,1,true,0.0,0.23850464501769605,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_008,Runtime error,2,3,false,0.0,0.2062116418669793,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_008,Runtime error,4,5,false,0.0,0.3267678241494033,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_009,Kernel Execution Timeout,5,6,false,0.0,0.27756019320073827,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_010,Runtime error,0,1,true,0.0,0.42257800745528257,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_011,Runtime error,0,1,true,0.0,0.20601453155903418,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_011,Kernel Execution Timeout,4,5,false,0.0,0.27184524119694436,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_011,Kernel Execution Timeout,6,7,false,0.0,0.3606121181289925,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_012,Runtime error,0,1,true,0.0,0.2732024702199943,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_012,Runtime error,2,3,false,0.0,0.31587132055248507,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_013,Kernel Execution Timeout,0,1,true,0.0,0.1975372385750982,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_013,Numerical error,2,3,false,0.0,0.24546011418742825,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_013,Kernel Execution Timeout,4,5,false,0.0,0.2066774219564048,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_013,Kernel Execution Timeout,6,7,false,0.0,0.2895064160033712,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_014,Runtime error,0,1,true,0.0,0.34712527034942836,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_014,Numerical error,3,4,false,0.0,0.4442849659324333,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_015,Numerical error,3,4,true,0.0,0.22261827224269526,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_016,Runtime error,0,1,true,0.0,0.5475752806793048,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_016,Numerical error,3,4,false,0.0,0.5532895686811813,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_017,Kernel Execution Timeout,1,2,true,0.0,0.17992535106843074,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_017,Runtime error,6,7,false,0.0,0.456186507215153,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_018,Kernel Execution Timeout,1,2,true,0.0,0.3580527025555938,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_019,Compilation error,0,1,true,,0.33091298288270216,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2140,exp_019,Kernel Execution Timeout,2,3,false,0.0,0.4995106306179069,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_000,Numerical error,4,5,true,0.0,0.17516111494376502,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_001,Kernel Execution Timeout,2,3,true,0.0,0.21204019050789313,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_006,Kernel Execution Timeout,5,6,true,0.0,0.1706351977310609,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_007,Numerical error,1,2,true,0.0,0.46530365976686777,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_007,Numerical error,4,5,false,0.0,0.45443792848490216,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_008,Numerical error,4,5,true,0.0,0.15223268562389589,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_009,Numerical error,3,4,true,0.0,0.1673738724273677,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_009,Compilation error,5,6,false,,0.16844457251937925,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_010,Numerical error,2,3,true,0.0,0.326325142026823,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_010,Kernel Execution Timeout,6,7,false,0.0,0.18231099707761464,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_011,Numerical error,1,2,true,0.0,0.1701598065218904,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_011,Compilation error,5,6,false,,0.16134569926997508,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_012,Numerical error,0,1,true,0.0,0.22551033705124734,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_013,Numerical error,3,4,true,0.0,0.45073425963681274,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_014,Numerical error,3,4,true,0.0,0.21181668889246735,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_015,Runtime error,0,1,true,0.0,0.5090559184104752,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_016,Compilation error,0,1,true,,0.1729399702293596,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_018,Numerical error,1,2,true,0.0,0.3439911568555166,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_018,Numerical error,6,7,false,0.0,0.27740143300221876,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_019,Runtime error,2,3,true,0.0,0.23567391274094746,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240,exp_019,Runtime error,5,6,false,0.0,0.022751926097657874,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_001,Numerical error,2,3,true,0.0,0.24959079392897057,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_002,Numerical error,5,6,true,0.0,0.24079781688252516,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_005,Runtime error,2,3,true,0.0,0.2818966781365094,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_005,Runtime error,4,5,false,0.0,0.22212765984937977,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_006,Runtime error,0,1,true,0.0,0.4545621917972395,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_006,Kernel Execution Timeout,4,5,false,0.0,0.29179946811912255,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_008,Compilation error,0,1,true,,0.03517023377249276,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_009,Numerical error,0,1,true,0.0,0.059835914330318554,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_011,Numerical error,0,1,true,0.0,0.10888972703554908,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_011,Kernel Execution Timeout,6,7,false,0.0,0.10066063029425508,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_012,Numerical error,1,2,true,0.0,0.3280515662048358,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_013,Kernel Execution Timeout,1,2,true,0.0,0.3186400427943165,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_014,Numerical error,0,1,true,0.0,0.25876472448179877,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_015,Kernel Execution Timeout,3,4,true,0.0,0.29902404783666464,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_017,Numerical error,2,3,true,0.0,0.39444270070705995,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_018,Runtime error,2,3,true,0.0,0.33280167895554796,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_019,Kernel Execution Timeout,0,1,true,0.0,0.38464315782227915,H,H
+/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340,exp_019,Kernel Execution Timeout,2,3,false,0.0,0.5686115214273347,H,H

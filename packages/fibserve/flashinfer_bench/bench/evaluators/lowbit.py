@@ -1,0 +1,136 @@
+"""Evaluator for low-bit quantized kernels with relaxed tolerances."""
+
+from __future__ import annotations
+
+import traceback
+from typing import Any, List, Optional, Tuple
+
+import torch
+from typing_extensions import override
+
+from flashinfer_bench.bench.config import ResolvedEvalConfig
+from flashinfer_bench.bench.utils import compute_error_stats, make_eval
+from flashinfer_bench.compile import Runnable
+from flashinfer_bench.data import Correctness, Definition, Evaluation, EvaluationStatus
+
+from .default import DefaultEvaluator
+from .utils import allocate_outputs, normalize_result
+
+
+class LowBitEvaluator(DefaultEvaluator):
+    DEFAULT_REQUIRED_MATCHED_RATIO = 0.95
+
+    @override
+    @classmethod
+    def can_evaluate(cls, definition: Definition) -> bool:
+        return "moe_fp8_block_scale" in definition.name
+
+    @override
+    @classmethod
+    def check_correctness(
+        cls,
+        definition: Definition,
+        sol_runnable: Runnable,
+        inputs: List[List[Any]],
+        ref_outputs: List[List[torch.Tensor]],
+        cfg: ResolvedEvalConfig,
+        log_path: str,
+        device: str,
+    ) -> Tuple[Optional[Correctness], Optional[Evaluation]]:
+        if cfg.required_matched_ratio is None:
+            cfg = cfg.model_copy(
+                update={"required_matched_ratio": cls.DEFAULT_REQUIRED_MATCHED_RATIO}
+            )
+
+        max_abs = 0.0
+        max_rel = 0.0
+        numerical_incorrect = False
+        min_matched_ratio = 1.0
+        is_dps = sol_runnable.metadata.destination_passing_style
+
+        for trial, inp in enumerate(inputs):
+            try:
+                if is_dps:
+                    out = allocate_outputs(definition, inp, device)
+                    with torch.no_grad():
+                        sol_runnable(*inp, *out)
+                    torch.cuda.synchronize(device)
+                else:
+                    with torch.no_grad():
+                        result = sol_runnable(*inp)
+                    torch.cuda.synchronize(device)
+                    out = normalize_result(definition, result, device)
+            except Exception:
+                traceback.print_exc()
+                return None, make_eval(
+                    status=EvaluationStatus.RUNTIME_ERROR, device=device, log_path=log_path
+                )
+
+            ref_out = ref_outputs[trial]
+
+            for sol_tensor, ref_tensor in zip(out, ref_out):
+                if tuple(sol_tensor.shape) != tuple(ref_tensor.shape):
+                    return None, make_eval(
+                        status=EvaluationStatus.INCORRECT_SHAPE, device=device, log_path=log_path
+                    )
+
+                if sol_tensor.dtype != ref_tensor.dtype:
+                    return None, make_eval(
+                        status=EvaluationStatus.INCORRECT_DTYPE, device=device, log_path=log_path
+                    )
+
+                # torch.isinf / torch.isnan are not implemented for some
+                # low-bit dtypes (e.g. float8_e4m3fn); skip the individual
+                # check that raises NotImplementedError rather than failing.
+                non_finite_err_val: Optional[float] = None
+                try:
+                    has_inf = torch.isinf(sol_tensor).any().item()
+                except NotImplementedError:
+                    has_inf = False
+                if has_inf:
+                    non_finite_err_val = float("inf")
+                else:
+                    try:
+                        has_nan = torch.isnan(sol_tensor).any().item()
+                    except NotImplementedError:
+                        has_nan = False
+                    if has_nan:
+                        non_finite_err_val = float("nan")
+
+                if non_finite_err_val is not None:
+                    correctness = Correctness(
+                        max_relative_error=non_finite_err_val, max_absolute_error=non_finite_err_val
+                    )
+                    return correctness, make_eval(
+                        status=EvaluationStatus.INCORRECT_NUMERICAL,
+                        device=device,
+                        log_path=log_path,
+                        correctness=correctness,
+                    )
+
+                abs_err, rel_err, exceeds_tol, matched_ratio = compute_error_stats(
+                    sol_tensor, ref_tensor, cfg
+                )
+
+                if exceeds_tol:
+                    numerical_incorrect = True
+
+                min_matched_ratio = min(min_matched_ratio, matched_ratio)
+                max_abs = max(max_abs, abs_err)
+                max_rel = max(max_rel, rel_err)
+
+        correctness = Correctness(
+            max_relative_error=max_rel,
+            max_absolute_error=max_abs,
+            extra={"matched_ratio": min_matched_ratio},
+        )
+
+        if numerical_incorrect:
+            return correctness, make_eval(
+                status=EvaluationStatus.INCORRECT_NUMERICAL,
+                device=device,
+                log_path=log_path,
+                correctness=correctness,
+            )
+
+        return correctness, None

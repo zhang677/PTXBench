@@ -1,0 +1,105 @@
+<svg viewBox="0 0 1440 298" width="1440" height="298" xmlns="http://www.w3.org/2000/svg" role="img">
+<style>text{font-family:Arial,sans-serif;fill:#1f2937}.small{font-size:12px}.title{font-size:18px;font-weight:700}.stage{font-size:13px;font-weight:700}.node-label{font-size:11px}</style>
+<rect x="0" y="0" width="1440" height="298" fill="#ffffff"/>
+<text class="title" x="24" y="30">Latest-pair patched / mha_bwd_d128_causal: turn-to-turn correctness flow</text>
+<text class="small" x="24" y="52">Trajectories: 8; shared definition/prompt-tag subset</text>
+<path d="M 90.0 114.0 C 155.3 114.0, 173.8 114.0, 257.1 114.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 0 Compilation error -> turn 1 Compilation error: 2</title></path>
+<path d="M 90.0 123.0 C 155.3 123.0, 173.8 161.0, 257.1 161.0" fill="none" stroke="#6b7280" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Compilation error -> turn 1 Other error: 1</title></path>
+<path d="M 90.0 154.0 C 155.3 154.0, 173.8 126.0, 257.1 126.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 0 Extraction error -> turn 1 Compilation error: 2</title></path>
+<path d="M 90.0 137.0 C 155.3 137.0, 173.8 135.0, 257.1 135.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Kernel Execution Timeout -> turn 1 Compilation error: 1</title></path>
+<path d="M 90.0 174.0 C 155.3 174.0, 173.8 144.0, 257.1 144.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 0 Other error -> turn 1 Compilation error: 2</title></path>
+<path d="M 275.1428571428571 117.0 C 340.5 117.0, 359.0 117.0, 442.3 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="18.0"><title>turn 1 Compilation error -> turn 2 Compilation error: 3</title></path>
+<path d="M 275.1428571428571 132.0 C 340.5 132.0, 359.0 140.0, 442.3 140.0" fill="none" stroke="#0f766e" stroke-opacity="0.30" stroke-width="12.0"><title>turn 1 Compilation error -> turn 2 Extraction error: 2</title></path>
+<path d="M 275.1428571428571 144.0 C 340.5 144.0, 359.0 160.0, 442.3 160.0" fill="none" stroke="#6b7280" stroke-opacity="0.30" stroke-width="12.0"><title>turn 1 Compilation error -> turn 2 Other error: 2</title></path>
+<path d="M 275.1428571428571 161.0 C 340.5 161.0, 359.0 169.0, 442.3 169.0" fill="none" stroke="#6b7280" stroke-opacity="0.30" stroke-width="6.0"><title>turn 1 Other error -> turn 2 Other error: 1</title></path>
+<path d="M 460.2857142857143 114.0 C 525.6 114.0, 544.1 114.0, 627.4 114.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 2 Compilation error -> turn 3 Compilation error: 2</title></path>
+<path d="M 460.2857142857143 123.0 C 525.6 123.0, 544.1 143.0, 627.4 143.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Compilation error -> turn 3 Runtime error: 1</title></path>
+<path d="M 460.2857142857143 140.0 C 525.6 140.0, 544.1 126.0, 627.4 126.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 2 Extraction error -> turn 3 Compilation error: 2</title></path>
+<path d="M 460.2857142857143 163.0 C 525.6 163.0, 544.1 163.0, 627.4 163.0" fill="none" stroke="#6b7280" stroke-opacity="0.30" stroke-width="18.0"><title>turn 2 Other error -> turn 3 Other error: 3</title></path>
+<path d="M 645.4285714285714 117.0 C 710.7 117.0, 729.3 117.0, 812.6 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="18.0"><title>turn 3 Compilation error -> turn 4 Compilation error: 3</title></path>
+<path d="M 645.4285714285714 129.0 C 710.7 129.0, 729.3 157.0, 812.6 157.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Compilation error -> turn 4 Numerical error: 1</title></path>
+<path d="M 645.4285714285714 157.0 C 710.7 157.0, 729.3 129.0, 812.6 129.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Other error -> turn 4 Compilation error: 1</title></path>
+<path d="M 645.4285714285714 163.0 C 710.7 163.0, 729.3 171.0, 812.6 171.0" fill="none" stroke="#0f766e" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Other error -> turn 4 Extraction error: 1</title></path>
+<path d="M 645.4285714285714 169.0 C 710.7 169.0, 729.3 143.0, 812.6 143.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Other error -> turn 4 Runtime error: 1</title></path>
+<path d="M 645.4285714285714 143.0 C 710.7 143.0, 729.3 177.0, 812.6 177.0" fill="none" stroke="#0f766e" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Runtime error -> turn 4 Extraction error: 1</title></path>
+<path d="M 830.5714285714286 111.0 C 895.9 111.0, 914.4 111.0, 997.7 111.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Compilation error -> turn 5 Compilation error: 1</title></path>
+<path d="M 830.5714285714286 120.0 C 895.9 120.0, 914.4 154.0, 997.7 154.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="12.0"><title>turn 4 Compilation error -> turn 5 Numerical error: 2</title></path>
+<path d="M 830.5714285714286 129.0 C 895.9 129.0, 914.4 137.0, 997.7 137.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Compilation error -> turn 5 Runtime error: 1</title></path>
+<path d="M 830.5714285714286 174.0 C 895.9 174.0, 914.4 120.0, 997.7 120.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 4 Extraction error -> turn 5 Compilation error: 2</title></path>
+<path d="M 830.5714285714286 157.0 C 895.9 157.0, 914.4 171.0, 997.7 171.0" fill="none" stroke="#0f766e" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Numerical error -> turn 5 Extraction error: 1</title></path>
+<path d="M 830.5714285714286 143.0 C 895.9 143.0, 914.4 177.0, 997.7 177.0" fill="none" stroke="#0f766e" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Runtime error -> turn 5 Extraction error: 1</title></path>
+<path d="M 1015.7142857142857 117.0 C 1081.0 117.0, 1099.5 117.0, 1182.9 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="18.0"><title>turn 5 Compilation error -> turn 6 Compilation error: 3</title></path>
+<path d="M 1015.7142857142857 171.0 C 1081.0 171.0, 1099.5 129.0, 1182.9 129.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Extraction error -> turn 6 Compilation error: 1</title></path>
+<path d="M 1015.7142857142857 177.0 C 1081.0 177.0, 1099.5 157.0, 1182.9 157.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Extraction error -> turn 6 Numerical error: 1</title></path>
+<path d="M 1015.7142857142857 154.0 C 1081.0 154.0, 1099.5 166.0, 1182.9 166.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="12.0"><title>turn 5 Numerical error -> turn 6 Numerical error: 2</title></path>
+<path d="M 1015.7142857142857 137.0 C 1081.0 137.0, 1099.5 143.0, 1182.9 143.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Runtime error -> turn 6 Runtime error: 1</title></path>
+<path d="M 1200.857142857143 111.0 C 1266.2 111.0, 1284.7 111.0, 1368.0 111.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Compilation error -> turn 7 Compilation error: 1</title></path>
+<path d="M 1200.857142857143 117.0 C 1266.2 117.0, 1284.7 177.0, 1368.0 177.0" fill="none" stroke="#0f766e" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Compilation error -> turn 7 Extraction error: 1</title></path>
+<path d="M 1200.857142857143 126.0 C 1266.2 126.0, 1284.7 134.0, 1368.0 134.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="12.0"><title>turn 6 Compilation error -> turn 7 Runtime error: 2</title></path>
+<path d="M 1200.857142857143 157.0 C 1266.2 157.0, 1284.7 117.0, 1368.0 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Numerical error -> turn 7 Compilation error: 1</title></path>
+<path d="M 1200.857142857143 163.0 C 1266.2 163.0, 1284.7 163.0, 1368.0 163.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Numerical error -> turn 7 Numerical error: 1</title></path>
+<path d="M 1200.857142857143 169.0 C 1266.2 169.0, 1284.7 143.0, 1368.0 143.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Numerical error -> turn 7 Runtime error: 1</title></path>
+<path d="M 1200.857142857143 143.0 C 1266.2 143.0, 1284.7 149.0, 1368.0 149.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Runtime error -> turn 7 Runtime error: 1</title></path>
+<text class="stage" x="60.0" y="76">turn 0</text>
+<rect x="72.0" y="108.0" width="18" height="18.0" rx="3" fill="#7b6fd6"><title>Compilation error: 3</title></rect>
+<text class="node-label" x="95.0" y="122.0" text-anchor="start">Compilation error (3)</text>
+<rect x="72.0" y="134.0" width="18" height="6.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 1</title></rect>
+<text class="node-label" x="95.0" y="140.0" text-anchor="start">Kernel Execution Timeout (1)</text>
+<rect x="72.0" y="148.0" width="18" height="12.0" rx="3" fill="#0f766e"><title>Extraction error: 2</title></rect>
+<text class="node-label" x="95.0" y="160.0" text-anchor="start">Extraction error (2)</text>
+<rect x="72.0" y="168.0" width="18" height="12.0" rx="3" fill="#6b7280"><title>Other error: 2</title></rect>
+<text class="node-label" x="95.0" y="180.0" text-anchor="start">Other error (2)</text>
+<text class="stage" x="245.1" y="76">turn 1</text>
+<rect x="257.1" y="108.0" width="18" height="42.0" rx="3" fill="#7b6fd6"><title>Compilation error: 7</title></rect>
+<text class="node-label" x="280.1" y="122.0" text-anchor="start">Compilation error (7)</text>
+<rect x="257.1" y="158.0" width="18" height="6.0" rx="3" fill="#6b7280"><title>Other error: 1</title></rect>
+<text class="node-label" x="280.1" y="164.0" text-anchor="start">Other error (1)</text>
+<text class="stage" x="430.3" y="76">turn 2</text>
+<rect x="442.3" y="108.0" width="18" height="18.0" rx="3" fill="#7b6fd6"><title>Compilation error: 3</title></rect>
+<text class="node-label" x="465.3" y="122.0" text-anchor="start">Compilation error (3)</text>
+<rect x="442.3" y="134.0" width="18" height="12.0" rx="3" fill="#0f766e"><title>Extraction error: 2</title></rect>
+<text class="node-label" x="465.3" y="146.0" text-anchor="start">Extraction error (2)</text>
+<rect x="442.3" y="154.0" width="18" height="18.0" rx="3" fill="#6b7280"><title>Other error: 3</title></rect>
+<text class="node-label" x="465.3" y="168.0" text-anchor="start">Other error (3)</text>
+<text class="stage" x="615.4" y="76">turn 3</text>
+<rect x="627.4" y="108.0" width="18" height="24.0" rx="3" fill="#7b6fd6"><title>Compilation error: 4</title></rect>
+<text class="node-label" x="650.4" y="122.0" text-anchor="start">Compilation error (4)</text>
+<rect x="627.4" y="140.0" width="18" height="6.0" rx="3" fill="#d55e00"><title>Runtime error: 1</title></rect>
+<text class="node-label" x="650.4" y="146.0" text-anchor="start">Runtime error (1)</text>
+<rect x="627.4" y="154.0" width="18" height="18.0" rx="3" fill="#6b7280"><title>Other error: 3</title></rect>
+<text class="node-label" x="650.4" y="168.0" text-anchor="start">Other error (3)</text>
+<text class="stage" x="800.6" y="76">turn 4</text>
+<rect x="812.6" y="108.0" width="18" height="24.0" rx="3" fill="#7b6fd6"><title>Compilation error: 4</title></rect>
+<text class="node-label" x="835.6" y="122.0" text-anchor="start">Compilation error (4)</text>
+<rect x="812.6" y="140.0" width="18" height="6.0" rx="3" fill="#d55e00"><title>Runtime error: 1</title></rect>
+<text class="node-label" x="835.6" y="146.0" text-anchor="start">Runtime error (1)</text>
+<rect x="812.6" y="154.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="835.6" y="160.0" text-anchor="start">Numerical error (1)</text>
+<rect x="812.6" y="168.0" width="18" height="12.0" rx="3" fill="#0f766e"><title>Extraction error: 2</title></rect>
+<text class="node-label" x="835.6" y="180.0" text-anchor="start">Extraction error (2)</text>
+<text class="stage" x="985.7" y="76">turn 5</text>
+<rect x="997.7" y="108.0" width="18" height="18.0" rx="3" fill="#7b6fd6"><title>Compilation error: 3</title></rect>
+<text class="node-label" x="1020.7" y="122.0" text-anchor="start">Compilation error (3)</text>
+<rect x="997.7" y="134.0" width="18" height="6.0" rx="3" fill="#d55e00"><title>Runtime error: 1</title></rect>
+<text class="node-label" x="1020.7" y="140.0" text-anchor="start">Runtime error (1)</text>
+<rect x="997.7" y="148.0" width="18" height="12.0" rx="3" fill="#e4a72b"><title>Numerical error: 2</title></rect>
+<text class="node-label" x="1020.7" y="160.0" text-anchor="start">Numerical error (2)</text>
+<rect x="997.7" y="168.0" width="18" height="12.0" rx="3" fill="#0f766e"><title>Extraction error: 2</title></rect>
+<text class="node-label" x="1020.7" y="180.0" text-anchor="start">Extraction error (2)</text>
+<text class="stage" x="1170.9" y="76">turn 6</text>
+<rect x="1182.9" y="108.0" width="18" height="24.0" rx="3" fill="#7b6fd6"><title>Compilation error: 4</title></rect>
+<text class="node-label" x="1205.9" y="122.0" text-anchor="start">Compilation error (4)</text>
+<rect x="1182.9" y="140.0" width="18" height="6.0" rx="3" fill="#d55e00"><title>Runtime error: 1</title></rect>
+<text class="node-label" x="1205.9" y="146.0" text-anchor="start">Runtime error (1)</text>
+<rect x="1182.9" y="154.0" width="18" height="18.0" rx="3" fill="#e4a72b"><title>Numerical error: 3</title></rect>
+<text class="node-label" x="1205.9" y="168.0" text-anchor="start">Numerical error (3)</text>
+<text class="stage" x="1356.0" y="76">turn 7</text>
+<rect x="1368.0" y="108.0" width="18" height="12.0" rx="3" fill="#7b6fd6"><title>Compilation error: 2</title></rect>
+<text class="node-label" x="1361.0" y="120.0" text-anchor="end">Compilation error (2)</text>
+<rect x="1368.0" y="128.0" width="18" height="24.0" rx="3" fill="#d55e00"><title>Runtime error: 4</title></rect>
+<text class="node-label" x="1361.0" y="142.0" text-anchor="end">Runtime error (4)</text>
+<rect x="1368.0" y="160.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="1361.0" y="166.0" text-anchor="end">Numerical error (1)</text>
+<rect x="1368.0" y="174.0" width="18" height="6.0" rx="3" fill="#0f766e"><title>Extraction error: 1</title></rect>
+<text class="node-label" x="1361.0" y="180.0" text-anchor="end">Extraction error (1)</text>
+</svg>

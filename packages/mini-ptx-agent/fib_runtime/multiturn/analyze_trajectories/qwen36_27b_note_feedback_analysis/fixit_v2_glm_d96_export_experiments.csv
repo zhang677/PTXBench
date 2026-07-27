@@ -1,0 +1,5 @@
+arch,exp_dir
+hopper,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d96
+hopper,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d96-causal
+hopper,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d96
+hopper,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d96-causal

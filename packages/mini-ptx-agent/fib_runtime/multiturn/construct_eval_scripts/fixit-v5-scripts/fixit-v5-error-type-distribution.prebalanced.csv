@@ -1,0 +1,10 @@
+definition,source_total,collected_total,filtered_total,filter_prompt_tag,filter_source_turn,filter_non_fenced_assistant_turn,filter_excluded_label,filter_missing_collected_row,collected_turn_0,collected_turn_1,collected_turn_2,collected_turn_3,collected_turn_4,collected_turn_5,collected_turn_6,collected_turn_7,filtered_turn_0,filtered_turn_1,filtered_turn_2,filtered_turn_3,filtered_turn_4,filtered_turn_5,filtered_turn_6,filtered_turn_7,total,Compilation error,Runtime error,Numerical error,Kernel Execution Timeout
+mha_bwd_d128,160,33,127,96,24,6,1,0,5,7,7,7,7,0,0,0,15,13,13,13,13,20,20,20,33,20,12,0,1
+mha_bwd_d128_causal,160,33,127,96,24,6,1,0,7,6,6,7,7,0,0,0,13,14,14,13,13,20,20,20,33,22,10,1,0
+mha_bwd_d64,160,40,120,96,24,0,0,0,8,8,8,8,8,0,0,0,12,12,12,12,12,20,20,20,40,11,16,3,10
+mha_bwd_d64_causal,160,35,125,96,24,4,1,0,7,7,7,7,7,0,0,0,13,13,13,13,13,20,20,20,35,15,9,5,6
+mha_with_lse_d128,160,40,120,96,24,0,0,0,8,8,8,8,8,0,0,0,12,12,12,12,12,20,20,20,40,21,19,0,0
+mha_with_lse_d128_causal,160,38,122,96,24,1,1,0,7,7,8,8,8,0,0,0,13,13,12,12,12,20,20,20,38,22,15,1,0
+mha_with_lse_d64,160,39,121,96,24,0,1,0,8,7,8,8,8,0,0,0,12,13,12,12,12,20,20,20,39,19,12,5,3
+mha_with_lse_d64_causal,160,40,120,96,24,0,0,0,8,8,8,8,8,0,0,0,12,12,12,12,12,20,20,20,40,21,13,5,1
+Total,1280,298,982,768,192,17,5,0,58,58,60,61,61,0,0,0,102,102,100,99,99,160,160,160,298,151,106,20,21

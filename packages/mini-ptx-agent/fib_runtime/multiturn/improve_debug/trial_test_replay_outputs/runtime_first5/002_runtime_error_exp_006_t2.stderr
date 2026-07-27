@@ -1,0 +1,29 @@
+ptxas info    : (C7519) warpgroup.arrive is injected in around line 7241 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_cuda17mha_bwd_kernel_dQE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16i'
+ptxas info    : (C7519) warpgroup.arrive is injected in around line 7503 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_cuda17mha_bwd_kernel_dQE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16i'
+ptxas info    : (C7517) warpgroup.wait is injected in around line 7503 by compiler to allow use of registers defined by GMMA in function '_ZN12tvm_ffi_cuda17mha_bwd_kernel_dQE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16i'
+ptxas info    : (C7519) warpgroup.arrive is injected in around line 1790 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_cuda20mha_bwd_kernel_dK_dVE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_i'
+ptxas info    : (C7519) warpgroup.arrive is injected in around line 2052 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_cuda20mha_bwd_kernel_dK_dVE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_i'
+ptxas info    : (C7517) warpgroup.wait is injected in around line 2052 by compiler to allow use of registers defined by GMMA in function '_ZN12tvm_ffi_cuda20mha_bwd_kernel_dK_dVE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_i'
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN12tvm_ffi_cuda17mha_bwd_kernel_dQE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16i' for 'sm_90a'
+ptxas info    : Function properties for _ZN12tvm_ffi_cuda17mha_bwd_kernel_dQE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16i
+    96 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 218 registers, used 1 barriers, 96 bytes cumulative stack size
+ptxas info    : Compile time = 139.766 ms
+ptxas info    : Compiling entry function '_ZN12tvm_ffi_cuda20mha_bwd_kernel_dK_dVE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_i' for 'sm_90a'
+ptxas info    : Function properties for _ZN12tvm_ffi_cuda20mha_bwd_kernel_dK_dVE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_i
+    144 bytes stack frame, 44 bytes spill stores, 44 bytes spill loads
+ptxas info    : Used 255 registers, used 1 barriers, 144 bytes cumulative stack size
+ptxas info    : Compile time = 203.222 ms
+ptxas info    : Compiling entry function '_ZN12tvm_ffi_cuda16compute_D_kernelEPK13__nv_bfloat16S2_Pfii' for 'sm_90a'
+ptxas info    : Function properties for _ZN12tvm_ffi_cuda16compute_D_kernelEPK13__nv_bfloat16S2_Pfii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 0 barriers
+ptxas info    : Compile time = 7.320 ms
+Running memcheck 1/2...
+Submitted sanitize task: ae647f62709b403baf697e99b690bd6d
+Running memcheck 2/2...
+Submitted sanitize task: 25ca045f662d4c578e2fbba77b6e9e67
+memcheck clean; running /evaluate...
+Submitted evaluate task: 4e284303dfa74808895ddd91d0e728ee
+Submitted debug task: 3442d9202c34407680b068521f29e929

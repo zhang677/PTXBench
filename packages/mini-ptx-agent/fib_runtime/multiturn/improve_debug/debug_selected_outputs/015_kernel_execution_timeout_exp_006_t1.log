@@ -1,0 +1,38 @@
+CUDA core dump analysis
+--------------------------------------------------------------------------------
+- focus: CUDA kernel 0, grid 2, block (12,1,0), thread (32,0,0), device 0, sm 0, warp 0, lane 0]
+- frame #0: kernel.cu:51
+  function: tvm_ffi_cuda::mha_bwd_kernel_dK_dV<<<(64,192,1),(128,1,1)>>> ()
+  source: :: "r"((uint32_t)__cvta_generic_to_shared(&bar[0])), "r"(phase));
+  inlined call site: kernel.cu:246
+  call source: mbarrier_wait_fn(bar_K, phase_K);
+  interpretation: the coredump caught the GPU in a wait/barrier path. For timeout failures, inspect kernel.cu:246 and its caller before treating this as a generic CUDA core dump.
+
+Primary diagnostics
+--------------------------------------------------------------------------------
+- ERROR: memcheck timed out after 45 seconds.
+- ERROR: direct runner timed out after 30 seconds; requested CUDA user-triggered core dump before terminating it.
+
+Source locations
+--------------------------------------------------------------------------------
+kernel.cu:51
+  47:         "WAIT_%=:\n"
+  48:         "mbarrier.try_wait.parity.shared.b64 P, [%0], %1;\n"
+  49:         "@!P bra WAIT_%=;\n"
+  50:         "}\n"
+> 51:         :: "r"((uint32_t)__cvta_generic_to_shared(&bar[0])), "r"(phase));
+  52: }
+  53: 
+  54: __device__ __forceinline__ void fence_proxy_async_fn() {
+  55:     asm volatile("fence.proxy.async;\n" ::: "memory");
+
+kernel.cu:246
+  242:     uint32_t phase_K = 0, phase_V = 0;
+  243:     uint32_t phase_Q[2] = {0, 0};
+  244:     uint32_t phase_dO[2] = {0, 0};
+  245:     
+> 246:     mbarrier_wait_fn(bar_K, phase_K);
+  247:     mbarrier_wait_fn(bar_V, phase_V);
+  248:     
+  249:     float acc_dK0[32] = {0}, acc_dK1[32] = {0};
+  250:     float acc_dV0[32] = {0}, acc_dV1[32] = {0};

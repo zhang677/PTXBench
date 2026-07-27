@@ -1,0 +1,11 @@
+old_definition,old_workload,new_definition,new_workload,seq
+mha_with_lse_h48_d128,f4a505f6-a887-44ae-9000-88553af1e433,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,4096
+mha_bwd_h48_d128,28a58a7c-05ba-4ce2-9538-a85f60ee7077,mha_bwd_d128,f5645ae3-e24f-5534-9d30-c46b68a8ffea,2048
+mha_with_lse_fp8,c026ae15-4ac4-4cc7-bd9d-a2a8092ba803,fp8_mha_with_lse_d256,4b431b40-99ba-4dc9-bcec-2627a07ffc2c,4096
+fp8_gemm_nt_1d2d_n4096_k7168,52b28ef-1525-4e15-a81d-454e48209fcd,fp8_gemm_nt_1d2d_n4096_k7168,c6eae59f-9e2f-4dae-992d-a4ea14310757,4096
+mha_with_lse_d64,7981ac38-4da5-4556-aca8-54030547467f,mha_with_lse_d64,7981ac38-4da5-4556-aca8-54030547467f,2048
+mha_with_lse_d128,0c6a7e3e-4098-4022-9377-df6a39ec6193,mha_with_lse_d128,0c6a7e3e-4098-4022-9377-df6a39ec6193,2048
+mha_with_lse_d256,0bdb6ed3-05c2-4fb4-ae68-9b4fb66acdf9,mha_with_lse_d256,0bdb6ed3-05c2-4fb4-ae68-9b4fb66acdf9,2048
+mha_with_lse_d64_causal,2e552518-49fd-4d12-875e-ae7378c2af1b,mha_with_lse_d64_causal,2e552518-49fd-4d12-875e-ae7378c2af1b,2048
+mha_with_lse_d128_causal,00fc7dc5-c57b-4920-9422-367cea0166ce,mha_with_lse_d128_causal,00fc7dc5-c57b-4920-9422-367cea0166ce,2048
+mha_with_lse_d256_causal,75e0cf7f-33f7-4ce4-9513-661a0ba97813,mha_with_lse_d256_causal,75e0cf7f-33f7-4ce4-9513-661a0ba97813,2048

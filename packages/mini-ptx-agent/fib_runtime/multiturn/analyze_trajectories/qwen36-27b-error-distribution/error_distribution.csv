@@ -1,0 +1,659 @@
+scope,arch,definition,workload,group,model,exp_dir,turn,correctness,count,total,fraction
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,,Runtime error,260,560,0.464286
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,,Numerical error,127,560,0.226786
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,,Compilation error,109,560,0.194643
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,,Kernel Execution Timeout,43,560,0.076786
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,,Correct,19,560,0.033929
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,,Extraction error,1,560,0.001786
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,,Other error,1,560,0.001786
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,,Runtime error,90,160,0.562500
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,,Correct,26,160,0.162500
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,,Compilation error,24,160,0.150000
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,,Kernel Execution Timeout,7,160,0.043750
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,,Numerical error,7,160,0.043750
+definition,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,,Extraction error,6,160,0.037500
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,,Compilation error,79,160,0.493750
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,,Runtime error,41,160,0.256250
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,,Kernel Execution Timeout,20,160,0.125000
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,,Numerical error,12,160,0.075000
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,,Extraction error,5,160,0.031250
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,,Other error,3,160,0.018750
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,,Compilation error,50,160,0.312500
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,,Runtime error,39,160,0.243750
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,,Numerical error,35,160,0.218750
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,,Kernel Execution Timeout,24,160,0.150000
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,,Extraction error,8,160,0.050000
+definition,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,,Correct,4,160,0.025000
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,,Compilation error,98,160,0.612500
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,,Runtime error,21,160,0.131250
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,,Kernel Execution Timeout,16,160,0.100000
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,,Numerical error,14,160,0.087500
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,,Extraction error,7,160,0.043750
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,,Other error,3,160,0.018750
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,,Sanitize Timeout,1,160,0.006250
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,,Runtime error,58,160,0.362500
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,,Compilation error,49,160,0.306250
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,,Numerical error,31,160,0.193750
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,,Kernel Execution Timeout,12,160,0.075000
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,,Correct,6,160,0.037500
+definition,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,,Extraction error,4,160,0.025000
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,,Compilation error,90,160,0.562500
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,,Runtime error,31,160,0.193750
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,,Kernel Execution Timeout,23,160,0.143750
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,,Numerical error,11,160,0.068750
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,,Extraction error,3,160,0.018750
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,,Other error,1,160,0.006250
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,,Profiling Service Timeout,1,160,0.006250
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,,Numerical error,43,160,0.268750
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,,Compilation error,41,160,0.256250
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,,Runtime error,37,160,0.231250
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,,Correct,26,160,0.162500
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,,Kernel Execution Timeout,7,160,0.043750
+definition,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,,Extraction error,6,160,0.037500
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,,Compilation error,99,160,0.618750
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,,Runtime error,24,160,0.150000
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,,Kernel Execution Timeout,15,160,0.093750
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,,Numerical error,15,160,0.093750
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,,Extraction error,6,160,0.037500
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,,Other error,1,160,0.006250
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,,Compilation error,46,160,0.287500
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,,Numerical error,43,160,0.268750
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,,Kernel Execution Timeout,34,160,0.212500
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,,Runtime error,26,160,0.162500
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,,Correct,8,160,0.050000
+definition,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,,Extraction error,3,160,0.018750
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,0,Compilation error,14,28,0.500000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,0,Runtime error,10,28,0.357143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,0,Numerical error,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,0,Kernel Execution Timeout,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,0,Other error,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,1,Runtime error,17,28,0.607143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,1,Compilation error,9,28,0.321429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,1,Extraction error,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,1,Kernel Execution Timeout,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,2,Runtime error,14,28,0.500000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,2,Compilation error,9,28,0.321429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,2,Numerical error,3,28,0.107143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,2,Correct,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,2,Kernel Execution Timeout,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,3,Runtime error,17,28,0.607143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,3,Compilation error,7,28,0.250000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,3,Numerical error,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,3,Correct,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,3,Kernel Execution Timeout,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,4,Runtime error,13,28,0.464286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,4,Compilation error,10,28,0.357143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,4,Correct,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,4,Numerical error,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,4,Kernel Execution Timeout,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,5,Runtime error,19,28,0.678571
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,5,Compilation error,7,28,0.250000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,5,Correct,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,5,Kernel Execution Timeout,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,6,Runtime error,18,28,0.642857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,6,Compilation error,6,28,0.214286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,6,Kernel Execution Timeout,3,28,0.107143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,6,Correct,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,7,Runtime error,18,28,0.642857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,7,Compilation error,6,28,0.214286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,7,Numerical error,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,7,Correct,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,7,Kernel Execution Timeout,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,8,Runtime error,16,28,0.571429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,8,Numerical error,6,28,0.214286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,8,Compilation error,5,28,0.178571
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,8,Kernel Execution Timeout,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,9,Runtime error,14,28,0.500000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,9,Kernel Execution Timeout,5,28,0.178571
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,9,Numerical error,5,28,0.178571
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,9,Compilation error,4,28,0.142857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,10,Runtime error,13,28,0.464286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,10,Compilation error,6,28,0.214286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,10,Numerical error,6,28,0.214286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,10,Kernel Execution Timeout,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,10,Correct,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,11,Runtime error,13,28,0.464286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,11,Numerical error,6,28,0.214286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,11,Compilation error,5,28,0.178571
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,11,Correct,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,11,Kernel Execution Timeout,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,12,Runtime error,12,28,0.428571
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,12,Numerical error,10,28,0.357143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,12,Compilation error,4,28,0.142857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,12,Kernel Execution Timeout,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,13,Numerical error,9,28,0.321429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,13,Runtime error,9,28,0.321429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,13,Compilation error,6,28,0.214286
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,13,Kernel Execution Timeout,4,28,0.142857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,14,Runtime error,11,28,0.392857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,14,Numerical error,10,28,0.357143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,14,Kernel Execution Timeout,4,28,0.142857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,14,Correct,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,14,Compilation error,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,15,Numerical error,11,28,0.392857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,15,Runtime error,10,28,0.357143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,15,Kernel Execution Timeout,3,28,0.107143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,15,Compilation error,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,15,Correct,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,16,Numerical error,11,28,0.392857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,16,Runtime error,9,28,0.321429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,16,Kernel Execution Timeout,4,28,0.142857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,16,Compilation error,3,28,0.107143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,16,Correct,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,17,Numerical error,16,28,0.571429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,17,Runtime error,9,28,0.321429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,17,Compilation error,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,17,Correct,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,17,Kernel Execution Timeout,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,18,Numerical error,12,28,0.428571
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,18,Runtime error,11,28,0.392857
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,18,Compilation error,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,18,Kernel Execution Timeout,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,18,Correct,1,28,0.035714
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,19,Numerical error,14,28,0.500000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,19,Runtime error,7,28,0.250000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,19,Kernel Execution Timeout,3,28,0.107143
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,19,Compilation error,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,19,Correct,2,28,0.071429
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,0,Compilation error,8,20,0.400000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,0,Correct,5,20,0.250000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,0,Runtime error,3,20,0.150000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,0,Extraction error,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,0,Numerical error,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,1,Runtime error,11,20,0.550000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,1,Correct,4,20,0.200000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,1,Compilation error,3,20,0.150000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,1,Extraction error,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,1,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,2,Runtime error,10,20,0.500000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,2,Compilation error,3,20,0.150000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,2,Correct,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,2,Extraction error,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,2,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,2,Numerical error,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,3,Runtime error,12,20,0.600000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,3,Correct,3,20,0.150000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,3,Compilation error,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,3,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,3,Numerical error,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,4,Runtime error,15,20,0.750000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,4,Compilation error,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,4,Correct,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,4,Numerical error,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,5,Runtime error,11,20,0.550000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,5,Correct,4,20,0.200000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,5,Compilation error,3,20,0.150000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,5,Extraction error,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,5,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,6,Runtime error,14,20,0.700000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,6,Correct,3,20,0.150000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,6,Compilation error,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,6,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,6,Numerical error,1,20,0.050000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,7,Runtime error,14,20,0.700000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,7,Correct,3,20,0.150000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,7,Compilation error,2,20,0.100000
+definition_by_turn,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm,7,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,0,Compilation error,13,20,0.650000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,0,Extraction error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,0,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,0,Runtime error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,1,Compilation error,15,20,0.750000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,1,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,1,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,1,Other error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,1,Runtime error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,2,Compilation error,11,20,0.550000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,2,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,2,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,2,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,2,Other error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,3,Compilation error,8,20,0.400000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,3,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,3,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,3,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,3,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,3,Other error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,4,Runtime error,8,20,0.400000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,4,Compilation error,7,20,0.350000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,4,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,4,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,5,Compilation error,9,20,0.450000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,5,Runtime error,8,20,0.400000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,5,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,5,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,6,Compilation error,9,20,0.450000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,6,Runtime error,7,20,0.350000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,6,Kernel Execution Timeout,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,7,Runtime error,8,20,0.400000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,7,Compilation error,7,20,0.350000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,7,Kernel Execution Timeout,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,7,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,0,Compilation error,16,20,0.800000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,0,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,0,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,0,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,1,Compilation error,9,20,0.450000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,1,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,1,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,1,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,1,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,2,Compilation error,8,20,0.400000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,2,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,2,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,2,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,2,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,2,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,3,Compilation error,6,20,0.300000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,3,Kernel Execution Timeout,6,20,0.300000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,3,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,3,Extraction error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,3,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,4,Compilation error,6,20,0.300000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,4,Numerical error,6,20,0.300000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,4,Runtime error,5,20,0.250000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,4,Extraction error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,4,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,5,Numerical error,7,20,0.350000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,5,Runtime error,6,20,0.300000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,5,Kernel Execution Timeout,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,5,Compilation error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,5,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,5,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,6,Numerical error,7,20,0.350000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,6,Runtime error,6,20,0.300000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,6,Compilation error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,6,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,6,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,7,Runtime error,10,20,0.500000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,7,Numerical error,6,20,0.300000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,7,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,7,Compilation error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128,7,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,0,Compilation error,14,20,0.700000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,0,Extraction error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,0,Other error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,0,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,1,Compilation error,10,20,0.500000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,1,Numerical error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,1,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,1,Runtime error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,2,Compilation error,11,20,0.550000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,2,Runtime error,5,20,0.250000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,2,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,2,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,3,Compilation error,14,20,0.700000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,3,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,3,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,3,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,4,Compilation error,15,20,0.750000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,4,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,4,Sanitize Timeout,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,5,Compilation error,11,20,0.550000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,5,Runtime error,5,20,0.250000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,5,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,5,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,6,Compilation error,12,20,0.600000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,6,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,6,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,6,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,6,Other error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,7,Compilation error,11,20,0.550000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,7,Kernel Execution Timeout,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,7,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,7,Extraction error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,0,Compilation error,14,20,0.700000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,0,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,0,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,0,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,1,Compilation error,12,20,0.600000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,1,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,1,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,1,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,2,Runtime error,7,20,0.350000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,2,Compilation error,5,20,0.250000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,2,Numerical error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,2,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,2,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,2,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,3,Runtime error,9,20,0.450000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,3,Compilation error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,3,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,3,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,3,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,3,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,4,Runtime error,9,20,0.450000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,4,Numerical error,7,20,0.350000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,4,Compilation error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,4,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,5,Compilation error,6,20,0.300000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,5,Numerical error,6,20,0.300000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,5,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,5,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,5,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,5,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,6,Runtime error,10,20,0.500000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,6,Numerical error,5,20,0.250000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,6,Compilation error,3,20,0.150000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,6,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,7,Runtime error,11,20,0.550000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,7,Numerical error,4,20,0.200000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,7,Compilation error,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,7,Correct,2,20,0.100000
+definition_by_turn,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal,7,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,0,Compilation error,17,20,0.850000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,0,Extraction error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,0,Profiling Service Timeout,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,1,Compilation error,13,20,0.650000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,1,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,1,Runtime error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,1,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,1,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,2,Compilation error,12,20,0.600000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,2,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,2,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,2,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,2,Other error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,3,Compilation error,11,20,0.550000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,3,Runtime error,7,20,0.350000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,3,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,3,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,4,Compilation error,13,20,0.650000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,4,Kernel Execution Timeout,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,4,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,4,Runtime error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,5,Compilation error,11,20,0.550000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,5,Kernel Execution Timeout,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,5,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,5,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,6,Compilation error,7,20,0.350000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,6,Runtime error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,6,Kernel Execution Timeout,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,6,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,7,Runtime error,7,20,0.350000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,7,Compilation error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,7,Kernel Execution Timeout,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,7,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,0,Compilation error,12,20,0.600000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,0,Correct,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,0,Extraction error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,0,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,0,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,1,Runtime error,9,20,0.450000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,1,Compilation error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,1,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,1,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,1,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,2,Compilation error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,2,Correct,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,2,Numerical error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,2,Runtime error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,2,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,3,Numerical error,11,20,0.550000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,3,Compilation error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,3,Correct,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,3,Runtime error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,3,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,3,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,4,Runtime error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,4,Compilation error,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,4,Correct,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,4,Numerical error,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,4,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,5,Numerical error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,5,Compilation error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,5,Runtime error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,5,Correct,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,5,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,6,Numerical error,9,20,0.450000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,6,Runtime error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,6,Correct,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,6,Compilation error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,7,Runtime error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,7,Compilation error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,7,Correct,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,7,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128,7,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,0,Compilation error,19,20,0.950000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,0,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,1,Compilation error,16,20,0.800000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,1,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,1,Runtime error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,2,Compilation error,9,20,0.450000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,2,Runtime error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,2,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,2,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,2,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,3,Compilation error,12,20,0.600000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,3,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,3,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,3,Runtime error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,3,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,3,Other error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,4,Compilation error,12,20,0.600000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,4,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,4,Extraction error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,4,Runtime error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,4,Numerical error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,5,Compilation error,13,20,0.650000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,5,Runtime error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,5,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,5,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,5,Kernel Execution Timeout,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,6,Compilation error,10,20,0.500000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,6,Runtime error,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,6,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,6,Numerical error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,7,Compilation error,8,20,0.400000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,7,Runtime error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,7,Kernel Execution Timeout,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,left,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,7,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,0,Compilation error,14,20,0.700000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,0,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,0,Numerical error,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,0,Runtime error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,1,Compilation error,9,20,0.450000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,1,Kernel Execution Timeout,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,1,Numerical error,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,1,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,1,Runtime error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,2,Kernel Execution Timeout,7,20,0.350000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,2,Numerical error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,2,Compilation error,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,2,Runtime error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,2,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,3,Numerical error,8,20,0.400000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,3,Runtime error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,3,Compilation error,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,3,Kernel Execution Timeout,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,4,Compilation error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,4,Numerical error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,4,Kernel Execution Timeout,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,4,Runtime error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,4,Correct,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,4,Extraction error,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,5,Numerical error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,5,Kernel Execution Timeout,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,5,Runtime error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,5,Compilation error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,5,Correct,1,20,0.050000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,6,Numerical error,6,20,0.300000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,6,Runtime error,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,6,Compilation error,4,20,0.200000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,6,Kernel Execution Timeout,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,6,Correct,2,20,0.100000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,7,Numerical error,7,20,0.350000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,7,Kernel Execution Timeout,5,20,0.250000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,7,Compilation error,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,7,Correct,3,20,0.150000
+definition_by_turn,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,right,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal,7,Runtime error,2,20,0.100000
+overall,hopper,,,left,Qwen3.6-27B,,,Compilation error,475,1200,0.395833
+overall,hopper,,,left,Qwen3.6-27B,,,Runtime error,377,1200,0.314167
+overall,hopper,,,left,Qwen3.6-27B,,,Numerical error,179,1200,0.149167
+overall,hopper,,,left,Qwen3.6-27B,,,Kernel Execution Timeout,117,1200,0.097500
+overall,hopper,,,left,Qwen3.6-27B,,,Extraction error,22,1200,0.018333
+overall,hopper,,,left,Qwen3.6-27B,,,Correct,19,1200,0.015833
+overall,hopper,,,left,Qwen3.6-27B,,,Other error,9,1200,0.007500
+overall,hopper,,,left,Qwen3.6-27B,,,Profiling Service Timeout,1,1200,0.000833
+overall,hopper,,,left,Qwen3.6-27B,,,Sanitize Timeout,1,1200,0.000833
+overall,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,,Runtime error,250,800,0.312500
+overall,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,,Compilation error,210,800,0.262500
+overall,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,,Numerical error,159,800,0.198750
+overall,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,,Kernel Execution Timeout,84,800,0.105000
+overall,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,,Correct,70,800,0.087500
+overall,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,,Extraction error,27,800,0.033750
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,0,Compilation error,77,108,0.712963
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,0,Runtime error,11,108,0.101852
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,0,Extraction error,10,108,0.092593
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,0,Numerical error,5,108,0.046296
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,0,Other error,3,108,0.027778
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,0,Kernel Execution Timeout,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,0,Profiling Service Timeout,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,1,Compilation error,63,108,0.583333
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,1,Runtime error,25,108,0.231481
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,1,Kernel Execution Timeout,9,108,0.083333
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,1,Numerical error,8,108,0.074074
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,1,Extraction error,2,108,0.018519
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,1,Other error,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,2,Compilation error,52,108,0.481481
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,2,Runtime error,32,108,0.296296
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,2,Numerical error,12,108,0.111111
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,2,Kernel Execution Timeout,8,108,0.074074
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,2,Other error,2,108,0.018519
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,2,Correct,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,2,Extraction error,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,3,Compilation error,52,108,0.481481
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,3,Runtime error,30,108,0.277778
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,3,Numerical error,11,108,0.101852
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,3,Kernel Execution Timeout,9,108,0.083333
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,3,Extraction error,3,108,0.027778
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,3,Other error,2,108,0.018519
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,3,Correct,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,4,Compilation error,57,108,0.527778
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,4,Runtime error,28,108,0.259259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,4,Kernel Execution Timeout,12,108,0.111111
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,4,Numerical error,6,108,0.055556
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,4,Correct,2,108,0.018519
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,4,Extraction error,2,108,0.018519
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,4,Sanitize Timeout,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,5,Compilation error,51,108,0.472222
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,5,Runtime error,39,108,0.361111
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,5,Kernel Execution Timeout,11,108,0.101852
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,5,Numerical error,4,108,0.037037
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,5,Extraction error,2,108,0.018519
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,5,Correct,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,6,Compilation error,44,108,0.407407
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,6,Runtime error,39,108,0.361111
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,6,Kernel Execution Timeout,16,108,0.148148
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,6,Numerical error,7,108,0.064815
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,6,Correct,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,6,Other error,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,7,Runtime error,39,108,0.361111
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,7,Compilation error,38,108,0.351852
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,7,Kernel Execution Timeout,18,108,0.166667
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,7,Numerical error,10,108,0.092593
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,7,Extraction error,2,108,0.018519
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,7,Correct,1,108,0.009259
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,8,Runtime error,16,28,0.571429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,8,Numerical error,6,28,0.214286
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,8,Compilation error,5,28,0.178571
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,8,Kernel Execution Timeout,1,28,0.035714
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,9,Runtime error,14,28,0.500000
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,9,Kernel Execution Timeout,5,28,0.178571
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,9,Numerical error,5,28,0.178571
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,9,Compilation error,4,28,0.142857
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,10,Runtime error,13,28,0.464286
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,10,Compilation error,6,28,0.214286
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,10,Numerical error,6,28,0.214286
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,10,Kernel Execution Timeout,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,10,Correct,1,28,0.035714
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,11,Runtime error,13,28,0.464286
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,11,Numerical error,6,28,0.214286
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,11,Compilation error,5,28,0.178571
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,11,Correct,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,11,Kernel Execution Timeout,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,12,Runtime error,12,28,0.428571
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,12,Numerical error,10,28,0.357143
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,12,Compilation error,4,28,0.142857
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,12,Kernel Execution Timeout,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,13,Numerical error,9,28,0.321429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,13,Runtime error,9,28,0.321429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,13,Compilation error,6,28,0.214286
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,13,Kernel Execution Timeout,4,28,0.142857
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,14,Runtime error,11,28,0.392857
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,14,Numerical error,10,28,0.357143
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,14,Kernel Execution Timeout,4,28,0.142857
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,14,Correct,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,14,Compilation error,1,28,0.035714
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,15,Numerical error,11,28,0.392857
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,15,Runtime error,10,28,0.357143
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,15,Kernel Execution Timeout,3,28,0.107143
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,15,Compilation error,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,15,Correct,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,16,Numerical error,11,28,0.392857
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,16,Runtime error,9,28,0.321429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,16,Kernel Execution Timeout,4,28,0.142857
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,16,Compilation error,3,28,0.107143
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,16,Correct,1,28,0.035714
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,17,Numerical error,16,28,0.571429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,17,Runtime error,9,28,0.321429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,17,Compilation error,1,28,0.035714
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,17,Correct,1,28,0.035714
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,17,Kernel Execution Timeout,1,28,0.035714
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,18,Numerical error,12,28,0.428571
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,18,Runtime error,11,28,0.392857
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,18,Compilation error,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,18,Kernel Execution Timeout,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,18,Correct,1,28,0.035714
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,19,Numerical error,14,28,0.500000
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,19,Runtime error,7,28,0.250000
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,19,Kernel Execution Timeout,3,28,0.107143
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,19,Compilation error,2,28,0.071429
+overall_by_turn,hopper,,,left,Qwen3.6-27B,,19,Correct,2,28,0.071429
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,0,Compilation error,64,100,0.640000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,0,Kernel Execution Timeout,8,100,0.080000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,0,Runtime error,8,100,0.080000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,0,Correct,7,100,0.070000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,0,Numerical error,7,100,0.070000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,0,Extraction error,6,100,0.060000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,1,Compilation error,39,100,0.390000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,1,Runtime error,29,100,0.290000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,1,Numerical error,12,100,0.120000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,1,Kernel Execution Timeout,11,100,0.110000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,1,Correct,5,100,0.050000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,1,Extraction error,4,100,0.040000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,2,Runtime error,27,100,0.270000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,2,Compilation error,25,100,0.250000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,2,Numerical error,18,100,0.180000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,2,Kernel Execution Timeout,16,100,0.160000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,2,Correct,9,100,0.090000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,2,Extraction error,5,100,0.050000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,3,Runtime error,33,100,0.330000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,3,Numerical error,25,100,0.250000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,3,Compilation error,19,100,0.190000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,3,Kernel Execution Timeout,13,100,0.130000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,3,Correct,6,100,0.060000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,3,Extraction error,4,100,0.040000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,4,Runtime error,38,100,0.380000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,4,Numerical error,23,100,0.230000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,4,Compilation error,20,100,0.200000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,4,Correct,9,100,0.090000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,4,Kernel Execution Timeout,7,100,0.070000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,4,Extraction error,3,100,0.030000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,5,Runtime error,31,100,0.310000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,5,Numerical error,25,100,0.250000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,5,Compilation error,18,100,0.180000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,5,Kernel Execution Timeout,12,100,0.120000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,5,Correct,10,100,0.100000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,5,Extraction error,4,100,0.040000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,6,Runtime error,41,100,0.410000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,6,Numerical error,28,100,0.280000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,6,Compilation error,12,100,0.120000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,6,Correct,10,100,0.100000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,6,Kernel Execution Timeout,9,100,0.090000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,7,Runtime error,43,100,0.430000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,7,Numerical error,21,100,0.210000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,7,Correct,14,100,0.140000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,7,Compilation error,13,100,0.130000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,7,Kernel Execution Timeout,8,100,0.080000
+overall_by_turn,hopper,,,right,Qwen3.6-27B-fixit-v2-glm,,7,Extraction error,1,100,0.010000

@@ -1,0 +1,18 @@
+{
+  "needle": "my_reasoning",
+  "ignore_case": false,
+  "run_dirs": [
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm",
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128",
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal",
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128",
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal"
+  ],
+  "skipped_no_csv_runs": [],
+  "outputs": {
+    "summary_csv": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/my-reasoning-leakage-2026-0624-0939/summary.csv",
+    "rows_csv": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/my-reasoning-leakage-2026-0624-0939/my_reasoning_leakage_rows.csv",
+    "summary_md": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/my-reasoning-leakage-2026-0624-0939/summary.md",
+    "manifest_json": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/my-reasoning-leakage-2026-0624-0939/manifest.json"
+  }
+}

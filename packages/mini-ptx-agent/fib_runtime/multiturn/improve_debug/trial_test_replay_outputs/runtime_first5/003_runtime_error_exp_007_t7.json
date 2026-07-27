@@ -1,0 +1,14 @@
+{
+  "index": 3,
+  "status": "ok",
+  "returncode": 0,
+  "elapsed_seconds": 47.382,
+  "kernel": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128/kernels/exp_007/kernel_t7.cu",
+  "category": "Runtime error",
+  "exp": "exp_007",
+  "turn": 7,
+  "original_message": "CUDA error an illegal memory access was encountered at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_18f01fce_18f01f/kernel.cu:588",
+  "trace_path": "/home/ubuntu/AccRL/fib_runtime/multiturn/improve_debug/trial_test_replay_outputs/runtime_first5/003_runtime_error_exp_007_t7.traces.json",
+  "stdout_path": "/home/ubuntu/AccRL/fib_runtime/multiturn/improve_debug/trial_test_replay_outputs/runtime_first5/003_runtime_error_exp_007_t7.stdout",
+  "stderr_path": "/home/ubuntu/AccRL/fib_runtime/multiturn/improve_debug/trial_test_replay_outputs/runtime_first5/003_runtime_error_exp_007_t7.stderr"
+}

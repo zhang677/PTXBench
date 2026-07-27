@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AccRL Plot Board</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Plot groups">
+        <div class="brand-row">
+          <div>
+            <h1>AccRL Plot Board</h1>
+            <p id="datasetSummary">Loading plots</p>
+          </div>
+          <button id="refreshButton" class="icon-button" type="button" title="Reload CSVs" aria-label="Reload CSVs">
+            <span aria-hidden="true">R</span>
+          </button>
+        </div>
+
+        <label class="field-label" for="searchInput">Search</label>
+        <input id="searchInput" class="search-input" type="search" placeholder="workload, arch, model" />
+
+        <div class="filter-row" aria-label="Architecture filter">
+          <button class="segmented active" type="button" data-arch="all">All</button>
+          <button class="segmented" type="button" data-arch="hopper">Hopper</button>
+          <button class="segmented" type="button" data-arch="blackwell">Blackwell</button>
+        </div>
+
+        <div class="list-actions">
+          <button id="selectVisibleButton" type="button">Select visible</button>
+          <button id="clearButton" type="button">Clear</button>
+        </div>
+
+        <div id="groupList" class="group-list"></div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div class="metric-toggles" aria-label="Metrics">
+            <label><input type="checkbox" name="metric" value="correctness_rate_by_release_date" checked /> Correctness</label>
+            <label><input type="checkbox" name="metric" value="best_speedup_by_release_date" checked /> Speedup</label>
+            <label><input type="checkbox" name="metric" value="arch_instruction_correctness_by_release_date" checked /> Arch tagged</label>
+            <label><input type="checkbox" name="metric" value="reasoning_tokens_vs_performance" checked /> Perf-reasoning</label>
+          </div>
+
+          <div class="view-controls">
+            <label class="select-label">
+              Columns
+              <select id="columnsSelect">
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+              </select>
+            </label>
+            <label class="select-label">
+              Size
+              <select id="sizeSelect">
+                <option value="compact">Compact</option>
+                <option value="standard" selected>Standard</option>
+                <option value="large">Large</option>
+              </select>
+            </label>
+            <button id="copyLinkButton" type="button">Copy link</button>
+            <button id="presentationButton" type="button">Present</button>
+          </div>
+        </header>
+
+        <section id="selectedSummary" class="selected-summary"></section>
+        <section id="plotGrid" class="plot-grid" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <dialog id="plotDialog" class="plot-dialog">
+      <button id="closeDialogButton" class="dialog-close" type="button" aria-label="Close">x</button>
+      <div id="dialogTitle" class="dialog-title"></div>
+      <img id="dialogImage" alt="" />
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,206 @@
+run,turn_from,turn_to,status_from,status_to,count
+note-feedback2-d128-8defs,0,1,Compilation error,Compilation error,3
+note-feedback2-d128-8defs,0,1,Compilation error,Correct,6
+note-feedback2-d128-8defs,0,1,Compilation error,Kernel Execution Timeout,2
+note-feedback2-d128-8defs,0,1,Runtime error,Compilation error,2
+note-feedback2-d128-8defs,0,1,Runtime error,Correct,1
+note-feedback2-d128-8defs,0,1,Runtime error,Kernel Execution Timeout,1
+note-feedback2-d128-8defs,0,1,Runtime error,Numerical error,1
+note-feedback2-d128-8defs,1,2,Compilation error,Compilation error,1
+note-feedback2-d128-8defs,1,2,Compilation error,Correct,1
+note-feedback2-d128-8defs,1,2,Compilation error,Kernel Execution Timeout,1
+note-feedback2-d128-8defs,1,2,Compilation error,Numerical error,1
+note-feedback2-d128-8defs,1,2,Compilation error,Runtime error,1
+note-feedback2-d128-8defs,1,2,Correct,Compilation error,2
+note-feedback2-d128-8defs,1,2,Correct,Correct,2
+note-feedback2-d128-8defs,1,2,Correct,Numerical error,1
+note-feedback2-d128-8defs,1,2,Correct,Runtime error,2
+note-feedback2-d128-8defs,1,2,Kernel Execution Timeout,Compilation error,1
+note-feedback2-d128-8defs,1,2,Kernel Execution Timeout,Correct,2
+note-feedback2-d128-8defs,1,2,Numerical error,Numerical error,1
+note-feedback2-d128-8defs,2,3,Compilation error,Compilation error,1
+note-feedback2-d128-8defs,2,3,Compilation error,Correct,2
+note-feedback2-d128-8defs,2,3,Compilation error,Runtime error,1
+note-feedback2-d128-8defs,2,3,Correct,Compilation error,1
+note-feedback2-d128-8defs,2,3,Correct,Correct,1
+note-feedback2-d128-8defs,2,3,Correct,Numerical error,3
+note-feedback2-d128-8defs,2,3,Kernel Execution Timeout,Correct,1
+note-feedback2-d128-8defs,2,3,Numerical error,Numerical error,3
+note-feedback2-d128-8defs,2,3,Runtime error,Correct,2
+note-feedback2-d128-8defs,2,3,Runtime error,Numerical error,1
+note-feedback2-d128-8defs,3,4,Compilation error,Kernel Execution Timeout,1
+note-feedback2-d128-8defs,3,4,Compilation error,Runtime error,1
+note-feedback2-d128-8defs,3,4,Correct,Compilation error,2
+note-feedback2-d128-8defs,3,4,Correct,Correct,2
+note-feedback2-d128-8defs,3,4,Correct,Kernel Execution Timeout,2
+note-feedback2-d128-8defs,3,4,Numerical error,Correct,1
+note-feedback2-d128-8defs,3,4,Numerical error,Kernel Execution Timeout,1
+note-feedback2-d128-8defs,3,4,Numerical error,Numerical error,4
+note-feedback2-d128-8defs,3,4,Numerical error,Runtime error,1
+note-feedback2-d128-8defs,3,4,Runtime error,Compilation error,1
+note-feedback2-d128-8defs,4,5,Compilation error,Correct,1
+note-feedback2-d128-8defs,4,5,Compilation error,Numerical error,1
+note-feedback2-d128-8defs,4,5,Compilation error,Runtime error,1
+note-feedback2-d128-8defs,4,5,Correct,Correct,2
+note-feedback2-d128-8defs,4,5,Correct,Runtime error,1
+note-feedback2-d128-8defs,4,5,Kernel Execution Timeout,Compilation error,2
+note-feedback2-d128-8defs,4,5,Kernel Execution Timeout,Correct,2
+note-feedback2-d128-8defs,4,5,Numerical error,Correct,1
+note-feedback2-d128-8defs,4,5,Numerical error,Numerical error,2
+note-feedback2-d128-8defs,4,5,Numerical error,Runtime error,1
+note-feedback2-d128-8defs,4,5,Runtime error,Correct,1
+note-feedback2-d128-8defs,4,5,Runtime error,Numerical error,1
+note-feedback2-d128-8defs,5,6,Compilation error,Compilation error,1
+note-feedback2-d128-8defs,5,6,Compilation error,Kernel Execution Timeout,1
+note-feedback2-d128-8defs,5,6,Correct,Compilation error,3
+note-feedback2-d128-8defs,5,6,Correct,Correct,1
+note-feedback2-d128-8defs,5,6,Correct,Kernel Execution Timeout,1
+note-feedback2-d128-8defs,5,6,Correct,Numerical error,1
+note-feedback2-d128-8defs,5,6,Numerical error,Numerical error,3
+note-feedback2-d128-8defs,5,6,Numerical error,Runtime error,1
+note-feedback2-d128-8defs,5,6,Runtime error,Correct,1
+note-feedback2-d128-8defs,5,6,Runtime error,Numerical error,2
+note-feedback2-d128-8defs,6,7,Compilation error,Correct,2
+note-feedback2-d128-8defs,6,7,Compilation error,Kernel Execution Timeout,1
+note-feedback2-d128-8defs,6,7,Correct,Numerical error,1
+note-feedback2-d128-8defs,6,7,Kernel Execution Timeout,Correct,1
+note-feedback2-d128-8defs,6,7,Kernel Execution Timeout,Kernel Execution Timeout,1
+note-feedback2-d128-8defs,6,7,Numerical error,Correct,2
+note-feedback2-d128-8defs,6,7,Numerical error,Kernel Execution Timeout,1
+note-feedback2-d128-8defs,6,7,Numerical error,Numerical error,2
+note-feedback2-d128-8defs,6,7,Numerical error,Runtime error,1
+note-feedback2-d128-8defs,6,7,Runtime error,Correct,1
+note-feedback2-d96-8defs,0,1,Compilation error,Compilation error,6
+note-feedback2-d96-8defs,0,1,Compilation error,Kernel Execution Timeout,2
+note-feedback2-d96-8defs,0,1,Compilation error,Runtime error,3
+note-feedback2-d96-8defs,0,1,Kernel Execution Timeout,Compilation error,1
+note-feedback2-d96-8defs,0,1,Kernel Execution Timeout,Numerical error,1
+note-feedback2-d96-8defs,0,1,Numerical error,Compilation error,1
+note-feedback2-d96-8defs,0,1,Runtime error,Numerical error,1
+note-feedback2-d96-8defs,0,1,Runtime error,Runtime error,1
+note-feedback2-d96-8defs,1,2,Compilation error,Correct,1
+note-feedback2-d96-8defs,1,2,Compilation error,Kernel Execution Timeout,1
+note-feedback2-d96-8defs,1,2,Compilation error,Numerical error,1
+note-feedback2-d96-8defs,1,2,Compilation error,Runtime error,5
+note-feedback2-d96-8defs,1,2,Kernel Execution Timeout,Compilation error,1
+note-feedback2-d96-8defs,1,2,Kernel Execution Timeout,Runtime error,1
+note-feedback2-d96-8defs,1,2,Numerical error,Compilation error,1
+note-feedback2-d96-8defs,1,2,Numerical error,Numerical error,1
+note-feedback2-d96-8defs,1,2,Runtime error,Compilation error,1
+note-feedback2-d96-8defs,1,2,Runtime error,Numerical error,3
+note-feedback2-d96-8defs,2,3,Compilation error,Numerical error,1
+note-feedback2-d96-8defs,2,3,Compilation error,Runtime error,2
+note-feedback2-d96-8defs,2,3,Correct,Compilation error,1
+note-feedback2-d96-8defs,2,3,Kernel Execution Timeout,Runtime error,1
+note-feedback2-d96-8defs,2,3,Numerical error,Compilation error,2
+note-feedback2-d96-8defs,2,3,Numerical error,Numerical error,2
+note-feedback2-d96-8defs,2,3,Numerical error,Runtime error,1
+note-feedback2-d96-8defs,2,3,Runtime error,Compilation error,2
+note-feedback2-d96-8defs,2,3,Runtime error,Numerical error,1
+note-feedback2-d96-8defs,2,3,Runtime error,Runtime error,3
+note-feedback2-d96-8defs,3,4,Compilation error,Compilation error,2
+note-feedback2-d96-8defs,3,4,Compilation error,Numerical error,3
+note-feedback2-d96-8defs,3,4,Numerical error,Numerical error,4
+note-feedback2-d96-8defs,3,4,Runtime error,Compilation error,2
+note-feedback2-d96-8defs,3,4,Runtime error,Kernel Execution Timeout,1
+note-feedback2-d96-8defs,3,4,Runtime error,Numerical error,1
+note-feedback2-d96-8defs,3,4,Runtime error,Runtime error,3
+note-feedback2-d96-8defs,4,5,Compilation error,Compilation error,1
+note-feedback2-d96-8defs,4,5,Compilation error,Numerical error,1
+note-feedback2-d96-8defs,4,5,Compilation error,Runtime error,2
+note-feedback2-d96-8defs,4,5,Kernel Execution Timeout,Compilation error,1
+note-feedback2-d96-8defs,4,5,Numerical error,Correct,1
+note-feedback2-d96-8defs,4,5,Numerical error,Kernel Execution Timeout,1
+note-feedback2-d96-8defs,4,5,Numerical error,Numerical error,5
+note-feedback2-d96-8defs,4,5,Numerical error,Runtime error,1
+note-feedback2-d96-8defs,4,5,Runtime error,Numerical error,2
+note-feedback2-d96-8defs,4,5,Runtime error,Runtime error,1
+note-feedback2-d96-8defs,5,6,Compilation error,Kernel Execution Timeout,1
+note-feedback2-d96-8defs,5,6,Compilation error,Runtime error,1
+note-feedback2-d96-8defs,5,6,Correct,Runtime error,1
+note-feedback2-d96-8defs,5,6,Kernel Execution Timeout,Runtime error,1
+note-feedback2-d96-8defs,5,6,Numerical error,Compilation error,1
+note-feedback2-d96-8defs,5,6,Numerical error,Correct,1
+note-feedback2-d96-8defs,5,6,Numerical error,Numerical error,5
+note-feedback2-d96-8defs,5,6,Runtime error,Compilation error,1
+note-feedback2-d96-8defs,5,6,Runtime error,Runtime error,2
+note-feedback2-d96-8defs,6,7,Compilation error,Numerical error,1
+note-feedback2-d96-8defs,6,7,Correct,Numerical error,1
+note-feedback2-d96-8defs,6,7,Kernel Execution Timeout,Kernel Execution Timeout,1
+note-feedback2-d96-8defs,6,7,Numerical error,Numerical error,3
+note-feedback2-d96-8defs,6,7,Numerical error,Runtime error,1
+note-feedback2-d96-8defs,6,7,Runtime error,Compilation error,1
+note-feedback2-d96-8defs,6,7,Runtime error,Numerical error,1
+note-feedback2-d96-8defs,6,7,Runtime error,Runtime error,2
+retrieved-notes-d128-4defs,0,1,Compilation error,Compilation error,13
+retrieved-notes-d128-4defs,0,1,Compilation error,Kernel Execution Timeout,7
+retrieved-notes-d128-4defs,0,1,Compilation error,Numerical error,1
+retrieved-notes-d128-4defs,0,1,Compilation error,Runtime error,9
+retrieved-notes-d128-4defs,0,1,Extraction error,Compilation error,1
+retrieved-notes-d128-4defs,0,1,Runtime error,Kernel Execution Timeout,1
+retrieved-notes-d128-4defs,1,2,Compilation error,Compilation error,9
+retrieved-notes-d128-4defs,1,2,Compilation error,Kernel Execution Timeout,1
+retrieved-notes-d128-4defs,1,2,Compilation error,Numerical error,1
+retrieved-notes-d128-4defs,1,2,Compilation error,Runtime error,3
+retrieved-notes-d128-4defs,1,2,Kernel Execution Timeout,Compilation error,6
+retrieved-notes-d128-4defs,1,2,Kernel Execution Timeout,Runtime error,2
+retrieved-notes-d128-4defs,1,2,Numerical error,Compilation error,1
+retrieved-notes-d128-4defs,1,2,Runtime error,Compilation error,3
+retrieved-notes-d128-4defs,1,2,Runtime error,Kernel Execution Timeout,1
+retrieved-notes-d128-4defs,1,2,Runtime error,Runtime error,5
+retrieved-notes-d128-4defs,2,3,Compilation error,Compilation error,7
+retrieved-notes-d128-4defs,2,3,Compilation error,Kernel Execution Timeout,2
+retrieved-notes-d128-4defs,2,3,Compilation error,Other error,1
+retrieved-notes-d128-4defs,2,3,Compilation error,Runtime error,9
+retrieved-notes-d128-4defs,2,3,Kernel Execution Timeout,Runtime error,2
+retrieved-notes-d128-4defs,2,3,Numerical error,Numerical error,1
+retrieved-notes-d128-4defs,2,3,Runtime error,Compilation error,2
+retrieved-notes-d128-4defs,2,3,Runtime error,Kernel Execution Timeout,4
+retrieved-notes-d128-4defs,2,3,Runtime error,Runtime error,4
+retrieved-notes-d128-4defs,3,4,Compilation error,Compilation error,3
+retrieved-notes-d128-4defs,3,4,Compilation error,Kernel Execution Timeout,4
+retrieved-notes-d128-4defs,3,4,Compilation error,Runtime error,2
+retrieved-notes-d128-4defs,3,4,Kernel Execution Timeout,Compilation error,1
+retrieved-notes-d128-4defs,3,4,Kernel Execution Timeout,Kernel Execution Timeout,2
+retrieved-notes-d128-4defs,3,4,Kernel Execution Timeout,Runtime error,3
+retrieved-notes-d128-4defs,3,4,Numerical error,Numerical error,1
+retrieved-notes-d128-4defs,3,4,Other error,Compilation error,1
+retrieved-notes-d128-4defs,3,4,Runtime error,Compilation error,2
+retrieved-notes-d128-4defs,3,4,Runtime error,Extraction error,1
+retrieved-notes-d128-4defs,3,4,Runtime error,Kernel Execution Timeout,2
+retrieved-notes-d128-4defs,3,4,Runtime error,Numerical error,2
+retrieved-notes-d128-4defs,3,4,Runtime error,Runtime error,8
+retrieved-notes-d128-4defs,4,5,Compilation error,Compilation error,4
+retrieved-notes-d128-4defs,4,5,Compilation error,Numerical error,1
+retrieved-notes-d128-4defs,4,5,Compilation error,Runtime error,2
+retrieved-notes-d128-4defs,4,5,Extraction error,Runtime error,1
+retrieved-notes-d128-4defs,4,5,Kernel Execution Timeout,Compilation error,3
+retrieved-notes-d128-4defs,4,5,Kernel Execution Timeout,Kernel Execution Timeout,5
+retrieved-notes-d128-4defs,4,5,Numerical error,Compilation error,1
+retrieved-notes-d128-4defs,4,5,Numerical error,Numerical error,2
+retrieved-notes-d128-4defs,4,5,Runtime error,Compilation error,2
+retrieved-notes-d128-4defs,4,5,Runtime error,Kernel Execution Timeout,3
+retrieved-notes-d128-4defs,4,5,Runtime error,Numerical error,1
+retrieved-notes-d128-4defs,4,5,Runtime error,Runtime error,7
+retrieved-notes-d128-4defs,5,6,Compilation error,Compilation error,4
+retrieved-notes-d128-4defs,5,6,Compilation error,Kernel Execution Timeout,1
+retrieved-notes-d128-4defs,5,6,Compilation error,Numerical error,1
+retrieved-notes-d128-4defs,5,6,Compilation error,Runtime error,4
+retrieved-notes-d128-4defs,5,6,Kernel Execution Timeout,Compilation error,1
+retrieved-notes-d128-4defs,5,6,Kernel Execution Timeout,Kernel Execution Timeout,5
+retrieved-notes-d128-4defs,5,6,Kernel Execution Timeout,Runtime error,2
+retrieved-notes-d128-4defs,5,6,Numerical error,Kernel Execution Timeout,1
+retrieved-notes-d128-4defs,5,6,Numerical error,Numerical error,3
+retrieved-notes-d128-4defs,5,6,Runtime error,Compilation error,2
+retrieved-notes-d128-4defs,5,6,Runtime error,Kernel Execution Timeout,3
+retrieved-notes-d128-4defs,5,6,Runtime error,Runtime error,5
+retrieved-notes-d128-4defs,6,7,Compilation error,Compilation error,3
+retrieved-notes-d128-4defs,6,7,Compilation error,Kernel Execution Timeout,2
+retrieved-notes-d128-4defs,6,7,Compilation error,Runtime error,2
+retrieved-notes-d128-4defs,6,7,Kernel Execution Timeout,Compilation error,1
+retrieved-notes-d128-4defs,6,7,Kernel Execution Timeout,Kernel Execution Timeout,9
+retrieved-notes-d128-4defs,6,7,Numerical error,Compilation error,1
+retrieved-notes-d128-4defs,6,7,Numerical error,Numerical error,3
+retrieved-notes-d128-4defs,6,7,Runtime error,Extraction error,1
+retrieved-notes-d128-4defs,6,7,Runtime error,Kernel Execution Timeout,2
+retrieved-notes-d128-4defs,6,7,Runtime error,Runtime error,8

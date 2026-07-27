@@ -1,0 +1,12 @@
+You task is to implement a CUDA kernel with a host `run` function that implementes the given PyTorch reference.
+
+Task:
+{task_content}
+
+Your response should end with the CUDA kernel and the host `run` function wrapped in a single code block.
+
+Output:
+...
+```cpp
+<Your implementation here>
+```

@@ -1,0 +1,81 @@
+{
+  "task_id": "106771f0b9524fe4b7c7800f78727f52",
+  "kind": "debug",
+  "status": "completed",
+  "definition": "mha_bwd_d128",
+  "solution": "exp_006_kernel_t2_f316f5a6",
+  "logs": [
+    {
+      "definition": "mha_bwd_d128",
+      "workload": {
+        "axes": {
+          "B": 4,
+          "H": 48,
+          "S": 4096,
+          "d": 128
+        },
+        "inputs": {
+          "Q": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "Q"
+          },
+          "K": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "K"
+          },
+          "V": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "V"
+          },
+          "O": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "O"
+          },
+          "dO": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "dO"
+          },
+          "L": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "L"
+          }
+        },
+        "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+        "outputs": null
+      },
+      "solution": "exp_006_kernel_t2_f316f5a6",
+      "metadata": {
+        "FlashInfer CUDA debug report": {
+          "exist": true,
+          "msg": "solution: exp_006_kernel_t2_f316f5a6\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_bijbso91"
+        },
+        "Most precise CUDA fault": {
+          "exist": true,
+          "msg": "- CUDA API reported: unspecified launch failure\n  reported at check site: kernel.cu:667"
+        },
+        "CUDA core dump analysis": {
+          "exist": false,
+          "msg": "- cuda-gdb produced no source-level backtrace."
+        },
+        "Primary diagnostics": {
+          "exist": true,
+          "msg": "- CUDA error unspecified launch failure at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_exp_006_kernel_t2_f316f5a6_f316f5/kernel.cu:667\n- WARNING: memcheck detected issues!"
+        },
+        "Source locations": {
+          "exist": true,
+          "msg": "kernel.cu:47\n  43:         \"WAIT_%=:\\n\"\n  44:         \"mbarrier.try_wait.parity.shared.b64 P, [%0], %1;\\n\"\n  45:         \"@!P bra WAIT_%=;\\n\"\n  46:         \"}\\n\"\n> 47:         :: \"r\"((uint32_t)__cvta_generic_to_shared(&bar[0])), \"r\"(phase));\n  48: }\n  49: \n  50: __device__ __forceinline__ void fence_proxy_async_fn() {\n  51:     asm volatile(\"fence.proxy.async;\\n\" ::: \"memory\");\n\nkernel.cu:248\n  244:     }\n  245:     \n  246:     uint32_t phase_K = 0, phase_V = 0;\n  247:     \n> 248:     mbarrier_wait_fn(bar_K, phase_K);\n  249:     mbarrier_wait_fn(bar_V, phase_V);\n  250:     \n  251:     float acc_dK0[32] = {0}, acc_dK1[32] = {0};\n  252:     float acc_dV0[32] = {0}, acc_dV1[32] = {0};\n\nkernel.cu:667\n  663:         S);\n  664:     CUDA_CHECK(cudaGetLastError());\n  665:     \n  666:     int smem_size_2 = 109568;\n> 667:     CUDA_CHECK(cudaFuncSetAttribute(mha_bwd_kernel_dQ, cudaFuncAttributeMaxDynamicSharedMemorySize, smem_size_2));\n  668:     \n  669:     mha_bwd_kernel_dQ<<<grid, block, smem_size_2, stream>>>(\n  670:         tma_Q, tma_K, tma_V, tma_dO,\n  671:         static_cast<const float*>(L.data_ptr()),"
+        },
+        "CUDA core dumps": {
+          "exist": false,
+          "msg": "- No CUDA core dump file was produced."
+        }
+      }
+    }
+  ]
+}

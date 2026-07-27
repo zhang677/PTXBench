@@ -1,0 +1,272 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2500" height="608" viewBox="0 0 2500 608">
+<style>text{font-family:Inter,Arial,sans-serif}.grid{stroke:#d0d7de;stroke-width:1;shape-rendering:crispEdges}</style>
+<rect width="2500" height="608" fill="#ffffff"/>
+<text x="34.0" y="38.0" font-size="26" text-anchor="start" font-weight="700" fill="#24292f">Gemini 3.1 Pro MHA Backward d128: Linfo vs June Baseline vs May NCU</text>
+<text x="34.0" y="64.0" font-size="14" text-anchor="start" font-weight="400" fill="#57606a">2 tables; every metric is shown at ≤1, ≤4, and ≤8 turns.</text>
+<text x="34.0" y="90.0" font-size="13" text-anchor="start" font-weight="700" fill="#9a6700">Bold gold: best overall</text>
+<text x="244.0" y="90.0" font-size="13" text-anchor="start" font-weight="400" fill="#57606a">All-zero metric/horizon slices are not bolded.</text>
+<text x="34.0" y="143.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">Configured-Prompt Overall Metrics</text>
+<rect x="34" y="153" width="2432.0" height="180.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="153" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Parquet</text>
+<text x="381.0" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">rows</text>
+<line class="grid" x1="334.0" y1="153.0" x2="334.0" y2="333.0"/>
+<text x="475.0" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="428.0" y1="153.0" x2="428.0" y2="333.0"/>
+<text x="569.0" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="522.0" y1="153.0" x2="522.0" y2="333.0"/>
+<text x="748.1" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="748.1" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="660.0" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="748.1" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="836.2" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="616.0" y1="153.0" x2="616.0" y2="333.0"/>
+<text x="1012.4" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="1012.4" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="924.3" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1012.4" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1100.5" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="880.3" y1="153.0" x2="880.3" y2="333.0"/>
+<text x="1276.7" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1276.7" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1188.6" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1276.7" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1364.8" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1144.6" y1="153.0" x2="1144.6" y2="333.0"/>
+<text x="1541.0" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1541.0" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1452.9" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1541.0" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1629.1" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1408.9" y1="153.0" x2="1408.9" y2="333.0"/>
+<text x="1805.3" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1805.3" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1717.2" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1805.3" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1893.4" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1673.1" y1="153.0" x2="1673.1" y2="333.0"/>
+<text x="2069.6" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2069.6" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1981.5" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2069.6" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2157.7" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1937.4" y1="153.0" x2="1937.4" y2="333.0"/>
+<text x="2333.9" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2333.9" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2245.8" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2333.9" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2422.0" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2201.7" y1="153.0" x2="2201.7" y2="333.0"/>
+<line class="grid" x1="34" y1="225.0" x2="2466.0" y2="225.0"/>
+<text x="43.0" y="248.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">gemini-31-pro-linfo</text>
+<text x="381.0" y="248.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">N/A</text>
+<text x="475.0" y="248.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">16</text>
+<text x="569.0" y="248.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">128</text>
+<text x="660.0" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">1</text>
+<text x="748.1" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">15</text>
+<text x="836.2" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">32</text>
+<text x="924.3" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1012.4" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.234375</text>
+<text x="1100.5" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.250000</text>
+<text x="1188.6" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1276.7" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.234375</text>
+<text x="1364.8" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.250000</text>
+<text x="1452.9" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1541.0" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.500000</text>
+<text x="1629.1" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.687500</text>
+<text x="1717.2" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1805.3" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.500000</text>
+<text x="1893.4" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.687500</text>
+<text x="1981.5" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.169822</text>
+<text x="2069.6" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.602755</text>
+<text x="2157.7" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.602755</text>
+<text x="2245.8" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.169822</text>
+<text x="2333.9" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.276571</text>
+<text x="2422.0" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.226266</text>
+<line class="grid" x1="34" y1="261.0" x2="2466.0" y2="261.0"/>
+<rect x="34" y="261" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="284.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">gemini-31-pro-june</text>
+<text x="381.0" y="284.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">N/A</text>
+<text x="475.0" y="284.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">16</text>
+<text x="569.0" y="284.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">128</text>
+<text x="660.0" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="748.1" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">12</text>
+<text x="836.2" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">27</text>
+<text x="924.3" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1012.4" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.187500</text>
+<text x="1100.5" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.210938</text>
+<text x="1188.6" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1276.7" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.187500</text>
+<text x="1364.8" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.210938</text>
+<text x="1452.9" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1541.0" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.500000</text>
+<text x="1629.1" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.812500</text>
+<text x="1717.2" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1805.3" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.500000</text>
+<text x="1893.4" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.812500</text>
+<text x="1981.5" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2069.6" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.509056</text>
+<text x="2157.7" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.606557</text>
+<text x="2245.8" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2333.9" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.271241</text>
+<text x="2422.0" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.238335</text>
+<line class="grid" x1="34" y1="297.0" x2="2466.0" y2="297.0"/>
+<text x="43.0" y="320.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">gemini-31-pro-may-ncu</text>
+<text x="381.0" y="320.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">N/A</text>
+<text x="475.0" y="320.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">16</text>
+<text x="569.0" y="320.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">128</text>
+<text x="660.0" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">1</text>
+<text x="748.1" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">15</text>
+<text x="836.2" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">29</text>
+<text x="924.3" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1012.4" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.234375</text>
+<text x="1100.5" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.226562</text>
+<text x="1188.6" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1276.7" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.187500</text>
+<text x="1364.8" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.203125</text>
+<text x="1452.9" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1541.0" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.750000</text>
+<text x="1629.1" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.750000</text>
+<text x="1717.2" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1805.3" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.625000</text>
+<text x="1893.4" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.687500</text>
+<text x="1981.5" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.402743</text>
+<text x="2069.6" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.602896</text>
+<text x="2157.7" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.638722</text>
+<text x="2245.8" y="320.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.402743</text>
+<text x="2333.9" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.137957</text>
+<text x="2422.0" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.188080</text>
+<text x="34.0" y="378.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">mha_bwd_d128</text>
+<rect x="34" y="388" width="2432.0" height="180.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="388" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Parquet</text>
+<text x="381.0" y="422.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">rows</text>
+<line class="grid" x1="334.0" y1="388.0" x2="334.0" y2="568.0"/>
+<text x="475.0" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="428.0" y1="388.0" x2="428.0" y2="568.0"/>
+<text x="569.0" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="522.0" y1="388.0" x2="522.0" y2="568.0"/>
+<text x="748.1" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="748.1" y="422.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="660.0" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="748.1" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="836.2" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="616.0" y1="388.0" x2="616.0" y2="568.0"/>
+<text x="1012.4" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="1012.4" y="422.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="924.3" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1012.4" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1100.5" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="880.3" y1="388.0" x2="880.3" y2="568.0"/>
+<text x="1276.7" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1276.7" y="422.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1188.6" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1276.7" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1364.8" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1144.6" y1="388.0" x2="1144.6" y2="568.0"/>
+<text x="1541.0" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1541.0" y="422.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1452.9" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1541.0" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1629.1" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1408.9" y1="388.0" x2="1408.9" y2="568.0"/>
+<text x="1805.3" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1805.3" y="422.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1717.2" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1805.3" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1893.4" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1673.1" y1="388.0" x2="1673.1" y2="568.0"/>
+<text x="2069.6" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2069.6" y="422.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1981.5" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2069.6" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2157.7" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1937.4" y1="388.0" x2="1937.4" y2="568.0"/>
+<text x="2333.9" y="407.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2333.9" y="422.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2245.8" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2333.9" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2422.0" y="448.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2201.7" y1="388.0" x2="2201.7" y2="568.0"/>
+<line class="grid" x1="34" y1="460.0" x2="2466.0" y2="460.0"/>
+<text x="43.0" y="483.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">gemini-31-pro-linfo</text>
+<text x="381.0" y="483.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">N/A</text>
+<text x="475.0" y="483.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">16</text>
+<text x="569.0" y="483.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">128</text>
+<text x="660.0" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">1</text>
+<text x="748.1" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">15</text>
+<text x="836.2" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">32</text>
+<text x="924.3" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1012.4" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.234375</text>
+<text x="1100.5" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.250000</text>
+<text x="1188.6" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1276.7" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.234375</text>
+<text x="1364.8" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.250000</text>
+<text x="1452.9" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1541.0" y="483.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.500000</text>
+<text x="1629.1" y="483.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.687500</text>
+<text x="1717.2" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1805.3" y="483.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.500000</text>
+<text x="1893.4" y="483.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.687500</text>
+<text x="1981.5" y="483.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.169822</text>
+<text x="2069.6" y="483.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.602755</text>
+<text x="2157.7" y="483.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.602755</text>
+<text x="2245.8" y="483.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.169822</text>
+<text x="2333.9" y="483.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.276571</text>
+<text x="2422.0" y="483.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.226266</text>
+<line class="grid" x1="34" y1="496.0" x2="2466.0" y2="496.0"/>
+<rect x="34" y="496" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="519.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">gemini-31-pro-june</text>
+<text x="381.0" y="519.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">N/A</text>
+<text x="475.0" y="519.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">16</text>
+<text x="569.0" y="519.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">128</text>
+<text x="660.0" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="748.1" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">12</text>
+<text x="836.2" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">27</text>
+<text x="924.3" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1012.4" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.187500</text>
+<text x="1100.5" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.210938</text>
+<text x="1188.6" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1276.7" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.187500</text>
+<text x="1364.8" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.210938</text>
+<text x="1452.9" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1541.0" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.500000</text>
+<text x="1629.1" y="519.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.812500</text>
+<text x="1717.2" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1805.3" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.500000</text>
+<text x="1893.4" y="519.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.812500</text>
+<text x="1981.5" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2069.6" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.509056</text>
+<text x="2157.7" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.606557</text>
+<text x="2245.8" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2333.9" y="519.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.271241</text>
+<text x="2422.0" y="519.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.238335</text>
+<line class="grid" x1="34" y1="532.0" x2="2466.0" y2="532.0"/>
+<text x="43.0" y="555.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">gemini-31-pro-may-ncu</text>
+<text x="381.0" y="555.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">N/A</text>
+<text x="475.0" y="555.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">16</text>
+<text x="569.0" y="555.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">128</text>
+<text x="660.0" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">1</text>
+<text x="748.1" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">15</text>
+<text x="836.2" y="555.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">29</text>
+<text x="924.3" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1012.4" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.234375</text>
+<text x="1100.5" y="555.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.226562</text>
+<text x="1188.6" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1276.7" y="555.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.187500</text>
+<text x="1364.8" y="555.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.203125</text>
+<text x="1452.9" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1541.0" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.750000</text>
+<text x="1629.1" y="555.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.750000</text>
+<text x="1717.2" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1805.3" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.625000</text>
+<text x="1893.4" y="555.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.687500</text>
+<text x="1981.5" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.402743</text>
+<text x="2069.6" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.602896</text>
+<text x="2157.7" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.638722</text>
+<text x="2245.8" y="555.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.402743</text>
+<text x="2333.9" y="555.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.137957</text>
+<text x="2422.0" y="555.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.188080</text>
+</svg>

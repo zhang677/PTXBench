@@ -1,0 +1,81 @@
+{
+  "task_id": "c194f78954034bc3aad67206297e8f69",
+  "kind": "debug",
+  "status": "completed",
+  "definition": "mha_bwd_d128",
+  "solution": "exp_005_kernel_t3_8dbc8988",
+  "logs": [
+    {
+      "definition": "mha_bwd_d128",
+      "workload": {
+        "axes": {
+          "B": 4,
+          "H": 48,
+          "S": 4096,
+          "d": 128
+        },
+        "inputs": {
+          "Q": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "Q"
+          },
+          "K": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "K"
+          },
+          "V": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "V"
+          },
+          "O": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "O"
+          },
+          "dO": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "dO"
+          },
+          "L": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "L"
+          }
+        },
+        "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+        "outputs": null
+      },
+      "solution": "exp_005_kernel_t3_8dbc8988",
+      "metadata": {
+        "FlashInfer CUDA debug report": {
+          "exist": true,
+          "msg": "solution: exp_005_kernel_t3_8dbc8988\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_t_up5lrg"
+        },
+        "Most precise CUDA fault": {
+          "exist": false,
+          "msg": "- No compute-sanitizer device fault block was found."
+        },
+        "CUDA core dump analysis": {
+          "exist": true,
+          "msg": "- focus: CUDA kernel 0, grid 4, block (29,35,0), thread (0,0,0), device 0, sm 0, warp 1, lane 0]"
+        },
+        "Primary diagnostics": {
+          "exist": true,
+          "msg": "- ERROR: memcheck timed out after 45 seconds.\n- ERROR: direct runner timed out after 30 seconds; requested CUDA user-triggered core dump before terminating it."
+        },
+        "Source locations": {
+          "exist": true,
+          "msg": "kernel.cu:96\n   92:         : \"+f\"(c[0]),\"+f\"(c[1]),\"+f\"(c[2]),\"+f\"(c[3]),\"+f\"(c[4]),\"+f\"(c[5]),\"+f\"(c[6]),\"+f\"(c[7]),\n   93:           \"+f\"(c[8]),\"+f\"(c[9]),\"+f\"(c[10]),\"+f\"(c[11]),\"+f\"(c[12]),\"+f\"(c[13]),\"+f\"(c[14]),\"+f\"(c[15]),\n   94:           \"+f\"(c[16]),\"+f\"(c[17]),\"+f\"(c[18]),\"+f\"(c[19]),\"+f\"(c[20]),\"+f\"(c[21]),\"+f\"(c[22]),\"+f\"(c[23]),\n   95:           \"+f\"(c[24]),\"+f\"(c[25]),\"+f\"(c[26]),\"+f\"(c[27]),\"+f\"(c[28]),\"+f\"(c[29]),\"+f\"(c[30]),\"+f\"(c[31])\n>  96:         : \"l\"(da), \"l\"(db), \"n\"(trans_a), \"n\"(trans_b));\n   97: }\n   98: \n   99: __device__ __forceinline__ void atomicAddFloat4(float4* address, float4 val) {\n  100:     atomicAdd(&address->x, val.x);\n\nkernel.cu:247\n  243:         wgmma_fence_fn();\n  244:         \n  245:         #pragma unroll\n  246:         for(int k=0; k<64; k+=16) {\n> 247:             wgmma_m64n64k16_ss_fn<0,0>(acc_S, \n  248:                 make_wgmma_desc(smem_Q0 + k, 1, 1024, 1), \n  249:                 make_wgmma_desc(smem_K0 + k, 1, 1024, 1));\n  250:         }\n  251:         #pragma unroll"
+        },
+        "CUDA core dumps": {
+          "exist": true,
+          "msg": "- /tmp/fib_debug/run_t_up5lrg/cuda_coredump_fa1ae1b86f39.6152.1783386298\nAutomatic cuda-gdb analysis did not produce a source-level frame; the dump file is retained for manual follow-up."
+        }
+      }
+    }
+  ]
+}

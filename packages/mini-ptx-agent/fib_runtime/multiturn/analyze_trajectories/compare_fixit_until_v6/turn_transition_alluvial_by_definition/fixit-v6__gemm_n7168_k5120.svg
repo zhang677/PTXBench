@@ -1,0 +1,136 @@
+<svg viewBox="0 0 1440 328" width="1440" height="328" xmlns="http://www.w3.org/2000/svg" role="img">
+<style>text{font-family:Arial,sans-serif;fill:#1f2937}.small{font-size:12px}.title{font-size:18px;font-weight:700}.stage{font-size:13px;font-weight:700}.node-label{font-size:11px}</style>
+<rect x="0" y="0" width="1440" height="328" fill="#ffffff"/>
+<text class="title" x="24" y="30">Fixit v6 / gemm_n7168_k5120: turn-to-turn correctness flow</text>
+<text class="small" x="24" y="52">Trajectories: 20; shared definition/prompt-tag subset</text>
+<path d="M 90.0 137.0 C 155.3 137.0, 173.8 123.0, 257.1 123.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="30.0"><title>turn 0 Compilation error -> turn 1 Compilation error: 5</title></path>
+<path d="M 90.0 158.0 C 155.3 158.0, 173.8 226.0, 257.1 226.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="12.0"><title>turn 0 Compilation error -> turn 1 Kernel Execution Timeout: 2</title></path>
+<path d="M 90.0 179.0 C 155.3 179.0, 173.8 167.0, 257.1 167.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="30.0"><title>turn 0 Compilation error -> turn 1 Runtime error: 5</title></path>
+<path d="M 90.0 111.0 C 155.3 111.0, 173.8 185.0, 257.1 185.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Correct -> turn 1 Runtime error: 1</title></path>
+<path d="M 90.0 249.0 C 155.3 249.0, 173.8 191.0, 257.1 191.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Kernel Execution Timeout -> turn 1 Runtime error: 1</title></path>
+<path d="M 90.0 205.0 C 155.3 205.0, 173.8 141.0, 257.1 141.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Runtime error -> turn 1 Compilation error: 1</title></path>
+<path d="M 90.0 214.0 C 155.3 214.0, 173.8 238.0, 257.1 238.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="12.0"><title>turn 0 Runtime error -> turn 1 Kernel Execution Timeout: 2</title></path>
+<path d="M 90.0 229.0 C 155.3 229.0, 173.8 203.0, 257.1 203.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="18.0"><title>turn 0 Runtime error -> turn 1 Runtime error: 3</title></path>
+<path d="M 275.1428571428571 117.0 C 340.5 117.0, 359.0 117.0, 442.3 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="18.0"><title>turn 1 Compilation error -> turn 2 Compilation error: 3</title></path>
+<path d="M 275.1428571428571 132.0 C 340.5 132.0, 359.0 208.0, 442.3 208.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="12.0"><title>turn 1 Compilation error -> turn 2 Kernel Execution Timeout: 2</title></path>
+<path d="M 275.1428571428571 141.0 C 340.5 141.0, 359.0 161.0, 442.3 161.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 1 Compilation error -> turn 2 Runtime error: 1</title></path>
+<path d="M 275.1428571428571 229.0 C 340.5 229.0, 359.0 223.0, 442.3 223.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="18.0"><title>turn 1 Kernel Execution Timeout -> turn 2 Kernel Execution Timeout: 3</title></path>
+<path d="M 275.1428571428571 241.0 C 340.5 241.0, 359.0 167.0, 442.3 167.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 1 Kernel Execution Timeout -> turn 2 Runtime error: 1</title></path>
+<path d="M 275.1428571428571 164.0 C 340.5 164.0, 359.0 138.0, 442.3 138.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="24.0"><title>turn 1 Runtime error -> turn 2 Compilation error: 4</title></path>
+<path d="M 275.1428571428571 182.0 C 340.5 182.0, 359.0 238.0, 442.3 238.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="12.0"><title>turn 1 Runtime error -> turn 2 Kernel Execution Timeout: 2</title></path>
+<path d="M 275.1428571428571 200.0 C 340.5 200.0, 359.0 182.0, 442.3 182.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="24.0"><title>turn 1 Runtime error -> turn 2 Runtime error: 4</title></path>
+<path d="M 460.2857142857143 111.0 C 525.6 111.0, 544.1 111.0, 627.4 111.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Compilation error -> turn 3 Compilation error: 1</title></path>
+<path d="M 460.2857142857143 132.0 C 525.6 132.0, 544.1 170.0, 627.4 170.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="36.0"><title>turn 2 Compilation error -> turn 3 Runtime error: 6</title></path>
+<path d="M 460.2857142857143 211.0 C 525.6 211.0, 544.1 123.0, 627.4 123.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="18.0"><title>turn 2 Kernel Execution Timeout -> turn 3 Compilation error: 3</title></path>
+<path d="M 460.2857142857143 226.0 C 525.6 226.0, 544.1 226.0, 627.4 226.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="12.0"><title>turn 2 Kernel Execution Timeout -> turn 3 Kernel Execution Timeout: 2</title></path>
+<path d="M 460.2857142857143 235.0 C 525.6 235.0, 544.1 249.0, 627.4 249.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Kernel Execution Timeout -> turn 3 Numerical error: 1</title></path>
+<path d="M 460.2857142857143 241.0 C 525.6 241.0, 544.1 191.0, 627.4 191.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Kernel Execution Timeout -> turn 3 Runtime error: 1</title></path>
+<path d="M 460.2857142857143 164.0 C 525.6 164.0, 544.1 138.0, 627.4 138.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 2 Runtime error -> turn 3 Compilation error: 2</title></path>
+<path d="M 460.2857142857143 173.0 C 525.6 173.0, 544.1 235.0, 627.4 235.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Runtime error -> turn 3 Kernel Execution Timeout: 1</title></path>
+<path d="M 460.2857142857143 185.0 C 525.6 185.0, 544.1 203.0, 627.4 203.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="18.0"><title>turn 2 Runtime error -> turn 3 Runtime error: 3</title></path>
+<path d="M 645.4285714285714 111.0 C 710.7 111.0, 729.3 229.0, 812.6 229.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Compilation error -> turn 4 Kernel Execution Timeout: 1</title></path>
+<path d="M 645.4285714285714 117.0 C 710.7 117.0, 729.3 249.0, 812.6 249.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Compilation error -> turn 4 Numerical error: 1</title></path>
+<path d="M 645.4285714285714 132.0 C 710.7 132.0, 729.3 152.0, 812.6 152.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="24.0"><title>turn 3 Compilation error -> turn 4 Runtime error: 4</title></path>
+<path d="M 645.4285714285714 226.0 C 710.7 226.0, 729.3 114.0, 812.6 114.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 3 Kernel Execution Timeout -> turn 4 Compilation error: 2</title></path>
+<path d="M 645.4285714285714 235.0 C 710.7 235.0, 729.3 167.0, 812.6 167.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Kernel Execution Timeout -> turn 4 Runtime error: 1</title></path>
+<path d="M 645.4285714285714 249.0 C 710.7 249.0, 729.3 173.0, 812.6 173.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Numerical error -> turn 4 Runtime error: 1</title></path>
+<path d="M 645.4285714285714 158.0 C 710.7 158.0, 729.3 126.0, 812.6 126.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 3 Runtime error -> turn 4 Compilation error: 2</title></path>
+<path d="M 645.4285714285714 167.0 C 710.7 167.0, 729.3 235.0, 812.6 235.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Runtime error -> turn 4 Kernel Execution Timeout: 1</title></path>
+<path d="M 645.4285714285714 191.0 C 710.7 191.0, 729.3 197.0, 812.6 197.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="42.0"><title>turn 3 Runtime error -> turn 4 Runtime error: 7</title></path>
+<path d="M 830.5714285714286 111.0 C 895.9 111.0, 914.4 111.0, 997.7 111.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Compilation error -> turn 5 Compilation error: 1</title></path>
+<path d="M 830.5714285714286 117.0 C 895.9 117.0, 914.4 243.0, 997.7 243.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Compilation error -> turn 5 Numerical error: 1</title></path>
+<path d="M 830.5714285714286 126.0 C 895.9 126.0, 914.4 164.0, 997.7 164.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="12.0"><title>turn 4 Compilation error -> turn 5 Runtime error: 2</title></path>
+<path d="M 830.5714285714286 229.0 C 895.9 229.0, 914.4 117.0, 997.7 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Kernel Execution Timeout -> turn 5 Compilation error: 1</title></path>
+<path d="M 830.5714285714286 235.0 C 895.9 235.0, 914.4 173.0, 997.7 173.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Kernel Execution Timeout -> turn 5 Runtime error: 1</title></path>
+<path d="M 830.5714285714286 249.0 C 895.9 249.0, 914.4 179.0, 997.7 179.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Numerical error -> turn 5 Runtime error: 1</title></path>
+<path d="M 830.5714285714286 155.0 C 895.9 155.0, 914.4 135.0, 997.7 135.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="30.0"><title>turn 4 Runtime error -> turn 5 Compilation error: 5</title></path>
+<path d="M 830.5714285714286 176.0 C 895.9 176.0, 914.4 226.0, 997.7 226.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="12.0"><title>turn 4 Runtime error -> turn 5 Kernel Execution Timeout: 2</title></path>
+<path d="M 830.5714285714286 185.0 C 895.9 185.0, 914.4 249.0, 997.7 249.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Runtime error -> turn 5 Numerical error: 1</title></path>
+<path d="M 830.5714285714286 203.0 C 895.9 203.0, 914.4 197.0, 997.7 197.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="30.0"><title>turn 4 Runtime error -> turn 5 Runtime error: 5</title></path>
+<path d="M 1015.7142857142857 111.0 C 1081.0 111.0, 1099.5 111.0, 1182.9 111.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Compilation error -> turn 6 Compilation error: 1</title></path>
+<path d="M 1015.7142857142857 120.0 C 1081.0 120.0, 1099.5 220.0, 1182.9 220.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="12.0"><title>turn 5 Compilation error -> turn 6 Kernel Execution Timeout: 2</title></path>
+<path d="M 1015.7142857142857 129.0 C 1081.0 129.0, 1099.5 249.0, 1182.9 249.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Compilation error -> turn 6 Numerical error: 1</title></path>
+<path d="M 1015.7142857142857 141.0 C 1081.0 141.0, 1099.5 137.0, 1182.9 137.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="18.0"><title>turn 5 Compilation error -> turn 6 Runtime error: 3</title></path>
+<path d="M 1015.7142857142857 223.0 C 1081.0 223.0, 1099.5 229.0, 1182.9 229.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Kernel Execution Timeout -> turn 6 Kernel Execution Timeout: 1</title></path>
+<path d="M 1015.7142857142857 229.0 C 1081.0 229.0, 1099.5 149.0, 1182.9 149.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Kernel Execution Timeout -> turn 6 Runtime error: 1</title></path>
+<path d="M 1015.7142857142857 246.0 C 1081.0 246.0, 1099.5 158.0, 1182.9 158.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="12.0"><title>turn 5 Numerical error -> turn 6 Runtime error: 2</title></path>
+<path d="M 1015.7142857142857 161.0 C 1081.0 161.0, 1099.5 117.0, 1182.9 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Runtime error -> turn 6 Compilation error: 1</title></path>
+<path d="M 1015.7142857142857 167.0 C 1081.0 167.0, 1099.5 235.0, 1182.9 235.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Runtime error -> turn 6 Kernel Execution Timeout: 1</title></path>
+<path d="M 1015.7142857142857 191.0 C 1081.0 191.0, 1099.5 185.0, 1182.9 185.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="42.0"><title>turn 5 Runtime error -> turn 6 Runtime error: 7</title></path>
+<path d="M 1200.857142857143 114.0 C 1266.2 114.0, 1284.7 140.0, 1368.0 140.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="12.0"><title>turn 6 Compilation error -> turn 7 Runtime error: 2</title></path>
+<path d="M 1200.857142857143 220.0 C 1266.2 220.0, 1284.7 114.0, 1368.0 114.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 6 Kernel Execution Timeout -> turn 7 Compilation error: 2</title></path>
+<path d="M 1200.857142857143 229.0 C 1266.2 229.0, 1284.7 229.0, 1368.0 229.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Kernel Execution Timeout -> turn 7 Kernel Execution Timeout: 1</title></path>
+<path d="M 1200.857142857143 235.0 C 1266.2 235.0, 1284.7 149.0, 1368.0 149.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Kernel Execution Timeout -> turn 7 Runtime error: 1</title></path>
+<path d="M 1200.857142857143 249.0 C 1266.2 249.0, 1284.7 249.0, 1368.0 249.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Numerical error -> turn 7 Numerical error: 1</title></path>
+<path d="M 1200.857142857143 131.0 C 1266.2 131.0, 1284.7 123.0, 1368.0 123.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Runtime error -> turn 7 Compilation error: 1</title></path>
+<path d="M 1200.857142857143 137.0 C 1266.2 137.0, 1284.7 235.0, 1368.0 235.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="6.0"><title>turn 6 Runtime error -> turn 7 Kernel Execution Timeout: 1</title></path>
+<path d="M 1200.857142857143 173.0 C 1266.2 173.0, 1284.7 185.0, 1368.0 185.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="66.0"><title>turn 6 Runtime error -> turn 7 Runtime error: 11</title></path>
+<text class="stage" x="60.0" y="76">turn 0</text>
+<rect x="72.0" y="108.0" width="18" height="6.0" rx="3" fill="#2a9d55"><title>Correct: 1</title></rect>
+<text class="node-label" x="95.0" y="114.0" text-anchor="start">Correct (1)</text>
+<rect x="72.0" y="122.0" width="18" height="72.0" rx="3" fill="#7b6fd6"><title>Compilation error: 12</title></rect>
+<text class="node-label" x="95.0" y="136.0" text-anchor="start">Compilation error (12)</text>
+<rect x="72.0" y="202.0" width="18" height="36.0" rx="3" fill="#d55e00"><title>Runtime error: 6</title></rect>
+<text class="node-label" x="95.0" y="216.0" text-anchor="start">Runtime error (6)</text>
+<rect x="72.0" y="246.0" width="18" height="6.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 1</title></rect>
+<text class="node-label" x="95.0" y="252.0" text-anchor="start">Kernel Execution Timeout (1)</text>
+<text class="stage" x="245.1" y="76">turn 1</text>
+<rect x="257.1" y="108.0" width="18" height="36.0" rx="3" fill="#7b6fd6"><title>Compilation error: 6</title></rect>
+<text class="node-label" x="280.1" y="122.0" text-anchor="start">Compilation error (6)</text>
+<rect x="257.1" y="152.0" width="18" height="60.0" rx="3" fill="#d55e00"><title>Runtime error: 10</title></rect>
+<text class="node-label" x="280.1" y="166.0" text-anchor="start">Runtime error (10)</text>
+<rect x="257.1" y="220.0" width="18" height="24.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 4</title></rect>
+<text class="node-label" x="280.1" y="234.0" text-anchor="start">Kernel Execution Timeout (4)</text>
+<text class="stage" x="430.3" y="76">turn 2</text>
+<rect x="442.3" y="108.0" width="18" height="42.0" rx="3" fill="#7b6fd6"><title>Compilation error: 7</title></rect>
+<text class="node-label" x="465.3" y="122.0" text-anchor="start">Compilation error (7)</text>
+<rect x="442.3" y="158.0" width="18" height="36.0" rx="3" fill="#d55e00"><title>Runtime error: 6</title></rect>
+<text class="node-label" x="465.3" y="172.0" text-anchor="start">Runtime error (6)</text>
+<rect x="442.3" y="202.0" width="18" height="42.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 7</title></rect>
+<text class="node-label" x="465.3" y="216.0" text-anchor="start">Kernel Execution Timeout (7)</text>
+<text class="stage" x="615.4" y="76">turn 3</text>
+<rect x="627.4" y="108.0" width="18" height="36.0" rx="3" fill="#7b6fd6"><title>Compilation error: 6</title></rect>
+<text class="node-label" x="650.4" y="122.0" text-anchor="start">Compilation error (6)</text>
+<rect x="627.4" y="152.0" width="18" height="60.0" rx="3" fill="#d55e00"><title>Runtime error: 10</title></rect>
+<text class="node-label" x="650.4" y="166.0" text-anchor="start">Runtime error (10)</text>
+<rect x="627.4" y="220.0" width="18" height="18.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 3</title></rect>
+<text class="node-label" x="650.4" y="234.0" text-anchor="start">Kernel Execution Timeout (3)</text>
+<rect x="627.4" y="246.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="650.4" y="252.0" text-anchor="start">Numerical error (1)</text>
+<text class="stage" x="800.6" y="76">turn 4</text>
+<rect x="812.6" y="108.0" width="18" height="24.0" rx="3" fill="#7b6fd6"><title>Compilation error: 4</title></rect>
+<text class="node-label" x="835.6" y="122.0" text-anchor="start">Compilation error (4)</text>
+<rect x="812.6" y="140.0" width="18" height="78.0" rx="3" fill="#d55e00"><title>Runtime error: 13</title></rect>
+<text class="node-label" x="835.6" y="154.0" text-anchor="start">Runtime error (13)</text>
+<rect x="812.6" y="226.0" width="18" height="12.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 2</title></rect>
+<text class="node-label" x="835.6" y="238.0" text-anchor="start">Kernel Execution Timeout (2)</text>
+<rect x="812.6" y="246.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="835.6" y="252.0" text-anchor="start">Numerical error (1)</text>
+<text class="stage" x="985.7" y="76">turn 5</text>
+<rect x="997.7" y="108.0" width="18" height="42.0" rx="3" fill="#7b6fd6"><title>Compilation error: 7</title></rect>
+<text class="node-label" x="1020.7" y="122.0" text-anchor="start">Compilation error (7)</text>
+<rect x="997.7" y="158.0" width="18" height="54.0" rx="3" fill="#d55e00"><title>Runtime error: 9</title></rect>
+<text class="node-label" x="1020.7" y="172.0" text-anchor="start">Runtime error (9)</text>
+<rect x="997.7" y="220.0" width="18" height="12.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 2</title></rect>
+<text class="node-label" x="1020.7" y="232.0" text-anchor="start">Kernel Execution Timeout (2)</text>
+<rect x="997.7" y="240.0" width="18" height="12.0" rx="3" fill="#e4a72b"><title>Numerical error: 2</title></rect>
+<text class="node-label" x="1020.7" y="252.0" text-anchor="start">Numerical error (2)</text>
+<text class="stage" x="1170.9" y="76">turn 6</text>
+<rect x="1182.9" y="108.0" width="18" height="12.0" rx="3" fill="#7b6fd6"><title>Compilation error: 2</title></rect>
+<text class="node-label" x="1205.9" y="120.0" text-anchor="start">Compilation error (2)</text>
+<rect x="1182.9" y="128.0" width="18" height="78.0" rx="3" fill="#d55e00"><title>Runtime error: 13</title></rect>
+<text class="node-label" x="1205.9" y="142.0" text-anchor="start">Runtime error (13)</text>
+<rect x="1182.9" y="214.0" width="18" height="24.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 4</title></rect>
+<text class="node-label" x="1205.9" y="228.0" text-anchor="start">Kernel Execution Timeout (4)</text>
+<rect x="1182.9" y="246.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="1205.9" y="252.0" text-anchor="start">Numerical error (1)</text>
+<text class="stage" x="1356.0" y="76">turn 7</text>
+<rect x="1368.0" y="108.0" width="18" height="18.0" rx="3" fill="#7b6fd6"><title>Compilation error: 3</title></rect>
+<text class="node-label" x="1361.0" y="122.0" text-anchor="end">Compilation error (3)</text>
+<rect x="1368.0" y="134.0" width="18" height="84.0" rx="3" fill="#d55e00"><title>Runtime error: 14</title></rect>
+<text class="node-label" x="1361.0" y="148.0" text-anchor="end">Runtime error (14)</text>
+<rect x="1368.0" y="226.0" width="18" height="12.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 2</title></rect>
+<text class="node-label" x="1361.0" y="238.0" text-anchor="end">Kernel Execution Timeout (2)</text>
+<rect x="1368.0" y="246.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="1361.0" y="252.0" text-anchor="end">Numerical error (1)</text>
+</svg>

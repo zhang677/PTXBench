@@ -1,0 +1,53 @@
+name: ptxbench
+
+services:
+  fibserve:
+    container_name: ${PROFILE_CONTAINER:-ptxbench-fibserve}
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.fibserve
+    image: ptxbench/fibserve:dev
+    command:
+      - serve
+      - --local
+      - /data
+      - --port
+      - "10000"
+      - --devices
+      - ${FIB_DEVICES:-cuda:0,cuda:1}
+    environment:
+      TVM_FFI_CUDA_ARCH_LIST: ${TVM_FFI_CUDA_ARCH_LIST:-9.0a}
+    ports:
+      - "${FIBSERVE_PORT:-10000}:10000"
+    volumes:
+      - ../data/datasets:/data:ro
+      - ../.ptxbench/cache/fibserve:/root/.cache/flashinfer_bench
+    gpus: all
+    init: true
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:10000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  agent:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.agent
+    image: ptxbench/mini-ptx-agent:dev
+    network_mode: host
+    working_dir: ${PTXBENCH_HOST_ROOT:?Set PTXBENCH_HOST_ROOT to the absolute PTXBench checkout path}
+    environment:
+      PTXBENCH_ROOT: ${PTXBENCH_HOST_ROOT}
+      MINI_PTX_AGENT_ROOT: ${PTXBENCH_HOST_ROOT}/packages/mini-ptx-agent
+      PTXBENCH_DATA_ROOT: ${PTXBENCH_HOST_ROOT}/data
+      PROFILE_BASE_URL: http://localhost:${FIBSERVE_PORT:-10000}
+    volumes:
+      # Keep the same absolute checkout path inside and outside this container.
+      # Child eval containers are launched through the host Docker socket.
+      - ${PTXBENCH_HOST_ROOT}:${PTXBENCH_HOST_ROOT}
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      fibserve:
+        condition: service_healthy
+    init: true

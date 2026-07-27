@@ -1,0 +1,81 @@
+{
+  "task_id": "6eb536672bf242c89e4c7b460e1d4c1b",
+  "kind": "debug",
+  "status": "completed",
+  "definition": "mha_bwd_d128",
+  "solution": "exp001_timeout_replay_5a0cd6b1",
+  "logs": [
+    {
+      "definition": "mha_bwd_d128",
+      "workload": {
+        "axes": {
+          "B": 4,
+          "H": 48,
+          "S": 4096,
+          "d": 128
+        },
+        "inputs": {
+          "Q": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "Q"
+          },
+          "K": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "K"
+          },
+          "V": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "V"
+          },
+          "O": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "O"
+          },
+          "dO": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "dO"
+          },
+          "L": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "L"
+          }
+        },
+        "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+        "outputs": null
+      },
+      "solution": "exp001_timeout_replay_5a0cd6b1",
+      "metadata": {
+        "FlashInfer CUDA debug report": {
+          "exist": true,
+          "msg": "solution: exp001_timeout_replay_5a0cd6b1\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:7\ndebug_dir: /tmp/fib_debug/run_y8puylg3"
+        },
+        "Most precise CUDA fault": {
+          "exist": false,
+          "msg": "- No compute-sanitizer device fault block was found."
+        },
+        "CUDA core dump analysis": {
+          "exist": false,
+          "msg": "- cuda-gdb produced no source-level backtrace."
+        },
+        "Primary diagnostics": {
+          "exist": true,
+          "msg": "- ERROR: memcheck timed out after 120 seconds."
+        },
+        "Source locations": {
+          "exist": false,
+          "msg": "- No source line was reported. For hangs, inspect any CUDA core dump below."
+        },
+        "CUDA core dumps": {
+          "exist": false,
+          "msg": "- No CUDA core dump file was produced."
+        }
+      }
+    }
+  ]
+}

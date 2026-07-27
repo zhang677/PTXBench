@@ -1,0 +1,8 @@
+{
+  "source_trajectory": "/home/ubuntu/AccRL-exps/eval_runs/2026-0629-1848-gemm/trajectories/exp_019.json",
+  "zero_based_turn": 3,
+  "assistant_message_index": 8,
+  "feedback_message_index": 9,
+  "definition": "gemm_n7168_k5120",
+  "workload_uuid": "94920358-01a8-4c5b-9209-3103fd490e94"
+}

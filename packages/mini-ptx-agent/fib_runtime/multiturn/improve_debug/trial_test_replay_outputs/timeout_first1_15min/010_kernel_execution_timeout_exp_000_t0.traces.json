@@ -1,0 +1,63 @@
+[
+  {
+    "definition": "mha_bwd_d128",
+    "workload": {
+      "axes": {
+        "B": 4,
+        "H": 48,
+        "S": 4096,
+        "d": 128
+      },
+      "inputs": {
+        "Q": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "Q"
+        },
+        "K": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "K"
+        },
+        "V": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "V"
+        },
+        "O": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "O"
+        },
+        "dO": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "dO"
+        },
+        "L": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "L"
+        }
+      },
+      "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+      "outputs": null
+    },
+    "solution": "eval_kernel_18a4bc89",
+    "evaluation": {
+      "status": "TIMEOUT",
+      "environment": {
+        "hardware": "NVIDIA H100 80GB HBM3",
+        "libs": {
+          "torch": "2.12.1+cu130",
+          "triton": "3.7.1",
+          "cuda": "13.0"
+        }
+      },
+      "timestamp": "2026-07-02T01:49:40.724424",
+      "log": "kernel.cu(273): warning #550-D: variable \"acc_dS\" was set but never used\n          float acc_dS[32];\n                ^\n\nRemark: The warnings can be suppressed with \"-diag-suppress <warning-number>\"\n\nptxas info    : 0 bytes gmem\nptxas info    : Compiling entry function '_ZN16tvm_ffi_cuda_mha20kernel_mha_bwd_dK_dVE14CUtensorMap_stS0_S0_S0_S0_PKfP13__nv_bfloat16S4_iii' for 'sm_90a'\nptxas info    : Function properties for _ZN16tvm_ffi_cuda_mha20kernel_mha_bwd_dK_dVE14CUtensorMap_stS0_S0_S0_S0_PKfP13__nv_bfloat16S4_iii\n    208 bytes stack frame, 204 bytes spill stores, 204 bytes spill loads\nptxas info    : Used 255 registers, used 1 barriers, 208 bytes cumulative stack size\nptxas info    : Compile time = 225.110 ms\nptxas info    : Compiling entry function '_ZN16tvm_ffi_cuda_mha17kernel_mha_bwd_dQE14CUtensorMap_stS0_S0_S0_S0_PKfP13__nv_bfloat16iii' for 'sm_90a'\nptxas info    : Function properties for _ZN16tvm_ffi_cuda_mha17kernel_mha_bwd_dQE14CUtensorMap_stS0_S0_S0_S0_PKfP13__nv_bfloat16iii\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 234 registers, used 1 barriers\nptxas info    : Compile time = 143.386 ms\n\nFlashInfer CUDA debug report\n================================================================================\nsolution: eval_kernel_18a4bc89\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_u0kdudfg\n\nMost precise CUDA fault\n--------------------------------------------------------------------------------\n- No compute-sanitizer device fault block was found.\n\nPrimary diagnostics\n--------------------------------------------------------------------------------\n- ERROR: memcheck timed out after 120 seconds.\n- ERROR: direct runner timed out after 120 seconds; requested CUDA user-triggered core dump before terminating it.\n\nSource locations\n--------------------------------------------------------------------------------\nkernel.cu:60 (reported as /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_18a4bc89_18a4bc/kernel.cu)\n  56:         \"WAIT_%=:\\n\"\n  57:         \"mbarrier.try_wait.parity.shared.b64 P, [%0], %1;\\n\"\n  58:         \"@!P bra WAIT_%=;\\n\"\n  59:         \"}\\n\"\n> 60:         :: \"r\"((uint32_t)__cvta_generic_to_shared(&bar[0])), \"r\"(phase));\n  61: }\n  62: \n  63: __device__ __forceinline__ void tma_load_2d_fn(const CUtensorMap* d, uint64_t* bar, void* smem, int32_t c0, int32_t c1) {\n  64:     asm volatile(\n\nkernel.cu:239 (reported as kernel.cu)\n  235:             tma_load_2d_fn(&tma_V, mbar, smem_V1, 64, bh_idx * S + j);\n  236:         } else {\n  237:             mbarrier_arrive_fn(mbar);\n  238:         }\n> 239:         mbarrier_wait_fn(mbar, phase);\n  240:         phase ^= 1;\n  241:         __syncthreads();\n  242: \n  243:         fence_proxy_async_fn();\n\nCUDA core dumps\n--------------------------------------------------------------------------------\n- /tmp/fib_debug/run_u0kdudfg/cuda_coredump_e28e2da891d9.27274.1782957139\n\nOpen a dump with:\n  cuda-gdb -batch -ex 'target cudacore /tmp/fib_debug/run_u0kdudfg/cuda_coredump_e28e2da891d9.27274.1782957139' -ex 'bt'\nIf cuda-gdb reports an error PC in a cubin, use nvdisasm -ndf -c -gi on the extracted cubin to inspect the inline source stack.\n\nRaw tool output\n--------------------------------------------------------------------------------\nfull_raw_log: /tmp/fib_debug/run_u0kdudfg/debug_raw.log\nRunning MEMCHECK debug pass\n========= COMPUTE-SANITIZER\nERROR: memcheck timed out after 120 seconds.\nRunning DIRECT COREDUMP timeout pass\nERROR: direct runner timed out after 120 seconds; requested CUDA user-triggered core dump before terminating it.\nCUDA coredump backtrace\nOpening GPU coredump: /tmp/fib_debug/run_u0kdudfg/cuda_coredump_e28e2da891d9.27274.1782957139\n[Current focus set to CUDA kernel 0, grid 1, block (8,0,0), thread (0,0,0), device 0, sm 0, warp 0, lane 0]\n#0  0x00007752ef7b6000 in tvm_ffi_cuda_mha::kernel_mha_bwd_dQ<<<(64,192,1),(128,1,1)>>> () at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_18a4bc89_18a4bc/kernel.cu:60 in _ZN16tvm_ffi_cuda_mha16mbarrier_wait_fnEPmj inlined from kernel.cu:239\n",
+      "correctness": null,
+      "performance": null
+    }
+  }
+]

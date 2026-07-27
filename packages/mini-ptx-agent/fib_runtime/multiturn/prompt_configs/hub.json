@@ -1,0 +1,324 @@
+{
+    "hopper-no-hint": [
+        "structural_doc/document/ptx_knowledge_sm90_plus.md",
+        "structural_doc/document/arch_param_h100.md",
+        "structural_doc/headers/simt.h",
+        "structural_doc/headers/barrier.h",
+        "structural_doc/headers/tma_bf16.h",
+        "structural_doc/headers/wgmma_bf16.h",
+        "structural_doc/document/debug_hints_sm90.md"
+    ],
+    "hopper-00": [
+        "hopper-no-hint",
+        "structural_doc/patterns/cluster_multicast_load.md"
+    ],
+    "hopper-01": [
+        "hopper-no-hint",
+        "structural_doc/patterns/l2_swizzle.md"
+    ],
+    "hopper-02": [
+        "hopper-no-hint",
+        "structural_doc/patterns/large_tiles.md"
+    ],
+    "hopper-03": [
+        "hopper-no-hint",
+        "structural_doc/patterns/persistent_kernel.md"
+    ],
+    "hopper-04": [
+        "hopper-no-hint",
+        "structural_doc/patterns/tma_store.md"
+    ],
+    "hopper-05": [
+        "hopper-no-hint",
+        "structural_doc/patterns/warp_specialization.md"
+    ],
+    "hopper-06": [
+        "hopper-no-hint",
+        "structural_doc/patterns/fa2_fwd.md"
+    ],
+    "hopper-07": [
+        "hopper-no-hint",
+        "structural_doc/patterns/fa3_fwd_v0.md"
+    ],
+    "hopper-07-mha-patched": [
+        "hopper-07",
+        "structural_doc/patterns/qwen36-27b-mha-patch.md"
+    ],
+    "hopper-08": [
+        "hopper-no-hint",
+        "structural_doc/patterns/fa3_fwd_v1.md"
+    ],
+    "hopper-08-mha-patched": [
+        "hopper-08",
+        "structural_doc/patterns/qwen36-27b-mha-patch.md"
+    ],
+    "hopper-09": [
+        "hopper-no-hint",
+        "structural_doc/patterns/fa3_fwd_v2.md"
+    ],
+    "hopper-09-mha-patched": [
+        "hopper-09",
+        "structural_doc/patterns/qwen36-27b-mha-patch.md"
+    ],
+    "hopper-010": [
+        "hopper-no-hint",
+        "structural_doc/patterns/fa3_bwd.md"
+    ],
+    "hopper-010-mha-patched": [
+        "hopper-010",
+        "structural_doc/patterns/qwen36-27b-mha-patch.md"
+    ],
+    "hopper-011": [
+        "hopper-no-hint",
+        "structural_doc/patterns/fa3_bwd_fwd_v0.md"
+    ],
+    "hopper-011-mha-patched": [
+        "hopper-011",
+        "structural_doc/patterns/qwen36-27b-mha-patch.md"
+    ],
+    "hopper-012": [
+        "hopper-no-hint",
+        "structural_doc/patterns/fa3_bwd_2ker.md"
+    ],
+    "hopper-012-mha-patched": [
+        "hopper-012",
+        "structural_doc/patterns/qwen36-27b-mha-patch.md"
+    ],
+    "hopper-013": [
+        "hopper-no-hint",
+        "structural_doc/patterns/fa3_bwd_2ker_fwd_v0.md"
+    ],
+    "hopper-013-mha-patched": [
+        "hopper-013",
+        "structural_doc/patterns/qwen36-27b-mha-patch.md"
+    ],
+    "hopper-014": [
+        "hopper-no-hint",
+        "structural_doc/patterns/fa3_fwd_v1_only.md"
+    ],
+    "hopper-014-mha-patched": [
+        "hopper-014",
+        "structural_doc/patterns/qwen36-27b-mha-patch.md"
+    ],
+    "hopper-10": [
+        "hopper-no-hint",
+        "structural_doc/patterns/warp_specialization.md",
+        "structural_doc/patterns/l2_swizzle.md"
+    ],
+    "hopper-11": [
+        "hopper-no-hint",
+        "structural_doc/patterns/warp_specialization_cluster_multicast.md"
+    ],
+    "hopper-12": [
+        "hopper-no-hint",
+        "structural_doc/patterns/warp_specialization.md",
+        "structural_doc/patterns/tma_store.md"
+    ],
+    "hopper-20": [
+        "hopper-no-hint",
+        "structural_doc/patterns/warp_specialization.md",
+        "structural_doc/patterns/l2_swizzle.md",
+        "structural_doc/patterns/large_tiles.md"
+    ],
+    "hopper-21": [
+        "hopper-no-hint",
+        "structural_doc/patterns/warp_specialization_persistent_kernel_cluster_multicast.md"
+    ],
+    "hopper-22": [
+        "hopper-no-hint",
+        "structural_doc/patterns/warp_specialization.md",
+        "structural_doc/patterns/tma_store.md",
+        "structural_doc/patterns/persistent_kernel.md"
+    ],
+    "hopper-30": [
+        "hopper-no-hint",
+        "structural_doc/patterns/warp_specialization_persistent_kernel_cluster_multicast_async_schedule.md"
+    ],
+    "hopper-50": [
+        "hopper-no-hint",
+        "structural_doc/patterns/cluster_multicast_load.md",
+        "structural_doc/patterns/l2_swizzle.md",
+        "structural_doc/patterns/large_tiles.md",
+        "structural_doc/patterns/persistent_kernel.md",
+        "structural_doc/patterns/tma_store.md",
+        "structural_doc/patterns/warp_specialization.md"
+    ],
+    "hopper-80": [
+        "hopper-50",
+        "structural_doc/patterns/warp_specialization_cluster_multicast.md",
+        "structural_doc/patterns/warp_specialization_persistent_kernel_cluster_multicast.md",
+        "structural_doc/patterns/warp_specialization_persistent_kernel_cluster_multicast_async_schedule.md"
+    ],
+    "hopper-wo-knowledge": [
+        "structural_doc/document/arch_param_h100.md",
+        "structural_doc/headers_wo_doc/simt.h",
+        "structural_doc/headers_wo_doc/barrier.h",
+        "structural_doc/headers_wo_doc/tma_bf16.h",
+        "structural_doc/headers_wo_doc/wgmma_bf16.h",
+        "structural_doc/document/debug_hints_sm90.md"
+    ],
+    "hopper-wo-knowledge-00": [
+        "hopper-wo-knowledge",
+        "structural_doc/patterns/cluster_multicast_load.md"
+    ],
+    "hopper-wo-knowledge-01": [
+        "hopper-wo-knowledge",
+        "structural_doc/patterns/l2_swizzle.md"
+    ],
+    "hopper-wo-knowledge-02": [
+        "hopper-wo-knowledge",
+        "structural_doc/patterns/large_tiles.md"
+    ],
+    "hopper-wo-knowledge-03": [
+        "hopper-wo-knowledge",
+        "structural_doc/patterns/persistent_kernel.md"
+    ],
+    "hopper-wo-knowledge-04": [
+        "hopper-wo-knowledge",
+        "structural_doc/patterns/tma_store.md"
+    ],
+    "hopper-wo-knowledge-05": [
+        "hopper-wo-knowledge",
+        "structural_doc/patterns/warp_specialization.md"
+    ],
+    "hopper-arch-only": [
+        "structural_doc/document/arch_param_h100.md"
+    ],
+    "hopper-arch-with-hint": [
+        "hopper-arch-only",
+        "structural_doc/document/debug_hints_sm90.md"
+    ],
+    "b200-bf16": [
+        "structural_doc/document/ptx_knowledge_sm90_plus.md",
+        "structural_doc/document/ptx_knowledge_sm100_plus.md",
+        "structural_doc/document/arch_param_b200.md",
+        "structural_doc/headers/simt.h",
+        "structural_doc/headers/barrier.h",
+        "structural_doc/headers/tma_bf16_sm100.h",
+        "structural_doc/headers/umma_bf16.h"
+    ],
+    "b200-bf16-00": [
+        "b200-bf16",
+        "structural_doc/patterns/cluster_multicast_load.md"
+    ],
+    "b200-bf16-04": [
+        "b200-bf16",
+        "structural_doc/patterns/tma_store.md"
+    ],
+    "b200-bf16-06": [
+        "b200-bf16",
+        "structural_doc/patterns/fa4_fwd.md"
+    ],
+    "b200-bf16-07": [
+        "b200-bf16",
+        "structural_doc/patterns/fa4_fwd_with_fa3.md"
+    ],
+    "b200-bf16-08": [
+        "b200-bf16",
+        "structural_doc/patterns/fa4_fwd_wo_nongemm.md"
+    ],
+    "b200-bf16-09": [
+        "b200-bf16",
+        "structural_doc/patterns/fa4_fwd_with_fa3_wo_nongemm.md"
+    ],
+    "b200-bf16-010": [
+        "b200-bf16",
+        "structural_doc/patterns/fa4_tdblog_fwd.md"
+    ],
+    "b200-bf16-011": [
+        "b200-bf16",
+        "structural_doc/patterns/fa4_tdblog_fwd_wo_nongemm.md"
+    ],
+    "b200-bf16-012": [
+        "b200-bf16",
+        "structural_doc/patterns/fa4_tdblog_bwd.md"
+    ],
+    "b200-bf16-013": [
+        "b200-bf16",
+        "structural_doc/patterns/fa4_tdblog_bwd_1cta.md"
+    ],  
+    "b200-bf16-10": [
+        "b200-bf16",
+        "structural_doc/headers/fa4_helpers.h",
+        "structural_doc/patterns/fa4_fwd.md"
+    ],
+    "b200-bf16-11": [
+        "b200-bf16-010",
+        "structural_doc/patterns/fa4_lpt.md"
+    ],
+    "b200-bf16-12": [
+        "b200-bf16-011",
+        "structural_doc/patterns/fa4_lpt.md"
+    ],
+    "b200-bf16-13": [
+        "b200-bf16-012",
+        "structural_doc/patterns/fa4_lpt.md"
+    ],
+    "b200-bf16-14": [
+        "b200-bf16-013",
+        "structural_doc/patterns/fa4_lpt.md"
+    ],
+    "h100-fp8": [
+        "structural_doc/document/ptx_knowledge_sm90_plus.md",
+        "structural_doc/document/arch_param_h100.md",
+        "structural_doc/headers/simt.h",
+        "structural_doc/headers/barrier.h",
+        "structural_doc/headers/tma_bf16_fp8.h",
+        "structural_doc/headers/wgmma_bf16_fp8.h",
+        "structural_doc/document/debug_hints_sm90.md"
+    ],
+    "h100-fp8-00": [
+        "h100-fp8",
+        "structural_doc/patterns/cluster_multicast_load.md"
+    ],
+    "h100-fp8-01": [
+        "h100-fp8",
+        "structural_doc/patterns/l2_swizzle.md"
+    ],
+    "h100-fp8-02": [
+        "h100-fp8",
+        "structural_doc/patterns/large_tiles.md"
+    ],
+    "h100-fp8-03": [
+        "h100-fp8",
+        "structural_doc/patterns/persistent_kernel.md"
+    ],
+    "h100-fp8-04": [
+        "h100-fp8",
+        "structural_doc/patterns/tma_store.md"
+    ],
+    "h100-fp8-05": [
+        "h100-fp8",
+        "structural_doc/patterns/warp_specialization.md"
+    ],
+    "h100-fp8-07": [
+        "h100-fp8",
+        "structural_doc/patterns/fa3_fwd_v0.md"
+    ],
+    "h100-fp8-08": [
+        "h100-fp8",
+        "structural_doc/patterns/fa3_fwd_v1.md"
+    ],
+    "h100-fp8-09": [
+        "h100-fp8",
+        "structural_doc/patterns/fa3_fwd_v2.md"
+    ],
+    "h100-param-only": [
+        "structural_doc/document/arch_param_h100.md"
+    ],
+    "hopper-no-hint-mha-patched": [
+        "hopper-no-hint",
+        "structural_doc/patterns/qwen36-27b-mha-patch.md"
+    ],
+    "hopper-notes-based": [
+        "structural_doc/document/arch_param_h100.md",
+        "structural_doc/headers/simt.h",
+        "structural_doc/headers/barrier.h",
+        "structural_doc/headers/tma_bf16.h",
+        "structural_doc/headers/wgmma_bf16.h"
+    ],
+    "hopper-notes-2026-0624-0939-kernel-fix-notes-smoke8": [
+        "hopper-notes-based",
+        "structural_doc/notes/2026-0624-0939-kernel-fix-notes-smoke8.prompt.md"
+    ]
+}

@@ -1,0 +1,18 @@
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_ZN12tvm_ffi_cuda14mha_bwd_kernelILi1EEEv14CUtensorMap_stS1_S1_S1_S1_PKfP13__nv_bfloat16S5_S5_iii' for 'sm_90a'
+ptxas info    : Function properties for _ZN12tvm_ffi_cuda14mha_bwd_kernelILi1EEEv14CUtensorMap_stS1_S1_S1_S1_PKfP13__nv_bfloat16S5_S5_iii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 252 registers, used 1 barriers
+ptxas info    : Compile time = 193.248 ms
+ptxas info    : Compiling entry function '_ZN12tvm_ffi_cuda14mha_bwd_kernelILi0EEEv14CUtensorMap_stS1_S1_S1_S1_PKfP13__nv_bfloat16S5_S5_iii' for 'sm_90a'
+ptxas info    : Function properties for _ZN12tvm_ffi_cuda14mha_bwd_kernelILi0EEEv14CUtensorMap_stS1_S1_S1_S1_PKfP13__nv_bfloat16S5_S5_iii
+    368 bytes stack frame, 492 bytes spill stores, 504 bytes spill loads
+ptxas info    : Used 255 registers, used 1 barriers, 368 bytes cumulative stack size
+ptxas info    : Compile time = 271.215 ms
+Running memcheck 1/2...
+Submitted sanitize task: b0a73d5825594dfcb28bfba288e6b49c
+Running memcheck 2/2...
+Submitted sanitize task: bbd6e19e5d3e452c95a4b5f2f20b6606
+memcheck clean; running /evaluate...
+Submitted evaluate task: ad8c783f8b4c4d3eacb73d33f63aa949
+Submitted debug task: e6cf05e2213f48f3a25b1ada4654e766

@@ -1,0 +1,71 @@
+[
+  {
+    "definition": "mha_bwd_d128",
+    "workload": {
+      "axes": {
+        "B": 4,
+        "H": 48,
+        "S": 4096,
+        "d": 128
+      },
+      "inputs": {
+        "Q": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "Q"
+        },
+        "K": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "K"
+        },
+        "V": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "V"
+        },
+        "O": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "O"
+        },
+        "dO": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "dO"
+        },
+        "L": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "L"
+        }
+      },
+      "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+      "outputs": null
+    },
+    "solution": "eval_kernel_6b4fcd72",
+    "evaluation": {
+      "status": "PASSED",
+      "environment": {
+        "hardware": "NVIDIA H100 80GB HBM3",
+        "libs": {
+          "torch": "2.12.1+cu130",
+          "triton": "3.7.1",
+          "cuda": "13.0"
+        }
+      },
+      "timestamp": "2026-07-02T01:29:55.788245",
+      "log": "ptxas info    : (C7519) warpgroup.arrive is injected in around line 5590 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_sdpa19sdpa_bwd_dkv_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_ifl'\nptxas info    : (C7519) warpgroup.arrive is injected in around line 6348 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_sdpa19sdpa_bwd_dkv_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_ifl'\nptxas info    : (C7519) warpgroup.arrive is injected in around line 1698 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_sdpa18sdpa_bwd_dq_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16ifl'\nptxas info    : (C7519) warpgroup.arrive is injected in around line 2230 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_sdpa18sdpa_bwd_dq_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16ifl'\nptxas info    : 0 bytes gmem\nptxas info    : Compiling entry function '_ZN12tvm_ffi_sdpa19sdpa_bwd_dkv_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_ifl' for 'sm_90a'\nptxas info    : Function properties for _ZN12tvm_ffi_sdpa19sdpa_bwd_dkv_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_ifl\n    544 bytes stack frame, 24 bytes spill stores, 24 bytes spill loads\nptxas info    : Used 255 registers, used 1 barriers, 544 bytes cumulative stack size\nptxas info    : Compile time = 193.316 ms\nptxas info    : Compiling entry function '_ZN12tvm_ffi_sdpa18sdpa_bwd_dq_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16ifl' for 'sm_90a'\nptxas info    : Function properties for _ZN12tvm_ffi_sdpa18sdpa_bwd_dq_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16ifl\n    256 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 228 registers, used 1 barriers, 256 bytes cumulative stack size\nptxas info    : Compile time = 128.601 ms\nptxas info    : Compiling entry function '_ZN12tvm_ffi_sdpa19precompute_D_kernelEPK13__nv_bfloat16S2_Pfi' for 'sm_90a'\nptxas info    : Function properties for _ZN12tvm_ffi_sdpa19precompute_D_kernelEPK13__nv_bfloat16S2_Pfi\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 29 registers, used 0 barriers\nptxas info    : Compile time = 3.967 ms\n\n/workspace/flashinfer-bench-private/flashinfer_bench/bench/timing.py:74: UserWarning: CUPTI is not installed. Try 'pip install -U cupti-python'. Falling back to CUDA events for benchmarking.\n  times = bench_gpu_time_with_cupti(\n",
+      "correctness": {
+        "max_relative_error": 201.97239685058594,
+        "max_absolute_error": 0.0009765625,
+        "extra": null
+      },
+      "performance": {
+        "latency_ms": 15.953871726989746,
+        "reference_latency_ms": 7.827440023422241,
+        "speedup_factor": 0.4906294946687001
+      }
+    }
+  }
+]

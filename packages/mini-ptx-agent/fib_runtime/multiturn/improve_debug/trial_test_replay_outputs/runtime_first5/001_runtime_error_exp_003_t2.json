@@ -1,0 +1,14 @@
+{
+  "index": 1,
+  "status": "ok",
+  "returncode": 0,
+  "elapsed_seconds": 45.788,
+  "kernel": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128/kernels/exp_003/kernel_t2.cu",
+  "category": "Runtime error",
+  "exp": "exp_003",
+  "turn": 2,
+  "original_message": "torch.AcceleratorError: CUDA error: an illegal memory access was encountered",
+  "trace_path": "/home/ubuntu/AccRL/fib_runtime/multiturn/improve_debug/trial_test_replay_outputs/runtime_first5/001_runtime_error_exp_003_t2.traces.json",
+  "stdout_path": "/home/ubuntu/AccRL/fib_runtime/multiturn/improve_debug/trial_test_replay_outputs/runtime_first5/001_runtime_error_exp_003_t2.stdout",
+  "stderr_path": "/home/ubuntu/AccRL/fib_runtime/multiturn/improve_debug/trial_test_replay_outputs/runtime_first5/001_runtime_error_exp_003_t2.stderr"
+}

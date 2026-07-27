@@ -1,0 +1,8 @@
+name: trajectory-reasoning-deepseek
+description: "DeepSeek-V4-Pro (1M context), thinking on, full trajectory history, every turn"
+selector: all_with_history
+reasoning_model: DeepSeek-V4-Pro
+prompt_version: v3_trajectory
+min_speedup: 0.0
+max_tokens: 196000
+enable_thinking: true

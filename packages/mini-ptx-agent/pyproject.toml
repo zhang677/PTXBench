@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mini-ptx-agent"
+version = "0.1.0.dev0"
+description = "PTXBench kernel optimization agent"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = {file = "LICENSE"}
+dependencies = [
+  "datasets>=4.8",
+  "huggingface-hub>=1.0",
+  "jinja2>=3.1",
+  "litellm>=1.82",
+  "matplotlib>=3.10",
+  "mini-swe-agent>=2.2,<3",
+  "numpy>=2.0",
+  "openai>=2.0",
+  "pandas>=2.2",
+  "pyarrow>=19",
+  "pyyaml>=6.0",
+  "requests>=2.32",
+  "safetensors>=0.7",
+  "textual>=8.0",
+  "torch>=2.8",
+  "typer>=0.24",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "ruff>=0.12",
+]
+training = [
+  "tinker-cookbook>=0.4.3,<0.5",
+]
+
+[project.scripts]
+ptxbench = "mini_ptx_agent.cli:app"
+ptxbench-inspect = "accrl.distill.inspector:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["accrl*", "mini_ptx_agent*"]

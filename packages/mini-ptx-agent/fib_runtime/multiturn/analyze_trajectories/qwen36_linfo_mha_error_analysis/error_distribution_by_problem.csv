@@ -1,0 +1,65 @@
+problem_id,problem_label,condition,run_dir,total,correctness,count,fraction
+mha_d128,MHA d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128,160,Compilation error,80,0.500000
+mha_d128,MHA d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128,160,Runtime error,74,0.462500
+mha_d128,MHA d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128,160,Kernel Execution Timeout,2,0.012500
+mha_d128,MHA d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128,160,Numerical error,3,0.018750
+mha_d128,MHA d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128,160,Extraction error,1,0.006250
+mha_d128,MHA d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128,160,Profiling Service Timeout,0,0.000000
+mha_d128,MHA d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128,160,Sanitize Timeout,0,0.000000
+mha_d128,MHA d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128,160,Other error,0,0.000000
+mha_d128,MHA d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,160,Compilation error,90,0.562500
+mha_d128,MHA d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,160,Runtime error,31,0.193750
+mha_d128,MHA d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,160,Kernel Execution Timeout,23,0.143750
+mha_d128,MHA d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,160,Numerical error,11,0.068750
+mha_d128,MHA d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,160,Extraction error,3,0.018750
+mha_d128,MHA d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,160,Profiling Service Timeout,1,0.006250
+mha_d128,MHA d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,160,Sanitize Timeout,0,0.000000
+mha_d128,MHA d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,160,Other error,1,0.006250
+mha_d128_causal,MHA d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128-causal,160,Compilation error,89,0.556250
+mha_d128_causal,MHA d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128-causal,160,Runtime error,64,0.400000
+mha_d128_causal,MHA d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128-causal,160,Kernel Execution Timeout,2,0.012500
+mha_d128_causal,MHA d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128-causal,160,Numerical error,2,0.012500
+mha_d128_causal,MHA d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128-causal,160,Extraction error,2,0.012500
+mha_d128_causal,MHA d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128-causal,160,Profiling Service Timeout,0,0.000000
+mha_d128_causal,MHA d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128-causal,160,Sanitize Timeout,0,0.000000
+mha_d128_causal,MHA d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-d128-causal,160,Other error,1,0.006250
+mha_d128_causal,MHA d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,160,Compilation error,99,0.618750
+mha_d128_causal,MHA d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,160,Runtime error,24,0.150000
+mha_d128_causal,MHA d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,160,Kernel Execution Timeout,15,0.093750
+mha_d128_causal,MHA d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,160,Numerical error,15,0.093750
+mha_d128_causal,MHA d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,160,Extraction error,6,0.037500
+mha_d128_causal,MHA d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,160,Profiling Service Timeout,0,0.000000
+mha_d128_causal,MHA d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,160,Sanitize Timeout,0,0.000000
+mha_d128_causal,MHA d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,160,Other error,1,0.006250
+mha_bwd_d128,MHA bwd d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128,160,Compilation error,90,0.562500
+mha_bwd_d128,MHA bwd d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128,160,Runtime error,61,0.381250
+mha_bwd_d128,MHA bwd d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128,160,Kernel Execution Timeout,3,0.018750
+mha_bwd_d128,MHA bwd d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128,160,Numerical error,2,0.012500
+mha_bwd_d128,MHA bwd d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128,160,Extraction error,2,0.012500
+mha_bwd_d128,MHA bwd d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128,160,Profiling Service Timeout,0,0.000000
+mha_bwd_d128,MHA bwd d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128,160,Sanitize Timeout,0,0.000000
+mha_bwd_d128,MHA bwd d128,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128,160,Other error,2,0.012500
+mha_bwd_d128,MHA bwd d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,160,Compilation error,79,0.493750
+mha_bwd_d128,MHA bwd d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,160,Runtime error,41,0.256250
+mha_bwd_d128,MHA bwd d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,160,Kernel Execution Timeout,20,0.125000
+mha_bwd_d128,MHA bwd d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,160,Numerical error,12,0.075000
+mha_bwd_d128,MHA bwd d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,160,Extraction error,5,0.031250
+mha_bwd_d128,MHA bwd d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,160,Profiling Service Timeout,0,0.000000
+mha_bwd_d128,MHA bwd d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,160,Sanitize Timeout,0,0.000000
+mha_bwd_d128,MHA bwd d128,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,160,Other error,3,0.018750
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128-causal,160,Compilation error,81,0.506250
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128-causal,160,Runtime error,69,0.431250
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128-causal,160,Kernel Execution Timeout,7,0.043750
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128-causal,160,Numerical error,2,0.012500
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128-causal,160,Extraction error,1,0.006250
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128-causal,160,Profiling Service Timeout,0,0.000000
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128-causal,160,Sanitize Timeout,0,0.000000
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b-linfo,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-linfo-mha-bwd-d128-causal,160,Other error,0,0.000000
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,160,Compilation error,98,0.612500
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,160,Runtime error,21,0.131250
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,160,Kernel Execution Timeout,16,0.100000
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,160,Numerical error,14,0.087500
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,160,Extraction error,7,0.043750
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,160,Profiling Service Timeout,0,0.000000
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,160,Sanitize Timeout,1,0.006250
+mha_bwd_d128_causal,MHA bwd d128 causal,qwen36-27b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,160,Other error,3,0.018750

@@ -1,0 +1,63 @@
+[
+  {
+    "definition": "mha_bwd_d128",
+    "workload": {
+      "axes": {
+        "B": 4,
+        "H": 48,
+        "S": 4096,
+        "d": 128
+      },
+      "inputs": {
+        "Q": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "Q"
+        },
+        "K": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "K"
+        },
+        "V": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "V"
+        },
+        "O": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "O"
+        },
+        "dO": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "dO"
+        },
+        "L": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "L"
+        }
+      },
+      "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+      "outputs": null
+    },
+    "solution": "eval_kernel_c9d4dc3e",
+    "evaluation": {
+      "status": "RUNTIME_ERROR",
+      "environment": {
+        "hardware": "NVIDIA H100 80GB HBM3",
+        "libs": {
+          "torch": "2.12.1+cu130",
+          "triton": "3.7.1",
+          "cuda": "13.0"
+        }
+      },
+      "timestamp": "2026-07-02T01:33:40.465709",
+      "log": "ptxas info    : (C7508) Potential Performance Loss: 'setmaxnreg' ignored; unable to determine register count at entry.\nptxas info    : (C7508) Potential Performance Loss: 'setmaxnreg' ignored; unable to determine register count at entry.\nptxas info    : 0 bytes gmem\nptxas info    : Compiling entry function '_Z16compute_D_kernelPK13__nv_bfloat16S1_Pfiii' for 'sm_90a'\nptxas info    : Function properties for _Z16compute_D_kernelPK13__nv_bfloat16S1_Pfiii\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 30 registers, used 0 barriers\nptxas info    : Compile time = 17.317 ms\nptxas info    : Compiling entry function '_Z20mha_bwd_kernel_pass214CUtensorMap_stS_S_S_S_S_S_PKfPfi' for 'sm_90a'\nptxas info    : Function properties for _Z20mha_bwd_kernel_pass214CUtensorMap_stS_S_S_S_S_S_PKfPfi\n    216 bytes stack frame, 212 bytes spill stores, 212 bytes spill loads\nptxas info    : Used 255 registers, used 1 barriers, 216 bytes cumulative stack size, 1024 bytes smem\nptxas info    : Compile time = 255.103 ms\nptxas info    : Compiling entry function '_Z20mha_bwd_kernel_pass114CUtensorMap_stS_S_S_S_S_PKfPfi' for 'sm_90a'\nptxas info    : Function properties for _Z20mha_bwd_kernel_pass114CUtensorMap_stS_S_S_S_S_PKfPfi\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 241 registers, used 1 barriers, 1024 bytes smem\nptxas info    : Compile time = 193.881 ms\n\nFlashInfer CUDA debug report\n================================================================================\nsolution: eval_kernel_c9d4dc3e\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_urmfmih7\n\nMost precise CUDA fault\n--------------------------------------------------------------------------------\n- Misaligned shared or local address\n  thread (0,0,0) in block (92,0,0)\n  faulting instruction: kernel.cu:61\n    at tma_store_2d_fn(const CUtensorMap_st *, void *, int, int)+0xce80 in kernel.cu:61\n  device frame: kernel.cu:574\n    Device Frame: mha_bwd_kernel_pass2(CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, const float *, float *, int)+0xcdc0 in kernel.cu:574\n  interpretation: the wrapper/synchronize line may only report the asynchronous CUDA failure; inspect kernel.cu:574 and the helper at kernel.cu:61 first.\n\nPrimary diagnostics\n--------------------------------------------------------------------------------\n- CUDA error misaligned address at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_c9d4dc3e_c9d4dc/kernel.cu:666\n- WARNING: memcheck detected issues!\n\nSource locations\n--------------------------------------------------------------------------------\nkernel.cu:61 (reported as kernel.cu)\n  57:     asm volatile(\n  58:         \"cp.async.bulk.tensor.2d.global.shared::cta.tile.bulk_group [%0, {%2, %3}], [%1];\"\n  59:         :: \"l\"((uint64_t)d),\n  60:         \"r\"((uint32_t)__cvta_generic_to_shared(smem)),\n> 61:         \"r\"(c0), \"r\"(c1) : \"memory\");\n  62: }\n  63: \n  64: __device__ __forceinline__ void tma_store_commit_fn() {\n  65:     asm volatile(\"cp.async.bulk.commit_group;\\n\" ::: \"memory\");\n\nkernel.cu:574 (reported as kernel.cu)\n  570:     __syncthreads();\n  571: \n  572:     if (threadIdx.x == 0) {\n  573:         tma_store_2d_fn(&tma_dK, smem_store_dK, 0, k_row_base + b_h_idx * S);\n> 574:         tma_store_2d_fn(&tma_dK, smem_store_dK + 4096, 64, k_row_base + b_h_idx * S);\n  575:         tma_store_2d_fn(&tma_dV, smem_store_dV, 0, k_row_base + b_h_idx * S);\n  576:         tma_store_2d_fn(&tma_dV, smem_store_dV + 4096, 64, k_row_base + b_h_idx * S);\n  577:         tma_store_commit_fn();\n  578:     }\n\nkernel.cu:666 (reported as /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_c9d4dc3e_c9d4dc/kernel.cu)\n  662:         dD_ptr,\n  663:         S\n  664:     );\n  665: \n> 666:     CUDA_CHECK(cudaStreamSynchronize(stream));\n  667:     CUDA_CHECK(cudaFreeAsync(dD_ptr, stream));\n  668: }\n  669: \n  670: TVM_FFI_DLL_EXPORT_TYPED_FUNC(run, run);\n\nCUDA core dumps\n--------------------------------------------------------------------------------\n- No CUDA core dump file was produced.\n\nRaw tool output\n--------------------------------------------------------------------------------\nfull_raw_log: /tmp/fib_debug/run_urmfmih7/debug_raw.log\nRunning MEMCHECK debug pass\n========= COMPUTE-SANITIZER\n========= Misaligned shared or local address\n=========     at tma_store_2d_fn(const CUtensorMap_st *, void *, int, int)+0xce80 in kernel.cu:61\n=========     by thread (0,0,0) in block (92,0,0)\n=========         Device Frame: mha_bwd_kernel_pass2(CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, const float *, float *, int)+0xcdc0 in kernel.cu:574\n========= ERROR SUMMARY: 3363 errors\n========= ERROR SUMMARY: 3263 errors were not printed. Use --print-limit option to adjust the number of printed errors\nCUDA error misaligned address at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_c9d4dc3e_c9d4dc/kernel.cu:666\nReturn code: 1\nWARNING: memcheck detected issues!\n",
+      "correctness": null,
+      "performance": null
+    }
+  }
+]

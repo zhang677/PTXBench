@@ -1,0 +1,8 @@
+PTXBench
+Copyright 2026 PTXBench contributors
+
+FIBServe is derived from FlashInfer Bench:
+https://github.com/flashinfer-ai/flashinfer-bench
+
+The original FlashInfer Bench license, NOTICE, and third-party license files
+are retained under packages/fibserve.

@@ -1,0 +1,88 @@
+[
+  {
+    "name": "kb_gemm_large_k",
+    "op_type": "gemm",
+    "description": "Matrix multiplication with large K dimension: C = A @ B where K >> M, N. The large reduction dimension (K) creates unique optimization challenges distinct from standard GEMM: higher memory traffic relative to compute, different tiling strategies, and greater sensitivity to reduction ordering and accumulation precision.",
+    "tags": ["source:kernelbench", "level:1", "large_reduction"],
+    "axes": {
+      "M": {
+        "type": "var",
+        "description": "Number of rows in A and C"
+      },
+      "K": {
+        "type": "var",
+        "description": "Reduction dimension (columns of A, rows of B) - intentionally large"
+      },
+      "N": {
+        "type": "var",
+        "description": "Number of columns in B and C"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["M", "K"],
+        "dtype": "bfloat16"
+      },
+      "B": {
+        "shape": ["K", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "C": {
+        "shape": ["M", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, B):\n    return torch.matmul(A, B)\n",
+    "workload_ranges": {
+      "M": [128, 256, 512],
+      "K": [65536, 131072, 262144, 524288],
+      "N": [128, 256, 512]
+    }
+  },
+  {
+    "name": "kb_gemm_very_large_k",
+    "op_type": "gemm",
+    "description": "Extreme case: Matrix multiplication with extremely large K dimension (K > 1M). Tests handling of very long reductions where accumulation precision and numerical stability become critical.",
+    "tags": ["source:kernelbench", "level:1", "large_reduction", "extreme"],
+    "axes": {
+      "M": {
+        "type": "var",
+        "description": "Number of rows in A and C"
+      },
+      "K": {
+        "type": "var",
+        "description": "Reduction dimension - extremely large"
+      },
+      "N": {
+        "type": "var",
+        "description": "Number of columns in B and C"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["M", "K"],
+        "dtype": "bfloat16"
+      },
+      "B": {
+        "shape": ["K", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "C": {
+        "shape": ["M", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, B):\n    return torch.matmul(A, B)\n",
+    "workload_ranges": {
+      "M": [64, 128, 256],
+      "K": [1048576, 2097152, 4194304],
+      "N": [64, 128, 256]
+    }
+  }
+]

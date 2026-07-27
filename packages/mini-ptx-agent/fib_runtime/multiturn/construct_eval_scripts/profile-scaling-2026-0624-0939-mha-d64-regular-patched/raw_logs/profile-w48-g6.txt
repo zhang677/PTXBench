@@ -1,0 +1,366 @@
+(base) ubuntu@ip-172-31-32-145:~$ conda activate acc 
+(acc) ubuntu@ip-172-31-32-145:~$ bash /home/ubuntu/AccRL/fib_runtime/multiturn/construct_eval_scripts/profile-scaling-2026-0624-0939-mha-d64-regular-patched/06_watch_fixitv2_d64_patched_eval_w48_g6_p5-3.sh        
+2026-07-26T01:57:09Z watcher started for RUN_DATE=2026-0624-0939-w48-g2 MODEL_NAME=qwen36-27b-SFT-2026-0624-0939 ACCRL_MODEL_HOST=localhost:30021 SERVICE_URL=http://localhost:10001 RUNNER=/home/ubuntu/AccRL/fib_runtime/multiturn/run_parallel_v2.py PROFILE_HOST=p5-3 PROFILE_CONTAINER=fib-profile PROFILE_TUNNEL_SESSION=connect-fib-profile-p5-3-10001 PROFILE_MAX_GPUS=6 CONFIG_MHA_FWD=/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-p4-mha-patched.json CONFIG_MHA_BWD=/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-bwd-p4-mha-patched.json                                                                                           
+👋 This is mini-swe-agent version 2.2.6.             
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration                                
+Loading global config from '/home/ubuntu/.config/mini-swe-agent/.env'                                     
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-d64: missing root; runner will create fresh plan.json                                                                                                    
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-d64-causal: missing root; runner will create fresh plan.json                                                                                             
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-bwd-d64: missing root; runner will create fresh plan.json                                                                                                
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-bwd-d64-causal: missing root; runner will create fresh plan.json                                                                                         
+2026-07-26T01:57:11Z no active eval process found; auditing roots                                         
+mha_with_lse_d64: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                   
+mha_with_lse_d64_causal: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0            
+mha_bwd_d64: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                        
+mha_bwd_d64_causal: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                 
+2026-07-26T01:57:11Z waiting for model endpoint localhost:30021 to include qwen36-27b-SFT-2026-0624-0939 (1/60)                                                                                                      
+2026-07-26T01:57:21Z waiting for model endpoint localhost:30021 to include qwen36-27b-SFT-2026-0624-0939 (2/60)                                                                                                      
+2026-07-26T01:57:32Z waiting for model endpoint localhost:30021 to include qwen36-27b-SFT-2026-0624-0939 (3/60)                                                                                                      
+^C                                                   
+(acc) ubuntu@ip-172-31-32-145:~$ bash /home/ubuntu/AccRL/fib_runtime/multiturn/construct_eval_scripts/profile-scaling-2026-0624-0939-mha-d64-regular-patched/06_watch_fixitv2_d64_patched_eval_w48_g6_p5-3.sh        
+2026-07-26T02:02:25Z watcher started for RUN_DATE=2026-0624-0939-w48-g2 MODEL_NAME=qwen36-27b-SFT-2026-0624-0939 ACCRL_MODEL_HOST=localhost:30021 SERVICE_URL=http://localhost:10001 RUNNER=/home/ubuntu/AccRL/fib_runtime/multiturn/run_parallel_v2.py PROFILE_HOST=p5-3 PROFILE_CONTAINER=fib-profile PROFILE_TUNNEL_SESSION=connect-fib-profile-p5-3-10001 PROFILE_MAX_GPUS=6 CONFIG_MHA_FWD=/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-p4-mha-patched.json CONFIG_MHA_BWD=/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-bwd-p4-mha-patched.json                                                                                           
+👋 This is mini-swe-agent version 2.2.6.             
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration                                
+Loading global config from '/home/ubuntu/.config/mini-swe-agent/.env'                                     
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-d64: missing root; runner will create fresh plan.json                                                                                                    
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-d64-causal: missing root; runner will create fresh plan.json                                                                                             
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-bwd-d64: missing root; runner will create fresh plan.json                                                                                                
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-bwd-d64-causal: missing root; runner will create fresh plan.json                                                                                         
+2026-07-26T02:02:27Z no active eval process found; auditing roots                                         
+mha_with_lse_d64: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                   
+mha_with_lse_d64_causal: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0            
+mha_bwd_d64: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                        
+mha_bwd_d64_causal: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                 
+2026-07-26T02:02:27Z model endpoint ready: localhost:30021 includes qwen36-27b-SFT-2026-0624-0939         
+2026-07-26T02:02:28Z reusing profile forward: 780543 ssh -o BatchMode=yes -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -N -L 127.0.0.1:10001:localhost:10000 p5-3                  
+2026-07-26T02:02:34Z profile container CUDA already ready: p5-3/fib-profile                               
+2026-07-26T02:02:34Z cleaning stale profile solution runners on p5-3/fib-profile                          
+[watcher] no stale profile solution runners found    
+2026-07-26T02:02:34Z restarting fib-profile on p5-3 for http://localhost:10001                            
+[restart_profiling] no tmux sessions found for TMUX_PREFIX=fib-serve                                      
+[restart_profiling] no leftover GPU processes visible inside fib-profile                                  
+[restart_profiling] waiting 30s for GPUs to cool before thermal preflight                                 
+[restart_profiling] limiting profile service to 6 GPU(s): cuda:0,cuda:1,cuda:2,cuda:3,cuda:4,cuda:5       
+[restart_profiling] CUDA preflight ok: torch sees 8 device(s); requested=cuda:0,cuda:1,cuda:2,cuda:3,cuda:4,cuda:5                                                                                                   
+[restart_profiling] relaunching dispatcher on 0.0.0.0:10000 via /workspace/flashinfer-bench-private/scripts/launch_fib_serve_dispatcher.sh                                                                           
+Starting fib-serve-backend-0: cuda:0 -> 40001        
+Starting fib-serve-backend-1: cuda:1 -> 40002        
+Starting fib-serve-backend-2: cuda:2 -> 40003        
+Starting fib-serve-backend-3: cuda:3 -> 40004        
+Starting fib-serve-backend-4: cuda:4 -> 40005        
+Starting fib-serve-backend-5: cuda:5 -> 40006        
+Starting fib-serve-dispatcher: dispatcher -> 10000   
+
+Launched 6 backend service(s):                       
+  localhost:40001          cuda:0                    
+  localhost:40002          cuda:1                    
+  localhost:40003          cuda:2                    
+  localhost:40004          cuda:3                    
+  localhost:40005          cuda:4                    
+  localhost:40006          cuda:5                    
+Dispatcher: http://localhost:10000                   
+
+Use:                                                 
+  PROFILE_BASE_URL=http://localhost:10000 <your verifier or client command>                               
+
+Logs:                                                
+  tmux attach -t fib-serve-dispatcher                
+  tmux attach -t fib-serve-backend-0                 
+[restart_profiling] launcher returned; service sessions are managed by tmux                               
+fib-serve-backend-0: 1 windows (created Sun Jul 26 02:03:11 2026)                                         
+fib-serve-backend-1: 1 windows (created Sun Jul 26 02:03:11 2026)                                         
+fib-serve-backend-2: 1 windows (created Sun Jul 26 02:03:11 2026)                                         
+fib-serve-backend-3: 1 windows (created Sun Jul 26 02:03:11 2026)                                         
+fib-serve-backend-4: 1 windows (created Sun Jul 26 02:03:11 2026)                                         
+fib-serve-backend-5: 1 windows (created Sun Jul 26 02:03:11 2026)                                         
+fib-serve-dispatcher: 1 windows (created Sun Jul 26 02:03:11 2026)                                        
+2026-07-26T02:03:13Z waiting for profile service http://localhost:10001 (1/60)                            
+2026-07-26T02:03:43Z profile service ready: http://localhost:10001                                        
+2026-07-26T02:03:43Z starting eval runner with mixed resume/fresh roots for RUN_DATE=2026-0624-0939-w48-g2                                                                                                           
+👋 This is mini-swe-agent version 2.2.6.             
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration                                
+Loading global config from '/home/ubuntu/.config/mini-swe-agent/.env'                                     
+Pre-building prompt docs for 9 tags: ['hopper-010-mha-patched', 'hopper-011-mha-patched', 'hopper-012-mha-patched', 'hopper-013-mha-patched', 'hopper-014-mha-patched', 'hopper-07-mha-patched', 'hopper-08-mha-patched', 'hopper-09-mha-patched', 'hopper-no-hint-mha-patched']                                               
+Launching 80 experiments from ["/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-p4-mha-patched.json", "/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-p4-mha-patched.json", "/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-bwd-p4-mha-patched.json", "/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-bwd-p4-mha-patched.json"]                                                                                    
+GPUs: none (--without-local-gpu)  |  Max parallel: 48  |  Max profiles: 6                                 
+Model: qwen36-27b-SFT-2026-0624-0939  |  Definitions: ['mha_bwd_d64', 'mha_bwd_d64_causal', 'mha_with_lse_d64', 'mha_with_lse_d64_causal']  |  GPU arch: hopper                                                      
+Service URL: http://localhost:10001                  
+Outputs: ['/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-bwd-d64', '/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-bwd-d64-causal', '/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-d64', '/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-d64-causal']                    
+Timeout: 86400s per experiment                       
+
+^CTraceback (most recent call last):                 
+  File "/home/ubuntu/AccRL/fib_runtime/multiturn/run_parallel_v2.py", line 967, in <module>               
+    main()                                           
+  File "/home/ubuntu/AccRL/fib_runtime/multiturn/run_parallel_v2.py", line 953, in main                   
+    results = run_experiments(experiments, args, gpu_queue, output_root, max_parallel)                    
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                    
+  File "/home/ubuntu/AccRL/fib_runtime/multiturn/run_parallel_v2.py", line 634, in run_experiments        
+    for future in as_completed(list(futures)):       
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^        
+  File "/home/ubuntu/miniconda3/envs/acc/lib/python3.12/concurrent/futures/_base.py", line 243, in as_completed                                                                                                      
+    waiter.event.wait(wait_timeout)                  
+  File "/home/ubuntu/miniconda3/envs/acc/lib/python3.12/threading.py", line 655, in wait                  
+    signaled = self._cond.wait(timeout)              
+               ^^^^^^^^^^^^^^^^^^^^^^^^              
+  File "/home/ubuntu/miniconda3/envs/acc/lib/python3.12/threading.py", line 355, in wait                  
+    waiter.acquire()                                 
+KeyboardInterrupt                                    
+
+(acc) ubuntu@ip-172-31-32-145:~$ rm -rf /home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2*                                                                                                                     
+(acc) ubuntu@ip-172-31-32-145:~$ bash /home/ubuntu/AccRL/fib_runtime/multiturn/construct_eval_scripts/profile-scaling-2026-0624-0939-mha-d64-regular-patched/06_watch_fixitv2_d64_patched_eval_w48_g6_p5-3.sh        
+2026-07-26T03:44:26Z watcher started for RUN_DATE=2026-0624-0939-w48-g6 MODEL_NAME=qwen36-27b-SFT-2026-0624-0939 ACCRL_MODEL_HOST=localhost:30021 SERVICE_URL=http://localhost:10001 RUNNER=/home/ubuntu/AccRL/fib_runtime/multiturn/run_parallel_v2.py PROFILE_HOST=p5-3 PROFILE_CONTAINER=fib-profile PROFILE_TUNNEL_SESSION=connect-fib-profile-p5-3-10001 PROFILE_MAX_GPUS=6 CONFIG_MHA_FWD=/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-p4-mha-patched.json CONFIG_MHA_BWD=/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-bwd-p4-mha-patched.json                                                                                           
+👋 This is mini-swe-agent version 2.2.6.             
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration                                
+Loading global config from '/home/ubuntu/.config/mini-swe-agent/.env'                                     
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64: missing root; runner will create fresh plan.json                                                                                                    
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64-causal: missing root; runner will create fresh plan.json                                                                                             
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64: missing root; runner will create fresh plan.json                                                                                                
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64-causal: missing root; runner will create fresh plan.json                                                                                         
+2026-07-26T03:44:28Z no active eval process found; auditing roots                                         
+mha_with_lse_d64: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                   
+mha_with_lse_d64_causal: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0            
+mha_bwd_d64: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                        
+mha_bwd_d64_causal: not-ok plan=0 trajectories=0 summary_state=missing summary_total=0 success=0 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                 
+2026-07-26T03:44:29Z model endpoint ready: localhost:30021 includes qwen36-27b-SFT-2026-0624-0939         
+2026-07-26T03:44:29Z reusing profile forward: 780543 ssh -o BatchMode=yes -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -N -L 127.0.0.1:10001:localhost:10000 p5-3                  
+2026-07-26T03:44:32Z profile container CUDA already ready: p5-3/fib-profile                               
+2026-07-26T03:44:32Z cleaning stale profile solution runners on p5-3/fib-profile                          
+[watcher] terminating stale profile solution runners: 1097271                                             
+1097274                                              
+1097280                                              
+2026-07-26T03:44:32Z restarting fib-profile on p5-3 for http://localhost:10001                            
+[restart_profiling] removing tmux sessions for TMUX_PREFIX=fib-serve: fib-serve-backend-0 fib-serve-backend-1 fib-serve-backend-2 fib-serve-backend-3 fib-serve-backend-4 fib-serve-backend-5 fib-serve-dispatcher   
+[restart_profiling] terminating leftover GPU processes before thermal preflight: 1055434                  
+[restart_profiling] waiting 30s for GPUs to cool before thermal preflight                                 
+[restart_profiling] limiting profile service to 6 GPU(s): cuda:0,cuda:1,cuda:2,cuda:3,cuda:4,cuda:5       
+[restart_profiling] CUDA preflight ok: torch sees 8 device(s); requested=cuda:0,cuda:1,cuda:2,cuda:3,cuda:4,cuda:5                                                                                                   
+[restart_profiling] relaunching dispatcher on 0.0.0.0:10000 via /workspace/flashinfer-bench-private/scripts/launch_fib_serve_dispatcher.sh                                                                           
+Starting fib-serve-backend-0: cuda:0 -> 40001        
+Starting fib-serve-backend-1: cuda:1 -> 40002        
+Starting fib-serve-backend-2: cuda:2 -> 40003        
+Starting fib-serve-backend-3: cuda:3 -> 40004        
+Starting fib-serve-backend-4: cuda:4 -> 40005        
+Starting fib-serve-backend-5: cuda:5 -> 40006        
+Starting fib-serve-dispatcher: dispatcher -> 10000   
+
+Launched 6 backend service(s):                       
+  localhost:40001          cuda:0                    
+  localhost:40002          cuda:1                    
+  localhost:40003          cuda:2                    
+  localhost:40004          cuda:3                    
+  localhost:40005          cuda:4                    
+  localhost:40006          cuda:5                    
+Dispatcher: http://localhost:10000                   
+
+Use:                                                 
+  PROFILE_BASE_URL=http://localhost:10000 <your verifier or client command>                               
+
+Logs:                                                
+  tmux attach -t fib-serve-dispatcher                
+  tmux attach -t fib-serve-backend-0                 
+[restart_profiling] launcher returned; service sessions are managed by tmux                               
+fib-serve-backend-0: 1 windows (created Sun Jul 26 03:45:12 2026)                                         
+fib-serve-backend-1: 1 windows (created Sun Jul 26 03:45:12 2026)                                         
+fib-serve-backend-2: 1 windows (created Sun Jul 26 03:45:12 2026)                                         
+fib-serve-backend-3: 1 windows (created Sun Jul 26 03:45:12 2026)                                         
+fib-serve-backend-4: 1 windows (created Sun Jul 26 03:45:12 2026)                                         
+fib-serve-backend-5: 1 windows (created Sun Jul 26 03:45:12 2026)                                         
+fib-serve-dispatcher: 1 windows (created Sun Jul 26 03:45:12 2026)                                        
+2026-07-26T03:45:13Z waiting for profile service http://localhost:10001 (1/60)                            
+2026-07-26T03:45:43Z profile service ready: http://localhost:10001                                        
+2026-07-26T03:45:44Z starting eval runner with mixed resume/fresh roots for RUN_DATE=2026-0624-0939-w48-g6                                                                                                           
+👋 This is mini-swe-agent version 2.2.6.             
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration                                
+Loading global config from '/home/ubuntu/.config/mini-swe-agent/.env'                                     
+Pre-building prompt docs for 9 tags: ['hopper-010-mha-patched', 'hopper-011-mha-patched', 'hopper-012-mha-patched', 'hopper-013-mha-patched', 'hopper-014-mha-patched', 'hopper-07-mha-patched', 'hopper-08-mha-patched', 'hopper-09-mha-patched', 'hopper-no-hint-mha-patched']                                               
+Launching 80 experiments from ["/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-p4-mha-patched.json", "/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-p4-mha-patched.json", "/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-bwd-p4-mha-patched.json", "/home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-bwd-p4-mha-patched.json"]                                                                                    
+GPUs: none (--without-local-gpu)  |  Max parallel: 48  |  Max profiles: 6                                 
+Model: qwen36-27b-SFT-2026-0624-0939  |  Definitions: ['mha_bwd_d64', 'mha_bwd_d64_causal', 'mha_with_lse_d64', 'mha_with_lse_d64_causal']  |  GPU arch: hopper                                                      
+Service URL: http://localhost:10001                  
+Outputs: ['/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64', '/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64-causal', '/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64', '/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64-causal']                    
+Timeout: 86400s per experiment                       
+
+[1/80] 2026-0624-0939-w48-g6-mha-d64/exp_012 (hopper-09-mha-patched) on no GPU: SUCCESS (7585.0s)         
+[2/80] 2026-0624-0939-w48-g6-mha-d64/exp_005 (hopper-07-mha-patched) on no GPU: SUCCESS (8662.1s)         
+[3/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_000 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (8870.0s)                                                                                                        
+[4/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_007 (hopper-010-mha-patched) on no GPU: SUCCESS (9387.2s)    
+[5/80] 2026-0624-0939-w48-g6-mha-d64/exp_000 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (9489.0s)    
+[6/80] 2026-0624-0939-w48-g6-mha-d64/exp_007 (hopper-07-mha-patched) on no GPU: SUCCESS (10053.8s)        
+[7/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_017 (hopper-014-mha-patched) on no GPU: SUCCESS (10279.1s)                                                                                                           
+[8/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_009 (hopper-08-mha-patched) on no GPU: SUCCESS (10304.1s) 
+[9/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_003 (hopper-no-hint-mha-patched) on no GPU: FAILED (10497.8s)                                                                                                        
+[10/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_006 (hopper-07-mha-patched) on no GPU: SUCCESS (10865.7s)                                                                                                           
+[11/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_015 (hopper-09-mha-patched) on no GPU: SUCCESS (11002.1s)                                                                                                           
+[12/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_007 (hopper-07-mha-patched) on no GPU: SUCCESS (11088.0s)                                                                                                           
+[13/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_011 (hopper-08-mha-patched) on no GPU: SUCCESS (11288.4s)                                                                                                           
+[14/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_018 (hopper-014-mha-patched) on no GPU: SUCCESS (11622.5s)                                                                                                          
+[15/80] 2026-0624-0939-w48-g6-mha-d64/exp_014 (hopper-09-mha-patched) on no GPU: SUCCESS (11677.9s)       
+[16/80] 2026-0624-0939-w48-g6-mha-d64/exp_001 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (12124.7s)  
+[17/80] 2026-0624-0939-w48-g6-mha-d64/exp_011 (hopper-08-mha-patched) on no GPU: SUCCESS (12250.4s)       
+[18/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_019 (hopper-014-mha-patched) on no GPU: SUCCESS (12375.6s)                                                                                                          
+[19/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_004 (hopper-07-mha-patched) on no GPU: SUCCESS (12397.3s)                                                                                                           
+[20/80] 2026-0624-0939-w48-g6-mha-d64/exp_008 (hopper-08-mha-patched) on no GPU: SUCCESS (12577.3s)       
+[21/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_010 (hopper-08-mha-patched) on no GPU: SUCCESS (12790.5s)                                                                                                           
+[22/80] 2026-0624-0939-w48-g6-mha-d64/exp_006 (hopper-07-mha-patched) on no GPU: SUCCESS (12883.8s)       
+[23/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_014 (hopper-09-mha-patched) on no GPU: SUCCESS (12989.5s)                                                                                                           
+[24/80] 2026-0624-0939-w48-g6-mha-d64/exp_010 (hopper-08-mha-patched) on no GPU: SUCCESS (13162.3s)       
+[25/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_002 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (13486.1s)                                                                                                         
+[26/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_005 (hopper-010-mha-patched) on no GPU: SUCCESS (13741.4s)  
+[27/80] 2026-0624-0939-w48-g6-mha-d64/exp_019 (hopper-014-mha-patched) on no GPU: SUCCESS (13824.6s)      
+[28/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_001 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (14013.6s)                                                                                                      
+[29/80] 2026-0624-0939-w48-g6-mha-d64/exp_017 (hopper-014-mha-patched) on no GPU: SUCCESS (14039.1s)      
+[30/80] 2026-0624-0939-w48-g6-mha-d64/exp_004 (hopper-07-mha-patched) on no GPU: SUCCESS (14367.3s)       
+[31/80] 2026-0624-0939-w48-g6-mha-d64/exp_016 (hopper-014-mha-patched) on no GPU: SUCCESS (14394.8s)      
+[32/80] 2026-0624-0939-w48-g6-mha-d64/exp_015 (hopper-09-mha-patched) on no GPU: SUCCESS (14398.5s)       
+[33/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_003 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (14459.6s)                                                                                                         
+[34/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_012 (hopper-09-mha-patched) on no GPU: SUCCESS (14552.2s)                                                                                                           
+[35/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_006 (hopper-010-mha-patched) on no GPU: SUCCESS (14723.6s)  
+[36/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_004 (hopper-010-mha-patched) on no GPU: SUCCESS (15195.7s)  
+[37/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_000 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (15292.0s)                                                                                                         
+[38/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_002 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (15566.0s)                                                                                                      
+[39/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_016 (hopper-014-mha-patched) on no GPU: SUCCESS (15648.8s)                                                                                                          
+[40/80] 2026-0624-0939-w48-g6-mha-d64/exp_009 (hopper-08-mha-patched) on no GPU: SUCCESS (15734.4s)       
+[41/80] 2026-0624-0939-w48-g6-mha-d64/exp_013 (hopper-09-mha-patched) on no GPU: SUCCESS (16208.4s)       
+[42/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_001 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (16266.5s)                                                                                                         
+[43/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_013 (hopper-09-mha-patched) on no GPU: SUCCESS (16574.8s)                                                                                                           
+[44/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_005 (hopper-07-mha-patched) on no GPU: SUCCESS (17045.3s)                                                                                                           
+[45/80] 2026-0624-0939-w48-g6-mha-d64-causal/exp_008 (hopper-08-mha-patched) on no GPU: SUCCESS (17382.4s)                                                                                                           
+[46/80] 2026-0624-0939-w48-g6-mha-d64/exp_018 (hopper-014-mha-patched) on no GPU: SUCCESS (17445.8s)      
+[47/80] 2026-0624-0939-w48-g6-mha-d64/exp_002 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (17707.0s)  
+[48/80] 2026-0624-0939-w48-g6-mha-d64/exp_003 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (19707.0s)  
+[49/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_009 (hopper-011-mha-patched) on no GPU: SUCCESS (11744.3s)  
+[50/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_013 (hopper-012-mha-patched) on no GPU: SUCCESS (10677.8s)  
+[51/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_011 (hopper-011-mha-patched) on no GPU: SUCCESS (12286.4s)  
+[52/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_018 (hopper-013-mha-patched) on no GPU: SUCCESS (10675.8s)  
+[53/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_019 (hopper-013-mha-patched) on no GPU: SUCCESS (10921.4s)  
+[54/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_010 (hopper-011-mha-patched) on no GPU: SUCCESS (13142.6s)  
+[55/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_002 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (10442.8s)                                                                                                  
+[56/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_016 (hopper-013-mha-patched) on no GPU: SUCCESS (11982.9s)  
+[57/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_004 (hopper-010-mha-patched) on no GPU: SUCCESS (10428.2s)                                                                                                      
+[58/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_006 (hopper-010-mha-patched) on no GPU: SUCCESS (10610.1s)                                                                                                      
+[59/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_015 (hopper-012-mha-patched) on no GPU: SUCCESS (12874.5s)  
+[60/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_007 (hopper-010-mha-patched) on no GPU: SUCCESS (10618.6s)                                                                                                      
+[61/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_017 (hopper-013-mha-patched) on no GPU: SUCCESS (12389.9s)  
+[62/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_000 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (12254.9s)                                                                                                  
+[63/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_019 (hopper-013-mha-patched) on no GPU: SUCCESS (9176.7s)                                                                                                       
+[64/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_008 (hopper-011-mha-patched) on no GPU: SUCCESS (16441.0s)  
+[65/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_013 (hopper-012-mha-patched) on no GPU: SUCCESS (10504.1s)                                                                                                      
+[66/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_005 (hopper-010-mha-patched) on no GPU: SUCCESS (12324.3s)                                                                                                      
+[67/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_009 (hopper-011-mha-patched) on no GPU: SUCCESS (11887.7s)                                                                                                      
+[68/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_017 (hopper-013-mha-patched) on no GPU: SUCCESS (10496.9s)                                                                                                      
+[69/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_001 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (13705.3s)                                                                                                  
+[70/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_010 (hopper-011-mha-patched) on no GPU: SUCCESS (12344.4s)                                                                                                      
+[71/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_014 (hopper-012-mha-patched) on no GPU: SUCCESS (11610.4s)                                                                                                      
+[72/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_008 (hopper-011-mha-patched) on no GPU: SUCCESS (12780.5s)                                                                                                      
+[73/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_011 (hopper-011-mha-patched) on no GPU: SUCCESS (12453.2s)                                                                                                      
+[74/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_014 (hopper-012-mha-patched) on no GPU: SUCCESS (15372.6s)  
+[75/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_015 (hopper-012-mha-patched) on no GPU: SUCCESS (11644.1s)                                                                                                      
+[76/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_016 (hopper-013-mha-patched) on no GPU: SUCCESS (11681.8s)                                                                                                      
+[77/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_018 (hopper-013-mha-patched) on no GPU: SUCCESS (11450.9s)                                                                                                      
+[78/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_003 (hopper-no-hint-mha-patched) on no GPU: SUCCESS (13731.2s)                                                                                                  
+[79/80] 2026-0624-0939-w48-g6-mha-bwd-d64-causal/exp_012 (hopper-012-mha-patched) on no GPU: SUCCESS (12883.4s)                                                                                                      
+[80/80] 2026-0624-0939-w48-g6-mha-bwd-d64/exp_012 (hopper-012-mha-patched) on no GPU: SUCCESS (16934.0s)  
+
+All experiments completed in 26423.1s wall time      
+
+============================================================                                              
+SUMMARY                                              
+============================================================                                              
+Total:    20                                         
+Success:  20                                         
+Failed:   0                                          
+Infra:    0                                          
+API:      0                                          
+Timeout:  0                                          
+Error:    0                                          
+Duration: avg=13399.8s  min=9387.2s  max=16934.0s    
+
+Per prompt_tag:                                      
+  hopper-010-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-011-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-012-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-013-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-no-hint-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                  
+
+Summary written to: /home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64/summary.json      
+
+============================================================                                              
+SUMMARY                                              
+============================================================                                              
+Total:    20                                         
+Success:  20                                         
+Failed:   0                                          
+Infra:    0                                          
+API:      0                                          
+Timeout:  0                                          
+Error:    0                                          
+Duration: avg=11651.5s  min=9176.7s  max=13731.2s    
+
+Per prompt_tag:                                      
+  hopper-010-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-011-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-012-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-013-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-no-hint-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                  
+
+Summary written to: /home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64-causal/summary.json                                                                                                          
+
+============================================================                                              
+SUMMARY                                              
+============================================================                                              
+Total:    20                                         
+Success:  20                                         
+Failed:   0                                          
+Infra:    0                                          
+API:      0                                          
+Timeout:  0                                          
+Error:    0                                          
+Duration: avg=13414.7s  min=7585.0s  max=19707.0s    
+
+Per prompt_tag:                                      
+  hopper-014-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-07-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                       
+  hopper-08-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                       
+  hopper-09-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                       
+  hopper-no-hint-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                  
+
+Summary written to: /home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64/summary.json          
+
+============================================================                                              
+SUMMARY                                              
+============================================================                                              
+Total:    20                                         
+Success:  19                                         
+Failed:   1                                          
+Infra:    0                                          
+API:      0                                          
+Timeout:  0                                          
+Error:    0                                          
+Duration: avg=12857.7s  min=8870.0s  max=17382.4s    
+
+Failed experiments: ['exp_003']                      
+
+Per prompt_tag:                                      
+  hopper-014-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                      
+  hopper-07-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                       
+  hopper-08-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                       
+  hopper-09-mha-patched: total=4 success=4 failed=0 infra=0 api=0 timeout=0 error=0                       
+  hopper-no-hint-mha-patched: total=4 success=3 failed=1 infra=0 api=0 timeout=0 error=0                  
+
+Summary written to: /home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64-causal/summary.json   
+2026-07-26T11:06:09Z eval launcher exited rc=0       
+👋 This is mini-swe-agent version 2.2.6.             
+Check the v2 migration guide at https://klieret.short.gy/mini-v2-migration                                
+Loading global config from '/home/ubuntu/.config/mini-swe-agent/.env'                                     
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64/plan.json: refreshed from /home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-p4-mha-patched.json backup=/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64/plan.json.1785064271.bak        
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64-causal/plan.json: refreshed from /home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-p4-mha-patched.json backup=/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64-causal/plan.json.1785064271.bak                                               
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64/plan.json: refreshed from /home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-bwd-p4-mha-patched.json backup=/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64/plan.json.1785064271.bak                                                 
+/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64-causal/plan.json: refreshed from /home/ubuntu/AccRL-exps/prompt_configs/2026-0605-mha-bwd-p4-mha-patched.json backup=/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64-causal/plan.json.1785064271.bak                                   
+2026-07-26T11:11:11Z no active eval process found; auditing roots                                         
+mha_with_lse_d64: ok plan=20 trajectories=20 summary_state=present summary_total=20 success=20 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                   
+mha_with_lse_d64_causal: ok plan=20 trajectories=20 summary_state=present summary_total=20 success=19 failed=1 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=1 current_infra=0 bad_plan_rows=0            
+mha_bwd_d64: ok plan=20 trajectories=20 summary_state=present summary_total=20 success=20 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                        
+mha_bwd_d64_causal: ok plan=20 trajectories=20 summary_state=present summary_total=20 success=20 failed=0 bad={'infra_failed': 0, 'api_failed': 0, 'timeout': 0, 'error': 0} missing=0 resume=0 terminal_context_window=0 current_infra=0 bad_plan_rows=0                 
+2026-07-26T11:11:13Z all roots complete              
+2026-07-26T11:11:13Z experiment timing MAX_PARALLEL=48 start=2026-07-26T03:44:26Z end=2026-07-26T11:11:13Z elapsed=07:26:47 elapsed_seconds=26807                                                                    
+(acc) ubuntu@ip-172-31-32-145:~$                     

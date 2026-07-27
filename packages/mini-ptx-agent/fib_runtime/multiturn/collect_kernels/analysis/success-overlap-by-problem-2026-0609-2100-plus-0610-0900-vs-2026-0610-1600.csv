@@ -1,0 +1,6 @@
+problem,planned_slots,neither,both,only_1600,only_2100+0900
+all,410,316,23,17,54
+mha,104,84,2,2,16
+mha_causal,172,139,16,4,13
+mha_bwd,80,56,2,11,11
+mha_bwd_causal,54,37,3,0,14

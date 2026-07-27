@@ -1,0 +1,42 @@
+# Suggested controlled SFT experiment matrix.
+#
+# This file is documentation for the harness in scripts/run_sft_experiment.sh.
+# The shell harness is env-driven so experiments can be launched explicitly
+# without adding a YAML parser dependency.
+
+defaults:
+  model: Qwen3.5-9B
+  hf_checkpoint: /data/local/models/qwen3.5_9B
+  ref_load: /data/local/models/qwen3.5_9B_torch_dist
+  data_dir: /home/chengze/work/AccRL-exps/sft_data/glm_kimi_intersection
+  out_root: /home/chengze/work/AccRL-exps/sft_runs
+  wandb_project: qwen35-9b-sft-glm-v3
+  cp_size: 8
+  sft_batch_size: 1
+  max_tokens_per_gpu: 16384
+  ray_num_cpus: 16
+
+datasets:
+  glm:
+    path: /home/chengze/work/AccRL-exps/sft_data/glm_kimi_intersection/glm_intersection.parquet
+    rows: 189
+  kimi:
+    path: /home/chengze/work/AccRL-exps/sft_data/glm_kimi_intersection/kimi_intersection.parquet
+    rows: 189
+  mixed:
+    path: /home/chengze/work/AccRL-exps/sft_data/glm_kimi_intersection/mixed_intersection.parquet
+    rows: 378
+
+recommended_runs:
+  smoke_mixed:
+    command: DATASET=mixed MODE=smoke SMOKE_ROWS=16 ./accrl/distill/sft/scripts/run_sft_experiment.sh run
+    purpose: Verify W&B, checkpoint loading, loss, and gradients on a tiny deterministic subset.
+  glm_full:
+    command: DATASET=glm MODE=full LR=1e-6 ./accrl/distill/sft/scripts/run_sft_experiment.sh run
+    purpose: GLM-only target baseline.
+  kimi_full:
+    command: DATASET=kimi MODE=full LR=1e-6 ./accrl/distill/sft/scripts/run_sft_experiment.sh run
+    purpose: Kimi-only target baseline.
+  mixed_full:
+    command: DATASET=mixed MODE=full LR=1e-6 ./accrl/distill/sft/scripts/run_sft_experiment.sh run
+    purpose: Mixed GLM+Kimi target run.

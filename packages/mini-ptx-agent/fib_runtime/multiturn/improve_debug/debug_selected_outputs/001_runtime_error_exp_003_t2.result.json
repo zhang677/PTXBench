@@ -1,0 +1,81 @@
+{
+  "task_id": "c43e2fde48a24d83a59af26e6f9fdeba",
+  "kind": "debug",
+  "status": "completed",
+  "definition": "mha_bwd_d128",
+  "solution": "exp_003_kernel_t2_ed027e83",
+  "logs": [
+    {
+      "definition": "mha_bwd_d128",
+      "workload": {
+        "axes": {
+          "B": 4,
+          "H": 48,
+          "S": 4096,
+          "d": 128
+        },
+        "inputs": {
+          "Q": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "Q"
+          },
+          "K": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "K"
+          },
+          "V": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "V"
+          },
+          "O": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "O"
+          },
+          "dO": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "dO"
+          },
+          "L": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "L"
+          }
+        },
+        "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+        "outputs": null
+      },
+      "solution": "exp_003_kernel_t2_ed027e83",
+      "metadata": {
+        "FlashInfer CUDA debug report": {
+          "exist": true,
+          "msg": "solution: exp_003_kernel_t2_ed027e83\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_6ox35b1y"
+        },
+        "Most precise CUDA fault": {
+          "exist": true,
+          "msg": "- CUDA API reported: an illegal memory access was encountered\n  likely failing launch: kernel.cu:730\n    CUDA reports many kernel faults asynchronously at the next cudaGetLastError/cudaStreamSynchronize; inspect this launch first.\n  reported at check site: kernel.cu:731"
+        },
+        "CUDA core dump analysis": {
+          "exist": false,
+          "msg": "- cuda-gdb produced no source-level backtrace."
+        },
+        "Primary diagnostics": {
+          "exist": true,
+          "msg": "- CUDA error an illegal memory access was encountered at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_exp_003_kernel_t2_ed027e83_ed027e/kernel.cu:731\n- WARNING: memcheck detected issues!"
+        },
+        "Source locations": {
+          "exist": true,
+          "msg": "kernel.cu:731\n  727:     CUDA_CHECK(cudaGetLastError());\n  728:     \n  729:     dim3 grid_conv((total_S_d + 127) / 128, 1, 1);\n  730:     convert_to_bf16_kernel_fast<<<grid_conv, 128, 0, stream>>>(dQ_fp32, dQ_ptr, total_S_d);\n> 731:     CUDA_CHECK(cudaGetLastError());\n  732:     convert_to_bf16_kernel_fast<<<grid_conv, 128, 0, stream>>>(dK_fp32, dK_ptr, total_S_d);\n  733:     CUDA_CHECK(cudaGetLastError());\n  734:     convert_to_bf16_kernel_fast<<<grid_conv, 128, 0, stream>>>(dV_fp32, dV_ptr, total_S_d);\n  735:     CUDA_CHECK(cudaGetLastError());"
+        },
+        "CUDA core dumps": {
+          "exist": false,
+          "msg": "- No CUDA core dump file was produced."
+        }
+      }
+    }
+  ]
+}

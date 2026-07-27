@@ -1,0 +1,81 @@
+{
+  "task_id": "45e9756473ce412e8e27765740c81987",
+  "kind": "debug",
+  "status": "completed",
+  "definition": "mha_bwd_d128",
+  "solution": "exp_003_kernel_t3_c72eb82d",
+  "logs": [
+    {
+      "definition": "mha_bwd_d128",
+      "workload": {
+        "axes": {
+          "B": 4,
+          "H": 48,
+          "S": 4096,
+          "d": 128
+        },
+        "inputs": {
+          "Q": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "Q"
+          },
+          "K": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "K"
+          },
+          "V": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "V"
+          },
+          "O": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "O"
+          },
+          "dO": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "dO"
+          },
+          "L": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "L"
+          }
+        },
+        "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+        "outputs": null
+      },
+      "solution": "exp_003_kernel_t3_c72eb82d",
+      "metadata": {
+        "FlashInfer CUDA debug report": {
+          "exist": true,
+          "msg": "solution: exp_003_kernel_t3_c72eb82d\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_cje48vms"
+        },
+        "Most precise CUDA fault": {
+          "exist": false,
+          "msg": "- No compute-sanitizer device fault block was found."
+        },
+        "CUDA core dump analysis": {
+          "exist": true,
+          "msg": "- focus: CUDA kernel 0, grid 2, block (44,0,0), thread (32,0,0), device 0, sm 0, warp 0, lane 0]\n- frame #0: kernel.cu:97\n  function: tvm_ffi_mha_bwd::mha_bwd_kernel_pass1_dV_dK<<<(64,1,192),(128,1,1)>>> ()\n  source: :: \"r\"((uint32_t)__cvta_generic_to_shared(&bar[0])), \"r\"(phase));\n  inlined call site: kernel.cu:228\n  call source: mbarrier_wait_fn(bar_K, phase_K);\n  interpretation: the coredump caught the GPU in a wait/barrier path. For timeout failures, inspect kernel.cu:228 and its caller before treating this as a generic CUDA core dump."
+        },
+        "Primary diagnostics": {
+          "exist": true,
+          "msg": "- ERROR: memcheck timed out after 45 seconds.\n- ERROR: direct runner timed out after 30 seconds; requested CUDA user-triggered core dump before terminating it."
+        },
+        "Source locations": {
+          "exist": true,
+          "msg": "kernel.cu:97\n   93:         \"WAIT_%=:\\n\"\n   94:         \"mbarrier.try_wait.parity.shared.b64 P, [%0], %1;\\n\"\n   95:         \"@!P bra WAIT_%=;\\n\"\n   96:         \"}\\n\"\n>  97:         :: \"r\"((uint32_t)__cvta_generic_to_shared(&bar[0])), \"r\"(phase));\n   98: }\n   99: \n  100: __device__ __forceinline__ void fence_proxy_async_fn() {\n  101:     asm volatile(\"fence.proxy.async.shared::cta;\\n\" ::: \"memory\");\n\nkernel.cu:228\n  224:     float dK_acc_0[32] = {0};\n  225:     float dK_acc_1[32] = {0};\n  226:     \n  227:     int phase_K = 0;\n> 228:     mbarrier_wait_fn(bar_K, phase_K);\n  229:     phase_K ^= 1;\n  230:     \n  231:     int phase_Q = 0;\n  232:     float scale = 1.0f / sqrtf(128.0f);"
+        },
+        "CUDA core dumps": {
+          "exist": false,
+          "msg": "- /tmp/fib_debug/run_cje48vms/cuda_coredump_fa1ae1b86f39.5383.1783386164\n- Source-level coredump analysis is reported above."
+        }
+      }
+    }
+  ]
+}

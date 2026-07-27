@@ -1,0 +1,32 @@
+[
+    {
+        "num_trajectories": 4,
+        "num_turns": 8,
+        "target_speedup": 1.2,
+        "prompt_tag": "hopper-no-hint-mha-patched"
+    },
+    {
+        "num_trajectories": 4,
+        "num_turns": 8,
+        "target_speedup": 1.2,
+        "prompt_tag": "hopper-010-mha-patched"
+    },
+    {
+        "num_trajectories": 4,
+        "num_turns": 8,
+        "target_speedup": 1.2,
+        "prompt_tag": "hopper-011-mha-patched"
+    },
+    {
+        "num_trajectories": 4,
+        "num_turns": 8,
+        "target_speedup": 1.2,
+        "prompt_tag": "hopper-012-mha-patched"
+    },
+    {
+        "num_trajectories": 4,
+        "num_turns": 8,
+        "target_speedup": 1.2,
+        "prompt_tag": "hopper-013-mha-patched"
+    }
+]

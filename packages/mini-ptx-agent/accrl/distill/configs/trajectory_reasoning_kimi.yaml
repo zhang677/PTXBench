@@ -1,0 +1,8 @@
+name: trajectory-reasoning-kimi
+description: "Kimi-K2.6, thinking off (CoT goes to visible <my_reasoning>), full trajectory history, every turn"
+selector: all_with_history
+reasoning_model: Kimi-K2.6
+prompt_version: v3_trajectory
+min_speedup: 0.0
+max_tokens: 196000
+enable_thinking: true

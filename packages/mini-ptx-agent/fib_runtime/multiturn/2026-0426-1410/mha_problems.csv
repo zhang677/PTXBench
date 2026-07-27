@@ -1,0 +1,15 @@
+definition_name,workload_uuid,seq_len
+mha_with_lse_d64,7d2575a0-bcc2-42a0-812f-6a7e9a57d97f,4096
+mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,4096
+mha_with_lse_d256,2b241dd1-683b-48e4-8d4b-3062cea34523,4096
+mha_with_lse_d64_causal,b69f7675-568f-40f2-9a4b-8bbe374b4a59,4096
+mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,4096
+mha_with_lse_d256_causal,537d3abe-1ece-444f-9a65-ce1e1a67ab8b,4096
+mha_with_lse_d64,7981ac38-4da5-4556-aca8-54030547467f,2048
+mha_with_lse_d128,0c6a7e3e-4098-4022-9377-df6a39ec6193,2048
+mha_with_lse_d256,0bdb6ed3-05c2-4fb4-ae68-9b4fb66acdf9,2048
+mha_with_lse_d64_causal,2e552518-49fd-4d12-875e-ae7378c2af1b,2048
+mha_with_lse_d128_causal,00fc7dc5-c57b-4920-9422-367cea0166ce,2048
+mha_with_lse_d256_causal,75e0cf7f-33f7-4ce4-9513-661a0ba97813,2048
+mha_with_lse_d96,e86112ff-2cd0-4e97-8efb-9ce6356ecb2b,4096
+mha_with_lse_d96_causal,982c9922-961f-452f-ab9e-574fdcd4e28c,4096

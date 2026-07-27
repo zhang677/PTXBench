@@ -1,0 +1,36 @@
+[
+  {
+    "definition": "gemm_n7168_k5120",
+    "workload": {
+      "axes": {
+        "M": 8192
+      },
+      "inputs": {
+        "A": {
+          "type": "random"
+        },
+        "B": {
+          "type": "random"
+        }
+      },
+      "uuid": "94920358-01a8-4c5b-9209-3103fd490e94",
+      "outputs": null
+    },
+    "solution": "eval_kernel_b6d0909c",
+    "evaluation": {
+      "status": "RUNTIME_ERROR",
+      "environment": {
+        "hardware": "NVIDIA H100 80GB HBM3",
+        "libs": {
+          "torch": "2.12.1+cu130",
+          "triton": "3.7.1",
+          "cuda": "13.0"
+        }
+      },
+      "timestamp": "2026-07-02T06:08:36.009792",
+      "log": "ptxas info    : 0 bytes gmem\nptxas info    : Compiling entry function '_ZN12tvm_ffi_gemm11gemm_kernelE14CUtensorMap_stS0_P13__nv_bfloat16ii' for 'sm_90a'\nptxas info    : Function properties for _ZN12tvm_ffi_gemm11gemm_kernelE14CUtensorMap_stS0_P13__nv_bfloat16ii\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 82 registers, used 1 barriers\nptxas info    : Compile time = 47.794 ms\n\nCUDA error unspecified launch failure at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_b6d0909c_b6d090/kernel.cu:237\n\nRuntime error during evaluation (EOFError): EOFError()",
+      "correctness": null,
+      "performance": null
+    }
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "definitions": [
+    "gemm_n7168_k5120",
+    "mha_bwd_d128",
+    "mha_bwd_d128_causal",
+    "mha_with_lse_d128",
+    "mha_with_lse_d128_causal"
+  ],
+  "left_model": "Qwen3.6-27B",
+  "mha_reports": {
+    "mha_bwd_d128": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-error-distribution/mha_eval_reports/mha_bwd_d128_error_distribution_summary.md",
+    "mha_bwd_d128_causal": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-error-distribution/mha_eval_reports/mha_bwd_d128_causal_error_distribution_summary.md",
+    "mha_with_lse_d128": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-error-distribution/mha_eval_reports/mha_with_lse_d128_error_distribution_summary.md",
+    "mha_with_lse_d128_causal": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-error-distribution/mha_eval_reports/mha_with_lse_d128_causal_error_distribution_summary.md"
+  },
+  "outputs": {
+    "distribution_csv": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-error-distribution/error_distribution.csv",
+    "error_rows_csv": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-error-distribution/error_rows.csv",
+    "manifest_json": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-error-distribution/manifest.json",
+    "summary_md": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-error-distribution/error_distribution_summary.md"
+  },
+  "paired_runs": [
+    {
+      "arch": "hopper",
+      "definition": "gemm_n7168_k5120",
+      "left_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345",
+      "right_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm",
+      "workload": "94920358-01a8-4c5b-9209-3103fd490e94"
+    },
+    {
+      "arch": "hopper",
+      "definition": "mha_bwd_d128",
+      "left_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128",
+      "right_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128",
+      "workload": "38c3b07c-f006-5f5e-9860-ba214c805a6b"
+    },
+    {
+      "arch": "hopper",
+      "definition": "mha_bwd_d128_causal",
+      "left_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal",
+      "right_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal",
+      "workload": "c119b3f0-c051-5e96-9c2a-2268d992fe1a"
+    },
+    {
+      "arch": "hopper",
+      "definition": "mha_with_lse_d128",
+      "left_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128",
+      "right_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128",
+      "workload": "bc38b351-d595-451b-9153-8e225702e53b"
+    },
+    {
+      "arch": "hopper",
+      "definition": "mha_with_lse_d128_causal",
+      "left_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal",
+      "right_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal",
+      "workload": "6d2f67a7-225a-4af5-87d3-cbb99b496325"
+    }
+  ],
+  "right_model": "Qwen3.6-27B-fixit-v2-glm",
+  "right_run_fragment": "2026-0624-0939",
+  "turn_limit": null
+}

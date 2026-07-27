@@ -1,0 +1,17 @@
+g,arch,definition,exp_dir
+2,hopper,mha_with_lse_d64,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-d64
+2,hopper,mha_with_lse_d64_causal,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-d64-causal
+2,hopper,mha_bwd_d64,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-bwd-d64
+2,hopper,mha_bwd_d64_causal,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g2-mha-bwd-d64-causal
+4,hopper,mha_with_lse_d64,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-mha-d64
+4,hopper,mha_with_lse_d64_causal,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-mha-d64-causal
+4,hopper,mha_bwd_d64,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-mha-bwd-d64
+4,hopper,mha_bwd_d64_causal,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-mha-bwd-d64-causal
+6,hopper,mha_with_lse_d64,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64
+6,hopper,mha_with_lse_d64_causal,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-d64-causal
+6,hopper,mha_bwd_d64,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64
+6,hopper,mha_bwd_d64_causal,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g6-mha-bwd-d64-causal
+8,hopper,mha_with_lse_d64,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g8-mha-d64
+8,hopper,mha_with_lse_d64_causal,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g8-mha-d64-causal
+8,hopper,mha_bwd_d64,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g8-mha-bwd-d64
+8,hopper,mha_bwd_d64_causal,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g8-mha-bwd-d64-causal

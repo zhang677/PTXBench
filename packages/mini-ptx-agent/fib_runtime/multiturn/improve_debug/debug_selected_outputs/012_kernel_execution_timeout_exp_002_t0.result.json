@@ -1,0 +1,81 @@
+{
+  "task_id": "1ae8ad00f91d4c4a82c0470f6109472b",
+  "kind": "debug",
+  "status": "completed",
+  "definition": "mha_bwd_d128",
+  "solution": "exp_002_kernel_t0_e2aa1b47",
+  "logs": [
+    {
+      "definition": "mha_bwd_d128",
+      "workload": {
+        "axes": {
+          "B": 4,
+          "H": 48,
+          "S": 4096,
+          "d": 128
+        },
+        "inputs": {
+          "Q": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "Q"
+          },
+          "K": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "K"
+          },
+          "V": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "V"
+          },
+          "O": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "O"
+          },
+          "dO": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "dO"
+          },
+          "L": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "L"
+          }
+        },
+        "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+        "outputs": null
+      },
+      "solution": "exp_002_kernel_t0_e2aa1b47",
+      "metadata": {
+        "FlashInfer CUDA debug report": {
+          "exist": true,
+          "msg": "solution: exp_002_kernel_t0_e2aa1b47\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_h52r57ra"
+        },
+        "Most precise CUDA fault": {
+          "exist": false,
+          "msg": "- No compute-sanitizer device fault block was found."
+        },
+        "CUDA core dump analysis": {
+          "exist": true,
+          "msg": "- focus: CUDA kernel 0, grid 1, block (8,0,0), thread (0,0,0), device 0, sm 0, warp 0, lane 0]\n- frame #0: kernel.cu:63\n  function: mha_bwd_pass1_kernel<<<(12288,1,1),(128,1,1)>>> ()\n  source: :: \"r\"((uint32_t)__cvta_generic_to_shared(&bar[0])), \"r\"(phase));\n  inlined call site: kernel.cu:240\n  call source: mbarrier_try_wait_parity(mbar_QO, mbar_phase);\n  interpretation: the coredump caught the GPU in a wait/barrier path. For timeout failures, inspect kernel.cu:240 and its caller before treating this as a generic CUDA core dump."
+        },
+        "Primary diagnostics": {
+          "exist": true,
+          "msg": "- ERROR: memcheck timed out after 45 seconds.\n- ERROR: direct runner timed out after 30 seconds; requested CUDA user-triggered core dump before terminating it."
+        },
+        "Source locations": {
+          "exist": true,
+          "msg": "kernel.cu:63\n  59:         \"WAIT_%=:\\n\"\n  60:         \"mbarrier.try_wait.parity.shared.b64 P, [%0], %1;\\n\"\n  61:         \"@!P bra WAIT_%=;\\n\"\n  62:         \"}\\n\"\n> 63:         :: \"r\"((uint32_t)__cvta_generic_to_shared(&bar[0])), \"r\"(phase));\n  64: }\n  65: \n  66: __device__ __forceinline__ void fence_proxy_async_fn() {\n  67:     asm volatile(\"fence.proxy.async;\\n\" ::: \"memory\");\n\nkernel.cu:240\n  236:         tma_load_3d_fn(&tma_O, mbar_QO, smem_O1, 64, bm, b_h_idx);\n  237:         tma_load_3d_fn(&tma_dO, mbar_QO, smem_dO0, 0, bm, b_h_idx);\n  238:         tma_load_3d_fn(&tma_dO, mbar_QO, smem_dO1, 64, bm, b_h_idx);\n  239:     }\n> 240:     mbarrier_try_wait_parity(mbar_QO, mbar_phase);\n  241:     mbar_phase ^= 1;\n  242: \n  243:     for (int i = ltid; i < 64 * 64; i += 128) {\n  244:         int row = i / 64;"
+        },
+        "CUDA core dumps": {
+          "exist": false,
+          "msg": "- /tmp/fib_debug/run_h52r57ra/cuda_coredump_fa1ae1b86f39.4614.1783386030\n- Source-level coredump analysis is reported above."
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+ptxas info    : (C7508) Potential Performance Loss: 'setmaxnreg' ignored; unable to determine register count at entry.
+ptxas info    : (C7508) Potential Performance Loss: 'setmaxnreg' ignored; unable to determine register count at entry.
+ptxas info    : 0 bytes gmem
+ptxas info    : Compiling entry function '_Z16compute_D_kernelPK13__nv_bfloat16S1_Pfiii' for 'sm_90a'
+ptxas info    : Function properties for _Z16compute_D_kernelPK13__nv_bfloat16S1_Pfiii
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers
+ptxas info    : Compile time = 17.317 ms
+ptxas info    : Compiling entry function '_Z20mha_bwd_kernel_pass214CUtensorMap_stS_S_S_S_S_S_PKfPfi' for 'sm_90a'
+ptxas info    : Function properties for _Z20mha_bwd_kernel_pass214CUtensorMap_stS_S_S_S_S_S_PKfPfi
+    216 bytes stack frame, 212 bytes spill stores, 212 bytes spill loads
+ptxas info    : Used 255 registers, used 1 barriers, 216 bytes cumulative stack size, 1024 bytes smem
+ptxas info    : Compile time = 255.103 ms
+ptxas info    : Compiling entry function '_Z20mha_bwd_kernel_pass114CUtensorMap_stS_S_S_S_S_PKfPfi' for 'sm_90a'
+ptxas info    : Function properties for _Z20mha_bwd_kernel_pass114CUtensorMap_stS_S_S_S_S_PKfPfi
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 241 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 193.881 ms
+Running memcheck 1/2...
+Submitted sanitize task: 52fb084cdd1445fda568261bbb0bf358
+Running memcheck 2/2...
+Submitted sanitize task: a8fbade3ae634cfeb43c86874e212179
+memcheck clean; running /evaluate...
+Submitted evaluate task: bbb11d00c915418b99f80737a24ca2df
+Submitted debug task: 3b3121925ede4ee6b15fe7a92a8b81e1

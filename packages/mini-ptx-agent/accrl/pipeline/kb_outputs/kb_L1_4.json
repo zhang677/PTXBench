@@ -1,0 +1,154 @@
+[
+  {
+    "name": "kb_matvec",
+    "op_type": "matmul",
+    "description": "Matrix-vector multiplication: y = A @ x. Unlike full matrix multiplication, this is bandwidth-bound rather than compute-bound because one dimension has no tiling opportunities. Critical for efficient linear layer inference with batch_size=1.",
+    "tags": ["source:kernelbench", "level:1", "inference", "bandwidth_bound"],
+    "axes": {
+      "m": {
+        "type": "var",
+        "description": "Number of rows in A (output vector length)"
+      },
+      "k": {
+        "type": "var",
+        "description": "Number of columns in A (input vector length)"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["m", "k"],
+        "dtype": "bfloat16"
+      },
+      "x": {
+        "shape": ["k"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "y": {
+        "shape": ["m"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, x):\n    return torch.mv(A, x)\n",
+    "workload_ranges": {
+      "m": [512, 1024, 2048, 4096, 8192, 16384],
+      "k": [512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072]
+    }
+  },
+  {
+    "name": "kb_matvec_tall_skinny",
+    "op_type": "matmul",
+    "description": "Matrix-vector multiplication optimized for tall-skinny matrices (m >> k). Common in linear projections from small hidden states to large vocabularies.",
+    "tags": ["source:kernelbench", "level:1", "inference", "bandwidth_bound", "projection"],
+    "axes": {
+      "m": {
+        "type": "var",
+        "description": "Number of rows in A (output vector length, typically large vocabulary size)"
+      },
+      "k": {
+        "type": "var",
+        "description": "Number of columns in A (input vector length, typically hidden dimension)"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["m", "k"],
+        "dtype": "bfloat16"
+      },
+      "x": {
+        "shape": ["k"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "y": {
+        "shape": ["m"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, x):\n    return torch.mv(A, x)\n",
+    "workload_ranges": {
+      "m": [32000, 50000, 100000, 128000, 256000],
+      "k": [512, 1024, 2048, 4096, 8192]
+    }
+  },
+  {
+    "name": "kb_matvec_short_wide",
+    "op_type": "matmul",
+    "description": "Matrix-vector multiplication optimized for short-wide matrices (k >> m). Common in down-projections or feature extraction layers.",
+    "tags": ["source:kernelbench", "level:1", "inference", "bandwidth_bound", "projection"],
+    "axes": {
+      "m": {
+        "type": "var",
+        "description": "Number of rows in A (output vector length, typically smaller dimension)"
+      },
+      "k": {
+        "type": "var",
+        "description": "Number of columns in A (input vector length, typically larger dimension)"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["m", "k"],
+        "dtype": "bfloat16"
+      },
+      "x": {
+        "shape": ["k"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "y": {
+        "shape": ["m"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, x):\n    return torch.mv(A, x)\n",
+    "workload_ranges": {
+      "m": [512, 1024, 2048, 4096],
+      "k": [8192, 16384, 32768, 65536, 131072]
+    }
+  },
+  {
+    "name": "kb_matvec_transposed",
+    "op_type": "matmul",
+    "description": "Matrix-vector multiplication with transposed matrix: y = A^T @ x. Memory access pattern differs from standard matvec, requiring different optimization strategies.",
+    "tags": ["source:kernelbench", "level:1", "inference", "bandwidth_bound"],
+    "axes": {
+      "m": {
+        "type": "var",
+        "description": "Number of columns in A (output vector length)"
+      },
+      "k": {
+        "type": "var",
+        "description": "Number of rows in A (input vector length)"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["k", "m"],
+        "dtype": "bfloat16"
+      },
+      "x": {
+        "shape": ["k"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "y": {
+        "shape": ["m"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, x):\n    return torch.mv(A.t(), x)\n",
+    "workload_ranges": {
+      "m": [512, 1024, 2048, 4096, 8192, 16384],
+      "k": [512, 1024, 2048, 4096, 8192, 16384, 32768, 65536]
+    }
+  }
+]

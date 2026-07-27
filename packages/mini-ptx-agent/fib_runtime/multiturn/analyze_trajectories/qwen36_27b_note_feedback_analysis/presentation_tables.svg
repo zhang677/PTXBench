@@ -1,0 +1,1223 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2500" height="2361" viewBox="0 0 2500 2361">
+<style>text{font-family:Inter,Arial,sans-serif}.grid{stroke:#d0d7de;stroke-width:1;shape-rendering:crispEdges}</style>
+<rect width="2500" height="2361" fill="#ffffff"/>
+<text x="34.0" y="38.0" font-size="26" text-anchor="start" font-weight="700" fill="#24292f">Qwen3.6-27B Note Feedback Analysis</text>
+<text x="34.0" y="64.0" font-size="14" text-anchor="start" font-weight="400" fill="#57606a">9 tables; every metric is shown at ≤1, ≤4, and ≤8 turns.</text>
+<text x="34.0" y="90.0" font-size="13" text-anchor="start" font-weight="700" fill="#9a6700">Bold gold: best overall</text>
+<text x="244.0" y="90.0" font-size="13" text-anchor="start" font-weight="400" fill="#57606a">All-zero metric/horizon slices are not bolded.</text>
+<text x="34.0" y="143.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">Included-Prompt Overall Metrics</text>
+<rect x="34" y="153" width="2432.0" height="288.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="153" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="334.0" y1="153.0" x2="334.0" y2="441.0"/>
+<text x="475.0" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="428.0" y1="153.0" x2="428.0" y2="441.0"/>
+<text x="660.9" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="660.9" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="568.3" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="660.9" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="753.4" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="522.0" y1="153.0" x2="522.0" y2="441.0"/>
+<text x="938.6" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="938.6" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="846.0" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="938.6" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1031.1" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="799.7" y1="153.0" x2="799.7" y2="441.0"/>
+<text x="1216.3" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1216.3" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1123.7" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1216.3" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1308.9" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1077.4" y1="153.0" x2="1077.4" y2="441.0"/>
+<text x="1494.0" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1494.0" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1401.4" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1494.0" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1586.6" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1355.1" y1="153.0" x2="1355.1" y2="441.0"/>
+<text x="1771.7" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1771.7" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1679.1" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1771.7" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1864.3" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1632.9" y1="153.0" x2="1632.9" y2="441.0"/>
+<text x="2049.4" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2049.4" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1956.9" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2049.4" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2142.0" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1910.6" y1="153.0" x2="1910.6" y2="441.0"/>
+<text x="2327.1" y="172.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2327.1" y="187.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2234.6" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2327.1" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2419.7" y="213.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2188.3" y1="153.0" x2="2188.3" y2="441.0"/>
+<line class="grid" x1="34" y1="225.0" x2="2466.0" y2="225.0"/>
+<text x="43.0" y="248.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_nopatched_d128</text>
+<text x="381.0" y="248.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">32</text>
+<text x="475.0" y="248.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">256</text>
+<text x="568.3" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">2</text>
+<text x="753.4" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">9</text>
+<text x="846.0" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.015625</text>
+<text x="1031.1" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.035156</text>
+<text x="1123.7" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.015625</text>
+<text x="1308.9" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.035156</text>
+<text x="1401.4" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1586.6" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1679.1" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1864.3" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1956.9" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.499509</text>
+<text x="2142.0" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.499509</text>
+<text x="2234.6" y="248.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.497641</text>
+<text x="2419.7" y="248.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.347231</text>
+<line class="grid" x1="34" y1="261.0" x2="2466.0" y2="261.0"/>
+<rect x="34" y="261" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="284.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d128</text>
+<text x="381.0" y="284.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">32</text>
+<text x="475.0" y="284.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">256</text>
+<text x="568.3" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">2</text>
+<text x="660.9" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="753.4" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">25</text>
+<text x="846.0" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="938.6" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1031.1" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.097656</text>
+<text x="1123.7" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1216.3" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1308.9" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.097656</text>
+<text x="1401.4" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1494.0" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.218750</text>
+<text x="1586.6" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.437500</text>
+<text x="1679.1" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1771.7" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.218750</text>
+<text x="1864.3" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.437500</text>
+<text x="1956.9" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.555985</text>
+<text x="2049.4" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.555985</text>
+<text x="2142.0" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.565364</text>
+<text x="2234.6" y="284.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.526248</text>
+<text x="2327.1" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.391706</text>
+<text x="2419.7" y="284.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.337186</text>
+<line class="grid" x1="34" y1="297.0" x2="2466.0" y2="297.0"/>
+<text x="43.0" y="320.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d96</text>
+<text x="381.0" y="320.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">32</text>
+<text x="475.0" y="320.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">256</text>
+<text x="568.3" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">2</text>
+<text x="753.4" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">5</text>
+<text x="846.0" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.015625</text>
+<text x="1031.1" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.019531</text>
+<text x="1123.7" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.015625</text>
+<text x="1308.9" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.019531</text>
+<text x="1401.4" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1586.6" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1679.1" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1864.3" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1956.9" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.239972</text>
+<text x="2142.0" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.291815</text>
+<text x="2234.6" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.165870</text>
+<text x="2419.7" y="320.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.156310</text>
+<line class="grid" x1="34" y1="333.0" x2="2466.0" y2="333.0"/>
+<rect x="34" y="333" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="356.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">retrieved_notes_d128</text>
+<text x="381.0" y="356.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">32</text>
+<text x="475.0" y="356.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">256</text>
+<text x="568.3" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="356.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<line class="grid" x1="34" y1="369.0" x2="2466.0" y2="369.0"/>
+<text x="43.0" y="392.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d128</text>
+<text x="381.0" y="392.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">32</text>
+<text x="475.0" y="392.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">256</text>
+<text x="568.3" y="392.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">29</text>
+<text x="753.4" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">63</text>
+<text x="846.0" y="392.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.226562</text>
+<text x="1031.1" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.246094</text>
+<text x="1123.7" y="392.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.226562</text>
+<text x="1308.9" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.246094</text>
+<text x="1401.4" y="392.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.593750</text>
+<text x="1586.6" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.656250</text>
+<text x="1679.1" y="392.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.593750</text>
+<text x="1864.3" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.656250</text>
+<text x="1956.9" y="392.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.646881</text>
+<text x="2142.0" y="392.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.679044</text>
+<text x="2234.6" y="392.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="392.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.191098</text>
+<text x="2419.7" y="392.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.182573</text>
+<line class="grid" x1="34" y1="405.0" x2="2466.0" y2="405.0"/>
+<rect x="34" y="405" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="428.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d96</text>
+<text x="381.0" y="428.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">32</text>
+<text x="475.0" y="428.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">256</text>
+<text x="568.3" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">3</text>
+<text x="753.4" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="846.0" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.023438</text>
+<text x="1031.1" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1123.7" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.015625</text>
+<text x="1308.9" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.027344</text>
+<text x="1401.4" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1586.6" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1679.1" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1864.3" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.093750</text>
+<text x="1956.9" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.172923</text>
+<text x="2142.0" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.477097</text>
+<text x="2234.6" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.067432</text>
+<text x="2419.7" y="428.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.119646</text>
+<text x="34.0" y="486.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">mha_bwd_d128</text>
+<rect x="34" y="496" width="2432.0" height="216.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="496" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="334.0" y1="496.0" x2="334.0" y2="712.0"/>
+<text x="475.0" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="428.0" y1="496.0" x2="428.0" y2="712.0"/>
+<text x="660.9" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="660.9" y="530.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="568.3" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="660.9" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="753.4" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="522.0" y1="496.0" x2="522.0" y2="712.0"/>
+<text x="938.6" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="938.6" y="530.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="846.0" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="938.6" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1031.1" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="799.7" y1="496.0" x2="799.7" y2="712.0"/>
+<text x="1216.3" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1216.3" y="530.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1123.7" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1216.3" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1308.9" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1077.4" y1="496.0" x2="1077.4" y2="712.0"/>
+<text x="1494.0" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1494.0" y="530.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1401.4" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1494.0" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1586.6" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1355.1" y1="496.0" x2="1355.1" y2="712.0"/>
+<text x="1771.7" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1771.7" y="530.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1679.1" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1771.7" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1864.3" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1632.9" y1="496.0" x2="1632.9" y2="712.0"/>
+<text x="2049.4" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2049.4" y="530.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1956.9" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2049.4" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2142.0" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1910.6" y1="496.0" x2="1910.6" y2="712.0"/>
+<text x="2327.1" y="515.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2327.1" y="530.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2234.6" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2327.1" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2419.7" y="556.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2188.3" y1="496.0" x2="2188.3" y2="712.0"/>
+<line class="grid" x1="34" y1="568.0" x2="2466.0" y2="568.0"/>
+<text x="43.0" y="591.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_nopatched_d128</text>
+<text x="381.0" y="591.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="591.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">4</text>
+<text x="846.0" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1123.7" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1401.4" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.250000</text>
+<text x="1679.1" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.250000</text>
+<text x="1956.9" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.413403</text>
+<text x="2234.6" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="591.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.288846</text>
+<line class="grid" x1="34" y1="604.0" x2="2466.0" y2="604.0"/>
+<rect x="34" y="604" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="627.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d128</text>
+<text x="381.0" y="627.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="627.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">1</text>
+<text x="753.4" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">4</text>
+<text x="846.0" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1031.1" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1123.7" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1308.9" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1401.4" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1586.6" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.250000</text>
+<text x="1679.1" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1864.3" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.250000</text>
+<text x="1956.9" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.379511</text>
+<text x="2142.0" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.388544</text>
+<text x="2234.6" y="627.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="627.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.379511</text>
+<text x="2419.7" y="627.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.336132</text>
+<line class="grid" x1="34" y1="640.0" x2="2466.0" y2="640.0"/>
+<text x="43.0" y="663.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">retrieved_notes_d128</text>
+<text x="381.0" y="663.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="663.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="663.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<line class="grid" x1="34" y1="676.0" x2="2466.0" y2="676.0"/>
+<rect x="34" y="676" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="699.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d128</text>
+<text x="381.0" y="699.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="699.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="699.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">5</text>
+<text x="753.4" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">14</text>
+<text x="846.0" y="699.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.156250</text>
+<text x="1031.1" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.218750</text>
+<text x="1123.7" y="699.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.156250</text>
+<text x="1308.9" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.218750</text>
+<text x="1401.4" y="699.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.375000</text>
+<text x="1586.6" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.500000</text>
+<text x="1679.1" y="699.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.375000</text>
+<text x="1864.3" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.500000</text>
+<text x="1956.9" y="699.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.548649</text>
+<text x="2142.0" y="699.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.548649</text>
+<text x="2234.6" y="699.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="699.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.300507</text>
+<text x="2419.7" y="699.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.233307</text>
+<text x="34.0" y="757.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">mha_bwd_d128_causal</text>
+<rect x="34" y="767" width="2432.0" height="216.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="767" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="334.0" y1="767.0" x2="334.0" y2="983.0"/>
+<text x="475.0" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="428.0" y1="767.0" x2="428.0" y2="983.0"/>
+<text x="660.9" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="660.9" y="801.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="568.3" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="660.9" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="753.4" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="522.0" y1="767.0" x2="522.0" y2="983.0"/>
+<text x="938.6" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="938.6" y="801.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="846.0" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="938.6" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1031.1" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="799.7" y1="767.0" x2="799.7" y2="983.0"/>
+<text x="1216.3" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1216.3" y="801.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1123.7" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1216.3" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1308.9" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1077.4" y1="767.0" x2="1077.4" y2="983.0"/>
+<text x="1494.0" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1494.0" y="801.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1401.4" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1494.0" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1586.6" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1355.1" y1="767.0" x2="1355.1" y2="983.0"/>
+<text x="1771.7" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1771.7" y="801.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1679.1" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1771.7" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1864.3" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1632.9" y1="767.0" x2="1632.9" y2="983.0"/>
+<text x="2049.4" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2049.4" y="801.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1956.9" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2049.4" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2142.0" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1910.6" y1="767.0" x2="1910.6" y2="983.0"/>
+<text x="2327.1" y="786.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2327.1" y="801.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2234.6" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2327.1" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2419.7" y="827.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2188.3" y1="767.0" x2="2188.3" y2="983.0"/>
+<line class="grid" x1="34" y1="839.0" x2="2466.0" y2="839.0"/>
+<text x="43.0" y="862.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_nopatched_d128</text>
+<text x="381.0" y="862.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="862.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">2</text>
+<text x="753.4" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">3</text>
+<text x="846.0" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1031.1" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.046875</text>
+<text x="1123.7" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.062500</text>
+<text x="1308.9" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.046875</text>
+<text x="1401.4" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1586.6" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1679.1" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1864.3" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1956.9" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="862.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.499509</text>
+<text x="2142.0" y="862.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.499509</text>
+<text x="2234.6" y="862.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="862.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.497641</text>
+<text x="2419.7" y="862.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.478680</text>
+<line class="grid" x1="34" y1="875.0" x2="2466.0" y2="875.0"/>
+<rect x="34" y="875" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="898.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d128</text>
+<text x="381.0" y="898.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="898.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">1</text>
+<text x="753.4" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">5</text>
+<text x="846.0" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1031.1" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.078125</text>
+<text x="1123.7" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1308.9" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.078125</text>
+<text x="1401.4" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1586.6" y="898.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.500000</text>
+<text x="1679.1" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1864.3" y="898.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.500000</text>
+<text x="1956.9" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.192159</text>
+<text x="2142.0" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.199286</text>
+<text x="2234.6" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.192159</text>
+<text x="2419.7" y="898.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.190274</text>
+<line class="grid" x1="34" y1="911.0" x2="2466.0" y2="911.0"/>
+<text x="43.0" y="934.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">retrieved_notes_d128</text>
+<text x="381.0" y="934.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="934.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="934.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<line class="grid" x1="34" y1="947.0" x2="2466.0" y2="947.0"/>
+<rect x="34" y="947" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="970.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d128</text>
+<text x="381.0" y="970.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="970.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">6</text>
+<text x="753.4" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">8</text>
+<text x="846.0" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.187500</text>
+<text x="1031.1" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.125000</text>
+<text x="1123.7" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.187500</text>
+<text x="1308.9" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.125000</text>
+<text x="1401.4" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.500000</text>
+<text x="1586.6" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.500000</text>
+<text x="1679.1" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.500000</text>
+<text x="1864.3" y="970.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.500000</text>
+<text x="1956.9" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.173243</text>
+<text x="2142.0" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.173459</text>
+<text x="2234.6" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.113979</text>
+<text x="2419.7" y="970.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.112317</text>
+<text x="34.0" y="1028.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">mha_with_lse_d128</text>
+<rect x="34" y="1038" width="2432.0" height="216.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="1038" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="334.0" y1="1038.0" x2="334.0" y2="1254.0"/>
+<text x="475.0" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="428.0" y1="1038.0" x2="428.0" y2="1254.0"/>
+<text x="660.9" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="660.9" y="1072.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="568.3" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="660.9" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="753.4" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="522.0" y1="1038.0" x2="522.0" y2="1254.0"/>
+<text x="938.6" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="938.6" y="1072.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="846.0" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="938.6" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1031.1" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="799.7" y1="1038.0" x2="799.7" y2="1254.0"/>
+<text x="1216.3" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1216.3" y="1072.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1123.7" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1216.3" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1308.9" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1077.4" y1="1038.0" x2="1077.4" y2="1254.0"/>
+<text x="1494.0" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1494.0" y="1072.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1401.4" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1494.0" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1586.6" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1355.1" y1="1038.0" x2="1355.1" y2="1254.0"/>
+<text x="1771.7" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1771.7" y="1072.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1679.1" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1771.7" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1864.3" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1632.9" y1="1038.0" x2="1632.9" y2="1254.0"/>
+<text x="2049.4" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2049.4" y="1072.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1956.9" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2049.4" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2142.0" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1910.6" y1="1038.0" x2="1910.6" y2="1254.0"/>
+<text x="2327.1" y="1057.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2327.1" y="1072.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2234.6" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2327.1" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2419.7" y="1098.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2188.3" y1="1038.0" x2="2188.3" y2="1254.0"/>
+<line class="grid" x1="34" y1="1110.0" x2="2466.0" y2="1110.0"/>
+<text x="43.0" y="1133.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_nopatched_d128</text>
+<text x="381.0" y="1133.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1133.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="1133.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<line class="grid" x1="34" y1="1146.0" x2="2466.0" y2="1146.0"/>
+<rect x="34" y="1146" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="1169.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d128</text>
+<text x="381.0" y="1169.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1169.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">2</text>
+<text x="660.9" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">6</text>
+<text x="753.4" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">13</text>
+<text x="846.0" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.250000</text>
+<text x="938.6" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.187500</text>
+<text x="1031.1" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.203125</text>
+<text x="1123.7" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.250000</text>
+<text x="1216.3" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.187500</text>
+<text x="1308.9" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.203125</text>
+<text x="1401.4" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.250000</text>
+<text x="1494.0" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.625000</text>
+<text x="1586.6" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.750000</text>
+<text x="1679.1" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.250000</text>
+<text x="1771.7" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.625000</text>
+<text x="1864.3" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.750000</text>
+<text x="1956.9" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.555985</text>
+<text x="2049.4" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.555985</text>
+<text x="2142.0" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.565364</text>
+<text x="2234.6" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.526248</text>
+<text x="2327.1" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.443403</text>
+<text x="2419.7" y="1169.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.459877</text>
+<line class="grid" x1="34" y1="1182.0" x2="2466.0" y2="1182.0"/>
+<text x="43.0" y="1205.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">retrieved_notes_d128</text>
+<text x="381.0" y="1205.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1205.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="1205.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<line class="grid" x1="34" y1="1218.0" x2="2466.0" y2="1218.0"/>
+<rect x="34" y="1218" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="1241.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d128</text>
+<text x="381.0" y="1241.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1241.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">6</text>
+<text x="753.4" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">15</text>
+<text x="846.0" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.187500</text>
+<text x="1031.1" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.234375</text>
+<text x="1123.7" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.187500</text>
+<text x="1308.9" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.234375</text>
+<text x="1401.4" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.625000</text>
+<text x="1586.6" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.625000</text>
+<text x="1679.1" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.625000</text>
+<text x="1864.3" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.625000</text>
+<text x="1956.9" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.502671</text>
+<text x="2142.0" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.502671</text>
+<text x="2234.6" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.176377</text>
+<text x="2419.7" y="1241.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.156937</text>
+<text x="34.0" y="1299.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">mha_with_lse_d128_causal</text>
+<rect x="34" y="1309" width="2432.0" height="216.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="1309" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="334.0" y1="1309.0" x2="334.0" y2="1525.0"/>
+<text x="475.0" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="428.0" y1="1309.0" x2="428.0" y2="1525.0"/>
+<text x="660.9" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="660.9" y="1343.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="568.3" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="660.9" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="753.4" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="522.0" y1="1309.0" x2="522.0" y2="1525.0"/>
+<text x="938.6" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="938.6" y="1343.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="846.0" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="938.6" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1031.1" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="799.7" y1="1309.0" x2="799.7" y2="1525.0"/>
+<text x="1216.3" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1216.3" y="1343.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1123.7" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1216.3" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1308.9" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1077.4" y1="1309.0" x2="1077.4" y2="1525.0"/>
+<text x="1494.0" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1494.0" y="1343.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1401.4" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1494.0" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1586.6" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1355.1" y1="1309.0" x2="1355.1" y2="1525.0"/>
+<text x="1771.7" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1771.7" y="1343.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1679.1" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1771.7" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1864.3" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1632.9" y1="1309.0" x2="1632.9" y2="1525.0"/>
+<text x="2049.4" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2049.4" y="1343.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1956.9" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2049.4" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2142.0" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1910.6" y1="1309.0" x2="1910.6" y2="1525.0"/>
+<text x="2327.1" y="1328.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2327.1" y="1343.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2234.6" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2327.1" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2419.7" y="1369.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2188.3" y1="1309.0" x2="2188.3" y2="1525.0"/>
+<line class="grid" x1="34" y1="1381.0" x2="2466.0" y2="1381.0"/>
+<text x="43.0" y="1404.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_nopatched_d128</text>
+<text x="381.0" y="1404.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1404.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">2</text>
+<text x="846.0" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1123.7" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1401.4" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1679.1" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1956.9" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.313978</text>
+<text x="2234.6" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="1404.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.310016</text>
+<line class="grid" x1="34" y1="1417.0" x2="2466.0" y2="1417.0"/>
+<rect x="34" y="1417" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="1440.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d128</text>
+<text x="381.0" y="1440.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1440.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">3</text>
+<text x="846.0" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.046875</text>
+<text x="1123.7" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.046875</text>
+<text x="1401.4" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.250000</text>
+<text x="1679.1" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.250000</text>
+<text x="1956.9" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.394664</text>
+<text x="2234.6" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="1440.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.228988</text>
+<line class="grid" x1="34" y1="1453.0" x2="2466.0" y2="1453.0"/>
+<text x="43.0" y="1476.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">retrieved_notes_d128</text>
+<text x="381.0" y="1476.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1476.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="1476.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<line class="grid" x1="34" y1="1489.0" x2="2466.0" y2="1489.0"/>
+<rect x="34" y="1489" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="1512.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d128</text>
+<text x="381.0" y="1512.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1512.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">12</text>
+<text x="753.4" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">26</text>
+<text x="846.0" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.375000</text>
+<text x="1031.1" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.406250</text>
+<text x="1123.7" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.375000</text>
+<text x="1308.9" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.406250</text>
+<text x="1401.4" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.875000</text>
+<text x="1586.6" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">1.000000</text>
+<text x="1679.1" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.875000</text>
+<text x="1864.3" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">1.000000</text>
+<text x="1956.9" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.646881</text>
+<text x="2142.0" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.679044</text>
+<text x="2234.6" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.213288</text>
+<text x="2419.7" y="1512.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.202734</text>
+<text x="34.0" y="1570.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">mha_bwd_d96</text>
+<rect x="34" y="1580" width="2432.0" height="144.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="1580" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="334.0" y1="1580.0" x2="334.0" y2="1724.0"/>
+<text x="475.0" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="428.0" y1="1580.0" x2="428.0" y2="1724.0"/>
+<text x="660.9" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="660.9" y="1614.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="568.3" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="660.9" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="753.4" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="522.0" y1="1580.0" x2="522.0" y2="1724.0"/>
+<text x="938.6" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="938.6" y="1614.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="846.0" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="938.6" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1031.1" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="799.7" y1="1580.0" x2="799.7" y2="1724.0"/>
+<text x="1216.3" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1216.3" y="1614.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1123.7" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1216.3" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1308.9" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1077.4" y1="1580.0" x2="1077.4" y2="1724.0"/>
+<text x="1494.0" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1494.0" y="1614.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1401.4" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1494.0" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1586.6" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1355.1" y1="1580.0" x2="1355.1" y2="1724.0"/>
+<text x="1771.7" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1771.7" y="1614.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1679.1" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1771.7" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1864.3" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1632.9" y1="1580.0" x2="1632.9" y2="1724.0"/>
+<text x="2049.4" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2049.4" y="1614.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1956.9" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2049.4" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2142.0" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1910.6" y1="1580.0" x2="1910.6" y2="1724.0"/>
+<text x="2327.1" y="1599.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2327.1" y="1614.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2234.6" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2327.1" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2419.7" y="1640.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2188.3" y1="1580.0" x2="2188.3" y2="1724.0"/>
+<line class="grid" x1="34" y1="1652.0" x2="2466.0" y2="1652.0"/>
+<text x="43.0" y="1675.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d96</text>
+<text x="381.0" y="1675.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1675.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="1675.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<line class="grid" x1="34" y1="1688.0" x2="2466.0" y2="1688.0"/>
+<rect x="34" y="1688" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="1711.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d96</text>
+<text x="381.0" y="1711.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1711.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="1711.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="34.0" y="1769.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">mha_bwd_d96_causal</text>
+<rect x="34" y="1779" width="2432.0" height="144.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="1779" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="334.0" y1="1779.0" x2="334.0" y2="1923.0"/>
+<text x="475.0" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="428.0" y1="1779.0" x2="428.0" y2="1923.0"/>
+<text x="660.9" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="660.9" y="1813.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="568.3" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="660.9" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="753.4" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="522.0" y1="1779.0" x2="522.0" y2="1923.0"/>
+<text x="938.6" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="938.6" y="1813.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="846.0" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="938.6" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1031.1" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="799.7" y1="1779.0" x2="799.7" y2="1923.0"/>
+<text x="1216.3" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1216.3" y="1813.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1123.7" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1216.3" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1308.9" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1077.4" y1="1779.0" x2="1077.4" y2="1923.0"/>
+<text x="1494.0" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1494.0" y="1813.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1401.4" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1494.0" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1586.6" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1355.1" y1="1779.0" x2="1355.1" y2="1923.0"/>
+<text x="1771.7" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1771.7" y="1813.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1679.1" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1771.7" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1864.3" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1632.9" y1="1779.0" x2="1632.9" y2="1923.0"/>
+<text x="2049.4" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2049.4" y="1813.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1956.9" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2049.4" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2142.0" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1910.6" y1="1779.0" x2="1910.6" y2="1923.0"/>
+<text x="2327.1" y="1798.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2327.1" y="1813.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2234.6" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2327.1" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2419.7" y="1839.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2188.3" y1="1779.0" x2="2188.3" y2="1923.0"/>
+<line class="grid" x1="34" y1="1851.0" x2="2466.0" y2="1851.0"/>
+<text x="43.0" y="1874.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d96</text>
+<text x="381.0" y="1874.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1874.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="1874.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<line class="grid" x1="34" y1="1887.0" x2="2466.0" y2="1887.0"/>
+<rect x="34" y="1887" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="1910.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d96</text>
+<text x="381.0" y="1910.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="1910.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="1910.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="34.0" y="1968.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">mha_with_lse_d96</text>
+<rect x="34" y="1978" width="2432.0" height="144.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="1978" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="334.0" y1="1978.0" x2="334.0" y2="2122.0"/>
+<text x="475.0" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="428.0" y1="1978.0" x2="428.0" y2="2122.0"/>
+<text x="660.9" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="660.9" y="2012.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="568.3" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="660.9" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="753.4" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="522.0" y1="1978.0" x2="522.0" y2="2122.0"/>
+<text x="938.6" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="938.6" y="2012.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="846.0" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="938.6" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1031.1" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="799.7" y1="1978.0" x2="799.7" y2="2122.0"/>
+<text x="1216.3" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1216.3" y="2012.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1123.7" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1216.3" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1308.9" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1077.4" y1="1978.0" x2="1077.4" y2="2122.0"/>
+<text x="1494.0" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1494.0" y="2012.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1401.4" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1494.0" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1586.6" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1355.1" y1="1978.0" x2="1355.1" y2="2122.0"/>
+<text x="1771.7" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1771.7" y="2012.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1679.1" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1771.7" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1864.3" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1632.9" y1="1978.0" x2="1632.9" y2="2122.0"/>
+<text x="2049.4" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2049.4" y="2012.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1956.9" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2049.4" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2142.0" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1910.6" y1="1978.0" x2="1910.6" y2="2122.0"/>
+<text x="2327.1" y="1997.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2327.1" y="2012.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2234.6" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2327.1" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2419.7" y="2038.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2188.3" y1="1978.0" x2="2188.3" y2="2122.0"/>
+<line class="grid" x1="34" y1="2050.0" x2="2466.0" y2="2050.0"/>
+<text x="43.0" y="2073.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d96</text>
+<text x="381.0" y="2073.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="2073.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">1</text>
+<text x="753.4" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">2</text>
+<text x="846.0" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.031250</text>
+<text x="1031.1" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.031250</text>
+<text x="1123.7" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.031250</text>
+<text x="1308.9" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.031250</text>
+<text x="1401.4" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.125000</text>
+<text x="1586.6" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.125000</text>
+<text x="1679.1" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.125000</text>
+<text x="1864.3" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.125000</text>
+<text x="1956.9" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.239972</text>
+<text x="2142.0" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.291815</text>
+<text x="2234.6" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.239972</text>
+<text x="2419.7" y="2073.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.264627</text>
+<line class="grid" x1="34" y1="2086.0" x2="2466.0" y2="2086.0"/>
+<rect x="34" y="2086" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="2109.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d96</text>
+<text x="381.0" y="2109.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="2109.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="753.4" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="846.0" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1031.1" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1123.7" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1308.9" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1401.4" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1586.6" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1679.1" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1864.3" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1956.9" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2142.0" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2234.6" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2419.7" y="2109.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="34.0" y="2167.0" font-size="18" text-anchor="start" font-weight="700" fill="#24292f">mha_with_lse_d96_causal</text>
+<rect x="34" y="2177" width="2432.0" height="144.0" rx="5" fill="#ffffff" stroke="#8c959f"/>
+<rect x="34" y="2177" width="2432.0" height="72" rx="5" fill="#f6f8fa"/>
+<text x="184.0" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Model / stage</text>
+<text x="381.0" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Traj.</text>
+<line class="grid" x1="334.0" y1="2177.0" x2="334.0" y2="2321.0"/>
+<text x="475.0" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turns</text>
+<line class="grid" x1="428.0" y1="2177.0" x2="428.0" y2="2321.0"/>
+<text x="660.9" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct</text>
+<text x="660.9" y="2211.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">turns</text>
+<text x="568.3" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="660.9" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="753.4" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="522.0" y1="2177.0" x2="522.0" y2="2321.0"/>
+<text x="938.6" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn</text>
+<text x="938.6" y="2211.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="846.0" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="938.6" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1031.1" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="799.7" y1="2177.0" x2="799.7" y2="2321.0"/>
+<text x="1216.3" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Turn correct</text>
+<text x="1216.3" y="2211.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1123.7" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1216.3" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1308.9" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1077.4" y1="2177.0" x2="1077.4" y2="2321.0"/>
+<text x="1494.0" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory</text>
+<text x="1494.0" y="2211.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">correctness</text>
+<text x="1401.4" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1494.0" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1586.6" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1355.1" y1="2177.0" x2="1355.1" y2="2321.0"/>
+<text x="1771.7" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Trajectory correct</text>
+<text x="1771.7" y="2211.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">+ instruction</text>
+<text x="1679.1" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="1771.7" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="1864.3" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1632.9" y1="2177.0" x2="1632.9" y2="2321.0"/>
+<text x="2049.4" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Best</text>
+<text x="2049.4" y="2211.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup</text>
+<text x="1956.9" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2049.4" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2142.0" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="1910.6" y1="2177.0" x2="1910.6" y2="2321.0"/>
+<text x="2327.1" y="2196.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">Correct-turn</text>
+<text x="2327.1" y="2211.0" font-size="12" text-anchor="middle" font-weight="700" fill="#24292f">speedup gmean</text>
+<text x="2234.6" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤1</text>
+<text x="2327.1" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤4</text>
+<text x="2419.7" y="2237.0" font-size="11" text-anchor="middle" font-weight="600" fill="#57606a">≤8</text>
+<line class="grid" x1="2188.3" y1="2177.0" x2="2188.3" y2="2321.0"/>
+<line class="grid" x1="34" y1="2249.0" x2="2466.0" y2="2249.0"/>
+<text x="43.0" y="2272.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">fixit_v2_glm_d96</text>
+<text x="381.0" y="2272.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="2272.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">1</text>
+<text x="753.4" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">3</text>
+<text x="846.0" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1031.1" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.046875</text>
+<text x="1123.7" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.031250</text>
+<text x="1308.9" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.046875</text>
+<text x="1401.4" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1586.6" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1679.1" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.125000</text>
+<text x="1864.3" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.125000</text>
+<text x="1956.9" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.114650</text>
+<text x="2142.0" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.114650</text>
+<text x="2234.6" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.114650</text>
+<text x="2419.7" y="2272.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.110041</text>
+<line class="grid" x1="34" y1="2285.0" x2="2466.0" y2="2285.0"/>
+<rect x="34" y="2285" width="2432.0" height="36" fill="#fbfcfd"/>
+<text x="43.0" y="2308.0" font-size="12.5" text-anchor="start" font-weight="600" fill="#24292f">note_feedback2_d96</text>
+<text x="381.0" y="2308.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">8</text>
+<text x="475.0" y="2308.0" font-size="12.5" text-anchor="middle" font-weight="400" fill="#24292f">64</text>
+<text x="568.3" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0</text>
+<text x="660.9" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">3</text>
+<text x="753.4" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">8</text>
+<text x="846.0" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="938.6" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.093750</text>
+<text x="1031.1" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.125000</text>
+<text x="1123.7" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1216.3" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.062500</text>
+<text x="1308.9" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.109375</text>
+<text x="1401.4" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1494.0" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.250000</text>
+<text x="1586.6" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.500000</text>
+<text x="1679.1" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="1771.7" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.125000</text>
+<text x="1864.3" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.375000</text>
+<text x="1956.9" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2049.4" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.172923</text>
+<text x="2142.0" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.477097</text>
+<text x="2234.6" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.0</text>
+<text x="2327.1" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="400" fill="#24292f">0.067432</text>
+<text x="2419.7" y="2308.0" font-size="12.2" text-anchor="middle" font-weight="700" fill="#9a6700">0.119646</text>
+</svg>

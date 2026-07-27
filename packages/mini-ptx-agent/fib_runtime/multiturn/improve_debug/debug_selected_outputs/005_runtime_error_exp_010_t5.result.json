@@ -1,0 +1,81 @@
+{
+  "task_id": "b989d10500374ccf82a2574effaa4298",
+  "kind": "debug",
+  "status": "completed",
+  "definition": "mha_bwd_d128",
+  "solution": "exp_010_kernel_t5_36d1b1e3",
+  "logs": [
+    {
+      "definition": "mha_bwd_d128",
+      "workload": {
+        "axes": {
+          "B": 4,
+          "H": 48,
+          "S": 4096,
+          "d": 128
+        },
+        "inputs": {
+          "Q": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "Q"
+          },
+          "K": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "K"
+          },
+          "V": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "V"
+          },
+          "O": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "O"
+          },
+          "dO": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "dO"
+          },
+          "L": {
+            "type": "safetensors",
+            "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+            "tensor_key": "L"
+          }
+        },
+        "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+        "outputs": null
+      },
+      "solution": "exp_010_kernel_t5_36d1b1e3",
+      "metadata": {
+        "FlashInfer CUDA debug report": {
+          "exist": true,
+          "msg": "solution: exp_010_kernel_t5_36d1b1e3\ndefinition: mha_bwd_d128\nworkload: 38c3b07c-f006-5f5e-9860-ba214c805a6b axes={'B': 4, 'H': 48, 'S': 4096, 'd': 128}\ndevice: cuda:0\ndebug_dir: /tmp/fib_debug/run_uu8o144n"
+        },
+        "Most precise CUDA fault": {
+          "exist": true,
+          "msg": "- Invalid __shared__ read of size 2048 bytes\n  thread (0,0,0) in block (5,0,0)\n  faulting instruction: kernel.cu:79\n    at tvm_ffi_cuda::make_wgmma_desc_swizzle(void *, unsigned int, unsigned int)+0x47c0 in kernel.cu:79\n  device frame: kernel.cu:295\n    Device Frame: tvm_ffi_cuda::bwd_main_kernel(CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, const float *, const float *, __nv_bfloat16 *, __nv_bfloat16 *, __nv_bfloat16 *, int, int, float)+0x3fa0 in kernel.cu:295\n  interpretation: the wrapper/synchronize line may only report the asynchronous CUDA failure; inspect kernel.cu:295 and the helper at kernel.cu:79 first."
+        },
+        "CUDA core dump analysis": {
+          "exist": false,
+          "msg": "- cuda-gdb produced no source-level backtrace."
+        },
+        "Primary diagnostics": {
+          "exist": true,
+          "msg": "- CUDA error: unspecified launch failure\n- Invalid __shared__ read of size 2048 bytes\n- Error: CUDA error: unspecified launch failure\n- WARNING: memcheck detected issues!"
+        },
+        "Source locations": {
+          "exist": true,
+          "msg": "kernel.cu:79\n  75: \n  76: __device__ static inline uint64_t make_wgmma_desc_swizzle(void* ptr, uint32_t lbo_bytes, uint32_t trans) {\n  77:     uint64_t addr = (uint32_t)__cvta_generic_to_shared(ptr);\n  78:     uint64_t desc = 0;\n> 79:     desc |= (addr & 0x3FFFF) >> 4; \n  80:     desc |= ((uint64_t)((lbo_bytes & 0x3FFFF) >> 4) << 16);  \n  81:     desc |= ((uint64_t)((1024 & 0x3FFFF) >> 4) << 32);  \n  82:     uint64_t base_offset = (addr >> 7) & 0x7; \n  83:     desc |= (base_offset << 49);\n\nkernel.cu:295\n  291:         wgmma_fence_fn();\n  292:         #pragma unroll\n  293:         for (int k = 0; k < 64; k += 16) {\n  294:             uint64_t dQ_0 = make_wgmma_desc_swizzle(smem.Q_0 + k * 16, 1, 0);\n> 295:             uint64_t dK_0 = make_wgmma_desc_swizzle(smem.K_0[stage] + k * 16, 1, 0);\n  296:             wgmma_m64n64k16_ss_fn<0, 0>(acc_S, dQ_0, dK_0);\n  297:             \n  298:             uint64_t dQ_1 = make_wgmma_desc_swizzle(smem.Q_1 + k * 16, 1, 0);\n  299:             uint64_t dK_1 = make_wgmma_desc_swizzle(smem.K_1[stage] + k * 16, 1, 0);\n\nkernel.cu:196\n  192:     __nv_bfloat16* __restrict__ dK_gmem,\n  193:     __nv_bfloat16* __restrict__ dV_gmem,\n  194:     int S, int d, float tau) \n  195: {\n> 196:     extern __shared__ char smem_pool[];\n  197:     DynamicSharedMemory& smem = *(DynamicSharedMemory*)smem_pool;\n  198: \n  199:     int tid = threadIdx.x;\n  200:     int i = blockIdx.x;\n\nkernel.cu:86\n  82:     uint64_t base_offset = (addr >> 7) & 0x7; \n  83:     desc |= (base_offset << 49);\n  84:     desc |= ((uint64_t)1 << 62); \n  85:     return desc;\n> 86: }\n  87: \n  88: __device__ __forceinline__ void wgmma_fence_fn() {\n  89:     asm volatile(\"wgmma.fence.sync.aligned;\\n\" ::: \"memory\");\n  90: }\n\nkernel.cu:74\n  70:         :: \"r\"((uint32_t)__cvta_generic_to_shared(smem)),\n  71:         \"l\"((uint64_t)d),\n  72:         \"r\"((uint32_t)__cvta_generic_to_shared(&bar[0])),\n  73:         \"r\"(c0), \"r\"(c1) : \"memory\");\n> 74: }\n  75: \n  76: __device__ static inline uint64_t make_wgmma_desc_swizzle(void* ptr, uint32_t lbo_bytes, uint32_t trans) {\n  77:     uint64_t addr = (uint32_t)__cvta_generic_to_shared(ptr);\n  78:     uint64_t desc = 0;\n\nkernel.cu:61\n  57:             \"@!P bra WAIT_%=;\\n\"\n  58:             \"}\\n\"\n  59:             :: \"r\"((uint32_t)__cvta_generic_to_shared(&bar[0])), \"r\"(parity));\n  60:     }\n> 61: }\n  62: \n  63: __device__ __forceinline__ void fence_proxy_async_fn() {\n  64:     asm volatile(\"fence.proxy.async;\\n\" ::: \"memory\");\n  65: }\n\nkernel.cu:1181\n  line 1181: outside available source range 1-551"
+        },
+        "CUDA core dumps": {
+          "exist": false,
+          "msg": "- No CUDA core dump file was produced."
+        }
+      }
+    }
+  ]
+}

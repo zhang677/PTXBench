@@ -1,0 +1,45 @@
+{
+  "task_id": "e26543c0ee1548dda86387efca1b69df",
+  "kind": "evaluate",
+  "status": "completed",
+  "definition": "gemm_n7168_k5120",
+  "solution": "eval_kernel_b6d0909c",
+  "traces": [
+    {
+      "definition": "gemm_n7168_k5120",
+      "workload": {
+        "axes": {
+          "M": 8192
+        },
+        "inputs": {
+          "A": {
+            "type": "random"
+          },
+          "B": {
+            "type": "random"
+          }
+        },
+        "uuid": "94920358-01a8-4c5b-9209-3103fd490e94",
+        "outputs": null
+      },
+      "solution": "eval_kernel_b6d0909c",
+      "evaluation": {
+        "status": "RUNTIME_ERROR",
+        "environment": {
+          "hardware": "NVIDIA H100 80GB HBM3",
+          "libs": {
+            "torch": "2.12.1+cu130",
+            "triton": "3.7.1",
+            "cuda": "13.0"
+          }
+        },
+        "timestamp": "2026-07-02T02:48:37.887575",
+        "log": "CUDA error unspecified launch failure at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_b6d0909c_b6d090/kernel.cu:237\n\nRuntime error during evaluation (EOFError): EOFError()",
+        "correctness": null,
+        "performance": null
+      }
+    }
+  ],
+  "logs": null,
+  "error": null
+}

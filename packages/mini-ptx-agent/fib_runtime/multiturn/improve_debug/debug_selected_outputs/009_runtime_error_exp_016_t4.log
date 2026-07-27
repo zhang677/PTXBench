@@ -1,0 +1,86 @@
+Most precise CUDA fault
+--------------------------------------------------------------------------------
+- Out-of-range shared or local address
+  thread (0,0,0) in block (12,1,0)
+  faulting instruction: kernel.cu:33
+    at tvm_ffi_cuda::init_smem_barrier_fn(unsigned long *, unsigned int)+0xf0 in kernel.cu:33
+  device frame: kernel.cu:257
+    Device Frame: tvm_ffi_cuda::bwd_dKdV_kernel(CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, CUtensorMap_st, const float *, const float *, int, int, int)+0x70 in kernel.cu:257
+  interpretation: the wrapper/synchronize line may only report the asynchronous CUDA failure; inspect kernel.cu:257 and the helper at kernel.cu:33 first.
+
+Primary diagnostics
+--------------------------------------------------------------------------------
+- CUDA error: an illegal memory access was encountered
+- Error: CUDA error: an illegal memory access was encountered
+- WARNING: memcheck detected issues!
+
+Source locations
+--------------------------------------------------------------------------------
+kernel.cu:33
+  29: namespace tvm_ffi_cuda {
+  30: 
+  31: __device__ __forceinline__ void init_smem_barrier_fn(uint64_t* bar, uint32_t count) {
+  32:     asm volatile("mbarrier.init.shared.b64 [%0], %1;"
+> 33:         :: "r"((uint32_t)__cvta_generic_to_shared(&bar[0])), "r"(count));
+  34: }
+  35: 
+  36: __device__ __forceinline__ void fence_smem_barrier_init_fn() {
+  37:     asm volatile("fence.mbarrier_init.release.cluster;\n" ::: "memory");
+
+kernel.cu:257
+  253:     int tid = threadIdx.x;
+  254:     int bj = blockIdx.x;
+  255:     
+  256:     if (tid == 0) {
+> 257:         init_smem_barrier_fn(&smem.mbar_K0, 1);
+  258:         init_smem_barrier_fn(&smem.mbar_V0, 1);
+  259:         init_smem_barrier_fn(&smem.mbar_K1, 1);
+  260:         init_smem_barrier_fn(&smem.mbar_V1, 1);
+  261:         
+
+kernel.cu:196
+  192:     };
+  193: };
+  194: 
+  195: union SharedStorage_dKdV {
+> 196:     struct {
+  197:         __nv_bfloat16 sK0[64 * 64];  
+  198:         __nv_bfloat16 sK1[64 * 64];  
+  199:         __nv_bfloat16 sV0[64 * 64];  
+  200:         __nv_bfloat16 sV1[64 * 64];  
+
+kernel.cu:86
+  82: __device__ __forceinline__ void fence_proxy_async_fn() {
+  83:     asm volatile("fence.proxy.async;\n" ::: "memory");
+  84: }
+  85: 
+> 86: __device__ __forceinline__ void fence_async_shared_fn() {
+  87:     asm volatile("fence.proxy.async.shared::cta;\n" ::: "memory");
+  88: }
+  89: 
+  90: __device__ __forceinline__ void wgmma_fence_fn() {
+
+kernel.cu:74
+  70:         "r"(c0), "r"(c1) : "memory");
+  71: }
+  72: 
+  73: __device__ __forceinline__ void tma_store_commit_fn() {
+> 74:     asm volatile("cp.async.bulk.commit_group;\n" ::: "memory");
+  75: }
+  76: 
+  77: template<int N>
+  78: __device__ __forceinline__ void tma_store_wait_fn() {
+
+kernel.cu:61
+  57:     asm volatile(
+  58:         "cp.async.bulk.tensor.2d.shared::cluster.global.mbarrier::complete_tx::bytes [%0], [%1, {%3, %4}], [%2];"
+  59:         :: "r"((uint32_t)__cvta_generic_to_shared(smem)),
+  60:         "l"((uint64_t)d),
+> 61:         "r"((uint32_t)__cvta_generic_to_shared(&bar[0])),
+  62:         "r"(c0), "r"(c1) : "memory");
+  63: }
+  64: 
+  65: __device__ __forceinline__ void tma_store_2d_fn(const CUtensorMap* d, void* smem, int32_t c0, int32_t c1) {
+
+kernel.cu:1181
+  line 1181: outside available source range 1-723

@@ -1,0 +1,90 @@
+<svg viewBox="0 0 1440 298" width="1440" height="298" xmlns="http://www.w3.org/2000/svg" role="img">
+<style>text{font-family:Arial,sans-serif;fill:#1f2937}.small{font-size:12px}.title{font-size:18px;font-weight:700}.stage{font-size:13px;font-weight:700}.node-label{font-size:11px}</style>
+<rect x="0" y="0" width="1440" height="298" fill="#ffffff"/>
+<text class="title" x="24" y="30">Single-user / mha_with_lse_d128: turn-to-turn correctness flow</text>
+<text class="small" x="24" y="52">Trajectories: 8; shared definition/prompt-tag subset</text>
+<path d="M 90.0 117.0 C 155.3 117.0, 173.8 117.0, 257.1 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="18.0"><title>turn 0 Compilation error -> turn 1 Compilation error: 3</title></path>
+<path d="M 90.0 129.0 C 155.3 129.0, 173.8 163.0, 257.1 163.0" fill="none" stroke="#d33f49" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Compilation error -> turn 1 Kernel Execution Timeout: 1</title></path>
+<path d="M 90.0 135.0 C 155.3 135.0, 173.8 177.0, 257.1 177.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Compilation error -> turn 1 Numerical error: 1</title></path>
+<path d="M 90.0 141.0 C 155.3 141.0, 173.8 143.0, 257.1 143.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Compilation error -> turn 1 Runtime error: 1</title></path>
+<path d="M 90.0 169.0 C 155.3 169.0, 173.8 129.0, 257.1 129.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Kernel Execution Timeout -> turn 1 Compilation error: 1</title></path>
+<path d="M 90.0 155.0 C 155.3 155.0, 173.8 149.0, 257.1 149.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 0 Runtime error -> turn 1 Runtime error: 1</title></path>
+<path d="M 275.1428571428571 111.0 C 340.5 111.0, 359.0 111.0, 442.3 111.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 1 Compilation error -> turn 2 Compilation error: 1</title></path>
+<path d="M 275.1428571428571 123.0 C 340.5 123.0, 359.0 143.0, 442.3 143.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="18.0"><title>turn 1 Compilation error -> turn 2 Runtime error: 3</title></path>
+<path d="M 275.1428571428571 163.0 C 340.5 163.0, 359.0 117.0, 442.3 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 1 Kernel Execution Timeout -> turn 2 Compilation error: 1</title></path>
+<path d="M 275.1428571428571 177.0 C 340.5 177.0, 359.0 123.0, 442.3 123.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 1 Numerical error -> turn 2 Compilation error: 1</title></path>
+<path d="M 275.1428571428571 143.0 C 340.5 143.0, 359.0 169.0, 442.3 169.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 1 Runtime error -> turn 2 Numerical error: 1</title></path>
+<path d="M 275.1428571428571 149.0 C 340.5 149.0, 359.0 155.0, 442.3 155.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 1 Runtime error -> turn 2 Runtime error: 1</title></path>
+<path d="M 460.2857142857143 111.0 C 525.6 111.0, 544.1 111.0, 627.4 111.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Compilation error -> turn 3 Compilation error: 1</title></path>
+<path d="M 460.2857142857143 117.0 C 525.6 117.0, 544.1 169.0, 627.4 169.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Compilation error -> turn 3 Numerical error: 1</title></path>
+<path d="M 460.2857142857143 123.0 C 525.6 123.0, 544.1 131.0, 627.4 131.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Compilation error -> turn 3 Runtime error: 1</title></path>
+<path d="M 460.2857142857143 169.0 C 525.6 169.0, 544.1 137.0, 627.4 137.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Numerical error -> turn 3 Runtime error: 1</title></path>
+<path d="M 460.2857142857143 137.0 C 525.6 137.0, 544.1 117.0, 627.4 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 2 Runtime error -> turn 3 Compilation error: 1</title></path>
+<path d="M 460.2857142857143 149.0 C 525.6 149.0, 544.1 149.0, 627.4 149.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="18.0"><title>turn 2 Runtime error -> turn 3 Runtime error: 3</title></path>
+<path d="M 645.4285714285714 111.0 C 710.7 111.0, 729.3 111.0, 812.6 111.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Compilation error -> turn 4 Compilation error: 1</title></path>
+<path d="M 645.4285714285714 117.0 C 710.7 117.0, 729.3 131.0, 812.6 131.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Compilation error -> turn 4 Runtime error: 1</title></path>
+<path d="M 645.4285714285714 169.0 C 710.7 169.0, 729.3 137.0, 812.6 137.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Numerical error -> turn 4 Runtime error: 1</title></path>
+<path d="M 645.4285714285714 131.0 C 710.7 131.0, 729.3 117.0, 812.6 117.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 3 Runtime error -> turn 4 Compilation error: 1</title></path>
+<path d="M 645.4285714285714 146.0 C 710.7 146.0, 729.3 152.0, 812.6 152.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="24.0"><title>turn 3 Runtime error -> turn 4 Runtime error: 4</title></path>
+<path d="M 830.5714285714286 114.0 C 895.9 114.0, 914.4 114.0, 997.7 114.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 4 Compilation error -> turn 5 Compilation error: 2</title></path>
+<path d="M 830.5714285714286 134.0 C 895.9 134.0, 914.4 126.0, 997.7 126.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 4 Runtime error -> turn 5 Compilation error: 2</title></path>
+<path d="M 830.5714285714286 143.0 C 895.9 143.0, 914.4 169.0, 997.7 169.0" fill="none" stroke="#e4a72b" stroke-opacity="0.30" stroke-width="6.0"><title>turn 4 Runtime error -> turn 5 Numerical error: 1</title></path>
+<path d="M 830.5714285714286 155.0 C 895.9 155.0, 914.4 149.0, 997.7 149.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="18.0"><title>turn 4 Runtime error -> turn 5 Runtime error: 3</title></path>
+<path d="M 1015.7142857142857 114.0 C 1081.0 114.0, 1099.5 114.0, 1182.9 114.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="12.0"><title>turn 5 Compilation error -> turn 6 Compilation error: 2</title></path>
+<path d="M 1015.7142857142857 126.0 C 1081.0 126.0, 1099.5 140.0, 1182.9 140.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="12.0"><title>turn 5 Compilation error -> turn 6 Runtime error: 2</title></path>
+<path d="M 1015.7142857142857 169.0 C 1081.0 169.0, 1099.5 149.0, 1182.9 149.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Numerical error -> turn 6 Runtime error: 1</title></path>
+<path d="M 1015.7142857142857 143.0 C 1081.0 143.0, 1099.5 123.0, 1182.9 123.0" fill="none" stroke="#7b6fd6" stroke-opacity="0.30" stroke-width="6.0"><title>turn 5 Runtime error -> turn 6 Compilation error: 1</title></path>
+<path d="M 1015.7142857142857 152.0 C 1081.0 152.0, 1099.5 158.0, 1182.9 158.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="12.0"><title>turn 5 Runtime error -> turn 6 Runtime error: 2</title></path>
+<path d="M 1200.857142857143 117.0 C 1266.2 117.0, 1284.7 117.0, 1368.0 117.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="18.0"><title>turn 6 Compilation error -> turn 7 Runtime error: 3</title></path>
+<path d="M 1200.857142857143 149.0 C 1266.2 149.0, 1284.7 141.0, 1368.0 141.0" fill="none" stroke="#d55e00" stroke-opacity="0.30" stroke-width="30.0"><title>turn 6 Runtime error -> turn 7 Runtime error: 5</title></path>
+<text class="stage" x="60.0" y="76">turn 0</text>
+<rect x="72.0" y="108.0" width="18" height="36.0" rx="3" fill="#7b6fd6"><title>Compilation error: 6</title></rect>
+<text class="node-label" x="95.0" y="122.0" text-anchor="start">Compilation error (6)</text>
+<rect x="72.0" y="152.0" width="18" height="6.0" rx="3" fill="#d55e00"><title>Runtime error: 1</title></rect>
+<text class="node-label" x="95.0" y="158.0" text-anchor="start">Runtime error (1)</text>
+<rect x="72.0" y="166.0" width="18" height="6.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 1</title></rect>
+<text class="node-label" x="95.0" y="172.0" text-anchor="start">Kernel Execution Timeout (1)</text>
+<text class="stage" x="245.1" y="76">turn 1</text>
+<rect x="257.1" y="108.0" width="18" height="24.0" rx="3" fill="#7b6fd6"><title>Compilation error: 4</title></rect>
+<text class="node-label" x="280.1" y="122.0" text-anchor="start">Compilation error (4)</text>
+<rect x="257.1" y="140.0" width="18" height="12.0" rx="3" fill="#d55e00"><title>Runtime error: 2</title></rect>
+<text class="node-label" x="280.1" y="152.0" text-anchor="start">Runtime error (2)</text>
+<rect x="257.1" y="160.0" width="18" height="6.0" rx="3" fill="#d33f49"><title>Kernel Execution Timeout: 1</title></rect>
+<text class="node-label" x="280.1" y="166.0" text-anchor="start">Kernel Execution Timeout (1)</text>
+<rect x="257.1" y="174.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="280.1" y="180.0" text-anchor="start">Numerical error (1)</text>
+<text class="stage" x="430.3" y="76">turn 2</text>
+<rect x="442.3" y="108.0" width="18" height="18.0" rx="3" fill="#7b6fd6"><title>Compilation error: 3</title></rect>
+<text class="node-label" x="465.3" y="122.0" text-anchor="start">Compilation error (3)</text>
+<rect x="442.3" y="134.0" width="18" height="24.0" rx="3" fill="#d55e00"><title>Runtime error: 4</title></rect>
+<text class="node-label" x="465.3" y="148.0" text-anchor="start">Runtime error (4)</text>
+<rect x="442.3" y="166.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="465.3" y="172.0" text-anchor="start">Numerical error (1)</text>
+<text class="stage" x="615.4" y="76">turn 3</text>
+<rect x="627.4" y="108.0" width="18" height="12.0" rx="3" fill="#7b6fd6"><title>Compilation error: 2</title></rect>
+<text class="node-label" x="650.4" y="120.0" text-anchor="start">Compilation error (2)</text>
+<rect x="627.4" y="128.0" width="18" height="30.0" rx="3" fill="#d55e00"><title>Runtime error: 5</title></rect>
+<text class="node-label" x="650.4" y="142.0" text-anchor="start">Runtime error (5)</text>
+<rect x="627.4" y="166.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="650.4" y="172.0" text-anchor="start">Numerical error (1)</text>
+<text class="stage" x="800.6" y="76">turn 4</text>
+<rect x="812.6" y="108.0" width="18" height="12.0" rx="3" fill="#7b6fd6"><title>Compilation error: 2</title></rect>
+<text class="node-label" x="835.6" y="120.0" text-anchor="start">Compilation error (2)</text>
+<rect x="812.6" y="128.0" width="18" height="36.0" rx="3" fill="#d55e00"><title>Runtime error: 6</title></rect>
+<text class="node-label" x="835.6" y="142.0" text-anchor="start">Runtime error (6)</text>
+<text class="stage" x="985.7" y="76">turn 5</text>
+<rect x="997.7" y="108.0" width="18" height="24.0" rx="3" fill="#7b6fd6"><title>Compilation error: 4</title></rect>
+<text class="node-label" x="1020.7" y="122.0" text-anchor="start">Compilation error (4)</text>
+<rect x="997.7" y="140.0" width="18" height="18.0" rx="3" fill="#d55e00"><title>Runtime error: 3</title></rect>
+<text class="node-label" x="1020.7" y="154.0" text-anchor="start">Runtime error (3)</text>
+<rect x="997.7" y="166.0" width="18" height="6.0" rx="3" fill="#e4a72b"><title>Numerical error: 1</title></rect>
+<text class="node-label" x="1020.7" y="172.0" text-anchor="start">Numerical error (1)</text>
+<text class="stage" x="1170.9" y="76">turn 6</text>
+<rect x="1182.9" y="108.0" width="18" height="18.0" rx="3" fill="#7b6fd6"><title>Compilation error: 3</title></rect>
+<text class="node-label" x="1205.9" y="122.0" text-anchor="start">Compilation error (3)</text>
+<rect x="1182.9" y="134.0" width="18" height="30.0" rx="3" fill="#d55e00"><title>Runtime error: 5</title></rect>
+<text class="node-label" x="1205.9" y="148.0" text-anchor="start">Runtime error (5)</text>
+<text class="stage" x="1356.0" y="76">turn 7</text>
+<rect x="1368.0" y="108.0" width="18" height="48.0" rx="3" fill="#d55e00"><title>Runtime error: 8</title></rect>
+<text class="node-label" x="1361.0" y="122.0" text-anchor="end">Runtime error (8)</text>
+</svg>

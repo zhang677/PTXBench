@@ -1,0 +1,14 @@
+{
+  "index": 0,
+  "status": "ok",
+  "returncode": 0,
+  "elapsed_seconds": 48.332,
+  "kernel": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128/kernels/exp_001/kernel_t5.cu",
+  "category": "Runtime error",
+  "exp": "exp_001",
+  "turn": 5,
+  "original_message": "CUDA error misaligned address at /root/.cache/flashinfer_bench/cache/tvm_ffi/tvm_ffi_eval_kernel_c9d4dc3e_c9d4dc/kernel.cu:666",
+  "trace_path": "/home/ubuntu/AccRL/fib_runtime/multiturn/improve_debug/trial_test_replay_outputs/runtime_first5/000_runtime_error_exp_001_t5.traces.json",
+  "stdout_path": "/home/ubuntu/AccRL/fib_runtime/multiturn/improve_debug/trial_test_replay_outputs/runtime_first5/000_runtime_error_exp_001_t5.stdout",
+  "stderr_path": "/home/ubuntu/AccRL/fib_runtime/multiturn/improve_debug/trial_test_replay_outputs/runtime_first5/000_runtime_error_exp_001_t5.stderr"
+}

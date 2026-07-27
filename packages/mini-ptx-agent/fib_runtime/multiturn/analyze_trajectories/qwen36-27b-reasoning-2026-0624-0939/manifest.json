@@ -1,0 +1,107 @@
+{
+  "baseline_model": "Qwen3.6-27B",
+  "collection_counts": {
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345": {
+      "turn_rows": 560
+    },
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm": {
+      "turn_rows": 160
+    },
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128": {
+      "turn_rows": 160
+    },
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal": {
+      "turn_rows": 160
+    },
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128": {
+      "turn_rows": 160
+    },
+    "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal": {
+      "turn_rows": 160
+    },
+    "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128": {
+      "turn_rows": 160
+    },
+    "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal": {
+      "turn_rows": 160
+    },
+    "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128": {
+      "turn_rows": 160
+    },
+    "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal": {
+      "turn_rows": 160
+    }
+  },
+  "definitions": [
+    "gemm_n7168_k5120",
+    "mha_bwd_d128",
+    "mha_bwd_d128_causal",
+    "mha_with_lse_d128",
+    "mha_with_lse_d128_causal"
+  ],
+  "mha_reports": {
+    "mha_bwd_d128": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/mha_eval_reports/mha_bwd_d128.md",
+    "mha_bwd_d128_causal": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/mha_eval_reports/mha_bwd_d128_causal.md",
+    "mha_with_lse_d128": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/mha_eval_reports/mha_with_lse_d128.md",
+    "mha_with_lse_d128_causal": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/mha_eval_reports/mha_with_lse_d128_causal.md"
+  },
+  "outputs": {
+    "aggregate_csv": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/reasoning_aggregates.csv",
+    "aligned_delta_csv": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/aligned_turn_deltas.csv",
+    "manifest_json": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/manifest.json",
+    "mha_reports_dir": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/mha_eval_reports",
+    "paired_runs_csv": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/paired_registry_rows.csv",
+    "per_turn_csv": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/reasoning_turns.csv",
+    "summary_md": "/home/ubuntu/AccRL/fib_runtime/multiturn/analyze_trajectories/qwen36-27b-reasoning-2026-0624-0939/reasoning_summary.md"
+  },
+  "paired_runs": [
+    {
+      "arch": "hopper",
+      "baseline_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345",
+      "baseline_model": "Qwen3.6-27B",
+      "definition": "gemm_n7168_k5120",
+      "sft_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm",
+      "sft_model": "Qwen3.6-27B-fixit-v2-glm",
+      "workload": "94920358-01a8-4c5b-9209-3103fd490e94"
+    },
+    {
+      "arch": "hopper",
+      "baseline_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128",
+      "baseline_model": "Qwen3.6-27B",
+      "definition": "mha_bwd_d128",
+      "sft_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128",
+      "sft_model": "Qwen3.6-27B-fixit-v2-glm",
+      "workload": "38c3b07c-f006-5f5e-9860-ba214c805a6b"
+    },
+    {
+      "arch": "hopper",
+      "baseline_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal",
+      "baseline_model": "Qwen3.6-27B",
+      "definition": "mha_bwd_d128_causal",
+      "sft_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal",
+      "sft_model": "Qwen3.6-27B-fixit-v2-glm",
+      "workload": "c119b3f0-c051-5e96-9c2a-2268d992fe1a"
+    },
+    {
+      "arch": "hopper",
+      "baseline_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128",
+      "baseline_model": "Qwen3.6-27B",
+      "definition": "mha_with_lse_d128",
+      "sft_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128",
+      "sft_model": "Qwen3.6-27B-fixit-v2-glm",
+      "workload": "bc38b351-d595-451b-9153-8e225702e53b"
+    },
+    {
+      "arch": "hopper",
+      "baseline_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal",
+      "baseline_model": "Qwen3.6-27B",
+      "definition": "mha_with_lse_d128_causal",
+      "sft_exp_dir": "/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal",
+      "sft_model": "Qwen3.6-27B-fixit-v2-glm",
+      "workload": "6d2f67a7-225a-4af5-87d3-cbb99b496325"
+    }
+  ],
+  "sft_model": "Qwen3.6-27B-fixit-v2-glm",
+  "sft_run_fragment": "2026-0624-0939",
+  "turn_limit": null
+}

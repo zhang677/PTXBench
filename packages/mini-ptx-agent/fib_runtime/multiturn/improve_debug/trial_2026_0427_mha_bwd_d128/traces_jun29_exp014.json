@@ -1,0 +1,71 @@
+[
+  {
+    "definition": "mha_bwd_d128",
+    "workload": {
+      "axes": {
+        "B": 4,
+        "H": 48,
+        "S": 4096,
+        "d": 128
+      },
+      "inputs": {
+        "Q": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "Q"
+        },
+        "K": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "K"
+        },
+        "V": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "V"
+        },
+        "O": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "O"
+        },
+        "dO": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "dO"
+        },
+        "L": {
+          "type": "safetensors",
+          "path": "./blob/workloads/attention/mha_bwd_d128/mha_bwd_d128_38c3b07cf0065f5e9860ba214c805a6b.safetensors",
+          "tensor_key": "L"
+        }
+      },
+      "uuid": "38c3b07c-f006-5f5e-9860-ba214c805a6b",
+      "outputs": null
+    },
+    "solution": "eval_kernel_90bd2966",
+    "evaluation": {
+      "status": "PASSED",
+      "environment": {
+        "hardware": "NVIDIA H100 80GB HBM3",
+        "libs": {
+          "torch": "2.12.1+cu130",
+          "triton": "3.7.1",
+          "cuda": "13.0"
+        }
+      },
+      "timestamp": "2026-07-02T01:28:13.649888",
+      "log": "kernel.cu(296): warning #177-D: variable \"global_row\" was declared but never referenced\n              int global_row = i * 64 + lm;\n                  ^\n\nRemark: The warnings can be suppressed with \"-diag-suppress <warning-number>\"\n\nkernel.cu(182): warning #177-D: variable \"smem_K1\" was declared but never referenced\n      __nv_bfloat16* smem_K1 = (__nv_bfloat16*)(smem_pool + 40960);\n                     ^\n\nkernel.cu(184): warning #177-D: variable \"smem_V1\" was declared but never referenced\n      __nv_bfloat16* smem_V1 = (__nv_bfloat16*)(smem_pool + 57344);\n                     ^\n\nkernel.cu(370): warning #177-D: variable \"smem_Q1\" was declared but never referenced\n      __nv_bfloat16* smem_Q1 = (__nv_bfloat16*)(smem_pool + 8192);\n                     ^\n\nkernel.cu(372): warning #177-D: variable \"smem_dO1\" was declared but never referenced\n      __nv_bfloat16* smem_dO1 = (__nv_bfloat16*)(smem_pool + 24576);\n                     ^\n\nkernel.cu(376): warning #177-D: variable \"smem_V1\" was declared but never referenced\n      __nv_bfloat16* smem_V1 = (__nv_bfloat16*)(smem_pool + 57344);\n                     ^\n\nptxas info    : (C7519) warpgroup.arrive is injected in around line 7348 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_cuda18backward_dQ_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16iiiif'\nptxas info    : (C7519) warpgroup.arrive is injected in around line 7529 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_cuda18backward_dQ_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16iiiif'\nptxas info    : (C7519) warpgroup.arrive is injected in around line 1624 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_cuda20backward_dKdV_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_iiiif'\nptxas info    : (C7519) warpgroup.arrive is injected in around line 1805 by compiler to allow use of registers in GMMA in function '_ZN12tvm_ffi_cuda20backward_dKdV_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_iiiif'\nptxas info    : 0 bytes gmem\nptxas info    : Compiling entry function '_ZN12tvm_ffi_cuda18backward_dQ_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16iiiif' for 'sm_90a'\nptxas info    : Function properties for _ZN12tvm_ffi_cuda18backward_dQ_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16iiiif\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 200 registers, used 1 barriers\nptxas info    : Compile time = 140.840 ms\nptxas info    : Compiling entry function '_ZN12tvm_ffi_cuda20backward_dKdV_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_iiiif' for 'sm_90a'\nptxas info    : Function properties for _ZN12tvm_ffi_cuda20backward_dKdV_kernelE14CUtensorMap_stS0_S0_S0_PKfS2_P13__nv_bfloat16S4_iiiif\n    144 bytes stack frame, 172 bytes spill stores, 172 bytes spill loads\nptxas info    : Used 255 registers, used 1 barriers, 144 bytes cumulative stack size\nptxas info    : Compile time = 224.425 ms\nptxas info    : Compiling entry function '_ZN12tvm_ffi_cuda16compute_D_kernelEPK13__nv_bfloat16S2_Pfiiii' for 'sm_90a'\nptxas info    : Function properties for _ZN12tvm_ffi_cuda16compute_D_kernelEPK13__nv_bfloat16S2_Pfiiii\n    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads\nptxas info    : Used 32 registers, used 0 barriers\nptxas info    : Compile time = 7.649 ms\n\n/workspace/flashinfer-bench-private/flashinfer_bench/bench/timing.py:74: UserWarning: CUPTI is not installed. Try 'pip install -U cupti-python'. Falling back to CUDA events for benchmarking.\n  times = bench_gpu_time_with_cupti(\n",
+      "correctness": {
+        "max_relative_error": 49.037288665771484,
+        "max_absolute_error": 0.0009765625,
+        "extra": null
+      },
+      "performance": {
+        "latency_ms": 20.14840030670166,
+        "reference_latency_ms": 7.827440023422241,
+        "speedup_factor": 0.3884894038371233
+      }
+    }
+  }
+]

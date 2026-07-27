@@ -1,0 +1,88 @@
+[
+  {
+    "name": "kb_tall_skinny_matmul_m_much_greater_n",
+    "op_type": "gemm",
+    "description": "Tall-skinny matrix multiplication where M >> N. This pattern benefits from split-K or stream-K optimizations to parallelize across the tall dimension. Input A is shape (M, K), B is shape (K, N), output is (M, N).",
+    "tags": ["source:kernelbench", "level:1", "pattern:tall-skinny"],
+    "axes": {
+      "M": {
+        "type": "var",
+        "description": "Number of rows in A (much larger than N)"
+      },
+      "K": {
+        "type": "var",
+        "description": "Inner dimension (columns of A, rows of B)"
+      },
+      "N": {
+        "type": "var",
+        "description": "Number of columns in B (much smaller than M)"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["M", "K"],
+        "dtype": "bfloat16"
+      },
+      "B": {
+        "shape": ["K", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "C": {
+        "shape": ["M", "N"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, B):\n    return torch.matmul(A, B)\n",
+    "workload_ranges": {
+      "M": [8192, 16384, 32768, 65536],
+      "K": [512, 1024, 2048, 4096],
+      "N": [16, 32, 64, 128]
+    }
+  },
+  {
+    "name": "kb_tall_skinny_matmul_n_much_greater_m",
+    "op_type": "gemm",
+    "description": "Tall-skinny matrix multiplication where N >> M (transpose variant). Input A is shape (K, M), B is shape (N, K), output is (N, M). This is the transposed version where the second matrix is tall.",
+    "tags": ["source:kernelbench", "level:1", "pattern:tall-skinny"],
+    "axes": {
+      "M": {
+        "type": "var",
+        "description": "Number of columns in A (much smaller than N)"
+      },
+      "K": {
+        "type": "var",
+        "description": "Inner dimension (rows of A, columns of B)"
+      },
+      "N": {
+        "type": "var",
+        "description": "Number of rows in B (much larger than M)"
+      }
+    },
+    "inputs": {
+      "A": {
+        "shape": ["K", "M"],
+        "dtype": "bfloat16"
+      },
+      "B": {
+        "shape": ["N", "K"],
+        "dtype": "bfloat16"
+      }
+    },
+    "outputs": {
+      "C": {
+        "shape": ["N", "M"],
+        "dtype": "bfloat16"
+      }
+    },
+    "constraints": [],
+    "reference": "import torch\n\n@torch.no_grad()\ndef run(A, B):\n    return torch.matmul(B, A)\n",
+    "workload_ranges": {
+      "M": [16, 32, 64, 128],
+      "K": [512, 1024, 2048, 4096],
+      "N": [8192, 16384, 32768, 65536]
+    }
+  }
+]
