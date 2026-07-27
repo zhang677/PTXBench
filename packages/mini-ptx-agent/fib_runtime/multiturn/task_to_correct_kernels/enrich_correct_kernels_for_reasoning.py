@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -151,8 +152,8 @@ def feedback_raw_output(trajectory_path: Path, turn: int) -> str:
 
 
 def enrich_row(row: dict[str, str]) -> dict[str, str]:
-    exp_dir = Path(row["exp_dir"]).expanduser()
-    kernel_path = Path(row["kernel_path"]).expanduser()
+    exp_dir = Path(os.path.expandvars(row["exp_dir"])).expanduser()
+    kernel_path = Path(os.path.expandvars(row["kernel_path"])).expanduser()
     trajectory_id, turn = parse_kernel_identity(kernel_path)
     prompt_tag = prompt_tag_from_plan(exp_dir, trajectory_id)
     turn_row = turn_csv_row(exp_dir, trajectory_id, turn)

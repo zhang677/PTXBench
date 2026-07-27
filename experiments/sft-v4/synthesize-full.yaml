@@ -1,0 +1,16 @@
+input_csv: ${SFT_V4_PROJECT}/correct-kernels.enriched.csv
+output_jsonl: ${SFT_V4_PROJECT}/reasoning_pairs.jsonl
+provenance_json: ${SFT_V4_PROJECT}/provenance.json
+name: gemini_hopper_mha_correct_kernel_reasoning
+description: Correct-kernel reasoning synthesis using latest prompt-tag base knowledge and one correct kernel.
+reasoning_model: openrouter/z-ai/glm-5.2
+prompt_version: v1_correct_kernel_adopted
+max_tokens: 131072
+min_reasoning_chars: 200
+max_reasoning_chars: 190000
+temperature: 1.0
+top_p: 0.95
+max_concurrent: 8
+timeout: 600.0
+limit:
+overwrite: false

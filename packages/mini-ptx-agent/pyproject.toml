@@ -19,7 +19,7 @@ dependencies = [
   "numpy>=2.0",
   "openai>=2.0",
   "pandas>=2.2",
-  "pyarrow>=19",
+  "pyarrow==23.0.1",
   "pyyaml>=6.0",
   "requests>=2.32",
   "safetensors>=0.7",

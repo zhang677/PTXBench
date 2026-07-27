@@ -21,9 +21,17 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_NOTES_JSONL = Path(
-    "/home/ubuntu/AccRL-exps/tasks/collect_notes/outputs/"
-    "mha-d128-4def-kernel-fix-notes-full/notes.jsonl"
+_MINI_PTX_AGENT_ROOT = Path(__file__).resolve().parents[3]
+_PTXBENCH_DATA_ROOT = Path(
+    os.environ.get("PTXBENCH_DATA_ROOT", _MINI_PTX_AGENT_ROOT.parents[1] / "data")
+).expanduser()
+DEFAULT_NOTES_JSONL = (
+    _PTXBENCH_DATA_ROOT
+    / "tasks"
+    / "collect_notes"
+    / "outputs"
+    / "mha-d128-4def-kernel-fix-notes-full"
+    / "notes.jsonl"
 )
 
 TOKEN_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*|\d+")

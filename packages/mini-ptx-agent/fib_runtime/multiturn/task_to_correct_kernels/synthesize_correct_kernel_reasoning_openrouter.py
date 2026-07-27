@@ -9,8 +9,8 @@ task message, and one correct kernel.
 from __future__ import annotations
 
 import argparse
-import asyncio
 import ast
+import asyncio
 import csv
 import hashlib
 import json
@@ -21,17 +21,18 @@ import shlex
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import litellm
 import yaml
 
-
 LOGGER = logging.getLogger(__name__)
 
-REPO_ROOT = Path("/home/ubuntu/AccRL")
+REPO_ROOT = Path(
+    os.environ.get("MINI_PTX_AGENT_ROOT", Path(__file__).resolve().parents[3])
+).expanduser().resolve()
 MULTITURN_DIR = REPO_ROOT / "fib_runtime" / "multiturn"
 PROMPT_CONFIG_DIR = MULTITURN_DIR / "prompt_configs"
 HUB_PATH = PROMPT_CONFIG_DIR / "hub.json"
@@ -143,7 +144,7 @@ def read_csv_rows(path: Path) -> list[dict[str, str]]:
 def resolve_config_path(value: str | Path | None, *, base_dir: Path) -> Path | None:
     if value is None:
         return None
-    path = Path(value).expanduser()
+    path = Path(os.path.expandvars(str(value))).expanduser()
     if path.is_absolute():
         return path
     return base_dir / path
@@ -292,7 +293,7 @@ def prompt_cache_key(row: dict[str, str]) -> tuple[str, str]:
 
 
 def read_text(path_text: str, label: str) -> str:
-    path = Path(path_text).expanduser()
+    path = Path(os.path.expandvars(path_text)).expanduser()
     if not path.is_file():
         raise FileNotFoundError(f"missing {label}: {path}")
     return path.read_text(errors="replace")
@@ -302,7 +303,7 @@ def first_user_task_message(row: dict[str, str]) -> str:
     raw_path = row.get("trajectory_path", "").strip()
     if not raw_path:
         return ""
-    path = Path(raw_path).expanduser()
+    path = Path(os.path.expandvars(raw_path)).expanduser()
     if not path.is_file():
         raise FileNotFoundError(f"missing trajectory: {path}")
     data = read_json(path)
@@ -528,7 +529,7 @@ def write_provenance(config: ExperimentConfig, stats: dict[str, Any]) -> None:
     path = default_provenance_path(config)
     payload = {
         "run_name": config.name,
-        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "created_at_utc": datetime.now(UTC).isoformat(),
         "script": str(Path(__file__).resolve()),
         "cwd": str(Path.cwd()),
         "argv": sys.argv,

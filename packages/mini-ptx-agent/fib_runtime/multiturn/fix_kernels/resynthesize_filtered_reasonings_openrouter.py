@@ -141,7 +141,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def resolve_config_path(value: str | Path, *, base_dir: Path) -> Path:
-    path = Path(value).expanduser()
+    path = Path(os.path.expandvars(str(value))).expanduser()
     return path if path.is_absolute() else base_dir / path
 
 

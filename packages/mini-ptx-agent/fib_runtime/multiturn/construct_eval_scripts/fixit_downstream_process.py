@@ -26,11 +26,10 @@ import socket
 import subprocess
 import sys
 import time
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 from urllib.error import URLError
 from urllib.request import Request, urlopen
-
 
 MINI_PTX_AGENT_ROOT = Path(
     os.environ.get("MINI_PTX_AGENT_ROOT", Path(__file__).resolve().parents[3])
@@ -40,9 +39,7 @@ PTXBENCH_ROOT = Path(
 ).expanduser().resolve()
 EXPS = Path(os.environ.get("PTXBENCH_DATA_ROOT", PTXBENCH_ROOT / "data")).expanduser().resolve()
 ACCRL = MINI_PTX_AGENT_ROOT  # Compatibility name retained inside the ported implementation.
-TINKER_COOKBOOK_ROOT = Path(
-    os.environ.get("TINKER_COOKBOOK_ROOT", "/home/ubuntu/tinker-cookbook")
-).expanduser().resolve()
+DEFAULT_REMOTE_PYTHON = "/data02/tinker-cookbook/.venv/bin/python"
 DEFAULT_PROJECT = EXPS / "sft_experiments/test-fixit-qwen36-27b-gemini-glm"
 DEFAULT_RUNS = DEFAULT_PROJECT / "runs"
 DEFAULT_BASE_MODEL = "Qwen/Qwen3.6-27B"
@@ -356,27 +353,42 @@ def latest_run_dir(args: argparse.Namespace, *, min_mtime: float | None = None) 
     return candidates[-1]
 
 
+def build_train_command(args: argparse.Namespace, parquet: Path) -> list[str | Path]:
+    command: list[str | Path] = [
+        sys.executable,
+        ACCRL / "accrl/distill/sft/tinker_sft_train.py",
+        f"dataset_path={parquet}",
+        f"model_name={args.base_model}",
+        f"run_tag={args.train_run_tag}",
+        f"log_dir={args.runs_dir}",
+        "batch_size=2",
+        "max_length=65536",
+        "save_every=50",
+        "lora_rank=32",
+        "wandb_project=qwen36-27b",
+        "behavior_if_log_dir_exists=raise",
+    ]
+    if args.train_num_epochs is not None:
+        command.append(f"num_epochs={args.train_num_epochs}")
+    else:
+        command.append("num_epochs=5")
+    if args.train_learning_rate is not None:
+        command.append(f"learning_rate={args.train_learning_rate}")
+    else:
+        command.append("learning_rate=4.65e-4")
+    if args.train_load_checkpoint_path is not None:
+        command.append(f"load_checkpoint_path={args.train_load_checkpoint_path}")
+    return command
+
+
 def stage_train(args: argparse.Namespace) -> None:
     parquet = require_path(args.parquet, "--parquet")
     if not parquet.is_file():
         raise SystemExit(f"missing parquet: {parquet}")
-    train_command: list[str | Path] = [
-        "bash",
-        args.runs_dir / "run_qwen36-27b.sh",
-        "--dataset-path",
-        parquet,
-        "--run-tag",
-        args.train_run_tag,
-    ]
-    if args.train_num_epochs is not None:
-        train_command.extend(["--num-epochs", str(args.train_num_epochs)])
-    if args.train_learning_rate is not None:
-        train_command.extend(["--learning-rate", str(args.train_learning_rate)])
-    if args.train_load_checkpoint_path is not None:
-        train_command.extend(
-            ["--load-checkpoint-path", args.train_load_checkpoint_path]
-        )
-    command = quote_cmd(train_command)
+    if not os.environ.get("TINKER_API_KEY"):
+        raise SystemExit("TINKER_API_KEY must be set for the training stage")
+    args.runs_dir.mkdir(parents=True, exist_ok=True)
+    command = quote_cmd(build_train_command(args, parquet))
     runner = Runner(True)
     runner.tmux_new(args.train_session)
     runner.tmux_send(args.train_session, command)
@@ -443,6 +455,7 @@ def prepare_remote_model(
     container: str,
     checkpoints_jsonl: Path,
     base_model: str,
+    remote_python: str,
 ) -> str:
     copy_repo_to_container(
         runner,
@@ -451,25 +464,18 @@ def prepare_remote_model(
         ACCRL,
         "/data02/PTXBench/packages/mini-ptx-agent",
     )
-    copy_repo_to_container(
-        runner,
-        remote,
-        container,
-        TINKER_COOKBOOK_ROOT,
-        "/data02/tinker-cookbook",
-    )
     remote_checkpoint = transfer_checkpoint(runner, remote, container, checkpoints_jsonl)
     hf_output = f"{Path(remote_checkpoint).parent}/hf_merged_final"
     runner.remote(
         remote,
         (
             f"docker exec {container} bash -lc "
-            f"{shlex.quote('/data02/tinker-cookbook/.venv/bin/python -c \"import tinker, tinker_cookbook\"')}"
+            f"{shlex.quote(f'{remote_python} -c \"import tinker, tinker_cookbook\"')}"
         ),
     )
     downloader = (
         "export TINKER_API_KEY=$(cat /data02/TINKER_API_KEY); "
-        "/data02/tinker-cookbook/.venv/bin/python "
+        f"{shlex.quote(remote_python)} "
         "/data02/PTXBench/packages/mini-ptx-agent/accrl/distill/sft/tinker_download_weights.py "
         f"--checkpoints-jsonl {shlex.quote(remote_checkpoint)} "
         f"--hf-output {shlex.quote(hf_output)} "
@@ -799,6 +805,7 @@ def stage_serve(args: argparse.Namespace) -> None:
         container=args.container,
         checkpoints_jsonl=checkpoints_jsonl,
         base_model=args.base_model,
+        remote_python=args.remote_python,
     )
     start_sglang(
         runner,
@@ -881,6 +888,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--remote", default=env_text("REMOTE", DEFAULT_REMOTE))
     parser.add_argument("--container", default=env_text("CONTAINER", DEFAULT_CONTAINER))
+    parser.add_argument(
+        "--remote-python",
+        default=env_text("REMOTE_PYTHON", DEFAULT_REMOTE_PYTHON),
+        help="Python inside the serving container with tinker-cookbook installed.",
+    )
     parser.add_argument("--serve-session", default=env_text("SERVE_SESSION", "serve-fixit"))
     parser.add_argument("--tunnel-session", default=env_text("TUNNEL_SESSION", "connect-sglang-fixit"))
     parser.add_argument("--serve-timeout-s", type=int, default=int(env_text("SERVE_TIMEOUT_S", "1800")))

@@ -21,6 +21,7 @@ FIBServe remain separate runtime images even though users clone one repository.
 packages/mini-ptx-agent/  Agent, prompts, Fixit scripts, inspector, benchmark
 packages/fibserve/        GPU evaluation service
 configs/fixit-v6/         Portable Fixit-v6 prompt configurations
+experiments/              Public experiment index, launchers, and provenance
 docker/                   Agent, evaluator, FIBServe, and Compose definitions
 data/                     Local datasets and run artifacts (git-ignored)
 ```
@@ -81,7 +82,10 @@ test -d "$PTXBENCH_HEAVY_TRACESET_ROOT/workloads"
 docker compose -f docker/compose.yaml up --build fibserve
 ```
 
-The Fixit-v6 port lives at:
+The public experiment index starts at [`experiments/README.md`](experiments/README.md).
+The source/data boundary and release procedure are documented in
+[`RELEASING.md`](RELEASING.md).
+Fixit-v6's implementation lives at:
 
 ```text
 packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/fixit-v6-scripts
@@ -89,6 +93,13 @@ packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/fixit-v6-sc
 
 Use `scripts/smoke_fixit_v6.sh --check` for a non-mutating dependency and
 configuration preflight.
+
+Use `scripts/reproduce_fixit_v6.sh --check` to validate the complete eight-stage
+source closure and `--check-data` to validate the external 258-pair input
+bundle before a full run. The SFT-v4 dataset/training lineage is preserved
+separately under `experiments/sft-v4` and has the corresponding
+`scripts/reproduce_sft_v4.sh` entrypoint. `ptxbench-inspect` remains part of the
+supported CLI.
 
 For a live run, select a dedicated OpenAI-compatible model endpoint. PTXBench
 does not default to a shared model serve:

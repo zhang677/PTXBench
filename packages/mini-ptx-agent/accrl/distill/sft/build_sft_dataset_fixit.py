@@ -29,6 +29,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import random
 import statistics
 from collections import Counter
@@ -57,7 +58,13 @@ def file_sha256(path: Path) -> str:
 
 
 def resolve_path(value: str, *, base_dir: Path) -> Path:
-    path = Path(value).expanduser()
+    path = Path(os.path.expandvars(value)).expanduser()
+    data_root = os.environ.get("PTXBENCH_DATA_ROOT")
+    if data_root and "eval_runs" in path.parts:
+        eval_runs_index = path.parts.index("eval_runs")
+        relocated = Path(data_root).expanduser().joinpath(*path.parts[eval_runs_index:])
+        if relocated.exists():
+            return relocated
     if path.is_absolute():
         return path
     return base_dir / path
@@ -325,11 +332,11 @@ def build_row(
         "target_source_field": "reasoning",
         "target_format": TARGET_FORMAT,
         "teacher_hidden_thinking_available": bool((record.get("thinking") or "").strip()),
-        "wrong_trajectory_path": str(trajectory_path),
+        "wrong_trajectory_path": csv_row["wrong_trajectory_path"],
         "wrong_turn": wrong_turn,
-        "wrong_kernel_path": str(wrong_kernel_path),
-        "wrong_log_path": str(wrong_log_path),
-        "correct_kernel_path": str(correct_kernel_path),
+        "wrong_kernel_path": csv_row["wrong_kernel_path"],
+        "wrong_log_path": csv_row["wrong_log_path"],
+        "correct_kernel_path": csv_row["correct_kernel_path"],
         "system_prompt_sha256": sha256_text(system_prompt),
         "task_prompt_sha256": sha256_text(task_prompt),
         "wrong_assistant_sha256": sha256_text(wrong_assistant),

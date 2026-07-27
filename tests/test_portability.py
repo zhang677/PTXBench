@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import sys
+import tarfile
 from pathlib import Path
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 MINI_ROOT = ROOT / "packages" / "mini-ptx-agent"
 CONSTRUCT_ROOT = MINI_ROOT / "fib_runtime" / "multiturn" / "construct_eval_scripts"
 FIXIT_ROOT = CONSTRUCT_ROOT / "fixit-v6-scripts"
+SFT_V4_ROOT = ROOT / "experiments" / "sft-v4"
 
 
 def test_active_fixit_v6_sources_have_no_legacy_absolute_roots() -> None:
@@ -19,6 +23,14 @@ def test_active_fixit_v6_sources_have_no_legacy_absolute_roots() -> None:
         MINI_ROOT / "fib_runtime" / "multiturn" / "run_parallel_v2.py",
         MINI_ROOT / "fib_runtime" / "multiturn" / "common.py",
         MINI_ROOT / "accrl" / "distill" / "inspector.py",
+        MINI_ROOT / "accrl" / "distill" / "sft" / "build_sft_dataset_sft_v4.py",
+        MINI_ROOT
+        / "fib_runtime"
+        / "multiturn"
+        / "task_to_correct_kernels"
+        / "synthesize_correct_kernel_reasoning_openrouter.py",
+        MINI_ROOT / "fib_runtime" / "multiturn" / "collect_notes" / "note_feedback.py",
+        *SFT_V4_ROOT.glob("*.sh"),
     ]
     legacy_roots = ("/home/ubuntu/AccRL", "/home/ubuntu/AccRL-exps")
     for path in paths:
@@ -59,3 +71,370 @@ def test_compose_uses_explicit_read_only_traceset_mounts() -> None:
     assert ":/workspace/accrl-training:ro" in compose
     assert ":/workspace/accrl-training-heavy:ro" in compose
     assert ("DATASET_ROOTS: /workspace/accrl-training:/workspace/accrl-training-heavy") in compose
+
+
+def test_complete_fixit_v6_source_preflight() -> None:
+    subprocess.run(
+        ["bash", str(ROOT / "scripts" / "reproduce_fixit_v6.sh"), "--check"],
+        cwd=ROOT,
+        env={
+            **os.environ,
+            "PTXBENCH_ROOT": str(ROOT),
+            "MINI_PTX_AGENT_ROOT": str(MINI_ROOT),
+            "PTXBENCH_DATA_ROOT": str(ROOT / "data"),
+        },
+        check=True,
+    )
+
+
+def test_complete_sft_v4_source_preflight() -> None:
+    subprocess.run(
+        ["bash", str(ROOT / "scripts" / "reproduce_sft_v4.sh"), "--check"],
+        cwd=ROOT,
+        env={
+            **os.environ,
+            "PTXBENCH_ROOT": str(ROOT),
+            "MINI_PTX_AGENT_ROOT": str(MINI_ROOT),
+            "PTXBENCH_DATA_ROOT": str(ROOT / "data"),
+        },
+        check=True,
+    )
+
+
+def test_sft_v4_provenance_closure_is_present() -> None:
+    provenance = json.loads((SFT_V4_ROOT / "provenance.json").read_text())
+    assert provenance["artifact"]["rows"] == 494
+    assert provenance["artifact"]["built_rows_before_max_token_filter"] == 521
+    assert provenance["artifact"]["max_token_filtered_rows"] == 27
+    assert provenance["artifact"]["message_roles"] == ["system", "user", "assistant"]
+    for relative_path in provenance["required_source_files"]:
+        assert (ROOT / relative_path).is_file(), relative_path
+    assert (MINI_ROOT / "accrl" / "distill" / "inspector.py").is_file()
+    assert 'ptxbench-inspect = "accrl.distill.inspector:app"' in (
+        MINI_ROOT / "pyproject.toml"
+    ).read_text()
+
+
+def test_sft_v4_builder_uses_first_prompt_and_selected_answer(
+    tmp_path: Path, monkeypatch
+) -> None:
+    sys.path.insert(0, str(MINI_ROOT))
+    from accrl.distill.sft.build_sft_dataset_sft_v4 import convert_record
+
+    monkeypatch.setenv("PTXBENCH_DATA_ROOT", str(tmp_path))
+    trajectory = tmp_path / "trajectory.json"
+    trajectory.write_text(
+        json.dumps(
+            {
+                "messages": [
+                    {"role": "system", "content": "base knowledge"},
+                    {"role": "user", "content": "kernel task"},
+                    {"role": "assistant", "content": "wrong first answer"},
+                    {"role": "user", "content": "feedback"},
+                    {"role": "assistant", "content": "selected correct answer"},
+                ]
+            }
+        )
+    )
+    row = convert_record(
+        {
+            "reasoning": "derive the selected kernel",
+            "metadata": {
+                "trajectory_path": "${PTXBENCH_DATA_ROOT}/trajectory.json",
+                "turn": 1,
+                "run_id": "run",
+                "trajectory_id": "exp_000",
+                "definition_name": "mha",
+            },
+        },
+        reasoning_field="reasoning",
+        include_distill_system=False,
+    )
+    assert [message["role"] for message in row["messages"]] == [
+        "system",
+        "user",
+        "assistant",
+    ]
+    assert row["messages"][0]["content"] == "base knowledge"
+    assert row["messages"][1]["content"] == "kernel task"
+    assert row["messages"][2]["content"] == (
+        "<think>\nderive the selected kernel\n</think>\nselected correct answer"
+    )
+
+
+def test_sft_v4_bundle_csv_paths_are_relocatable(tmp_path: Path) -> None:
+    import csv
+    import importlib.util
+
+    data_root = tmp_path / "legacy-data"
+    mini_root = tmp_path / "legacy-mini"
+    source = tmp_path / "enriched.csv"
+    fieldnames = [
+        "exp_dir",
+        "test_path",
+        "kernel_path",
+        "correct_kernel_path",
+        "turn_csv",
+        "trajectory_path",
+    ]
+    with source.open("w", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow(
+            {
+                "exp_dir": data_root / "eval_runs" / "run",
+                "test_path": mini_root / "fib_runtime" / "test.py",
+                "kernel_path": data_root / "eval_runs" / "run" / "kernel.cu",
+                "correct_kernel_path": data_root
+                / "eval_runs"
+                / "run"
+                / "kernel.cu",
+                "turn_csv": data_root / "eval_runs" / "run" / "turn.csv",
+                "trajectory_path": data_root / "eval_runs" / "run" / "exp.json",
+            }
+        )
+
+    script = ROOT / "scripts" / "build_sft_v4_data_bundle.py"
+    spec = importlib.util.spec_from_file_location("sft_v4_bundle", script)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    rewritten = module.portable_csv(
+        source, data_root=data_root, mini_root=mini_root
+    ).decode()
+    assert "${PTXBENCH_DATA_ROOT}/eval_runs/run/kernel.cu" in rewritten
+    assert "${MINI_PTX_AGENT_ROOT}/fib_runtime/test.py" in rewritten
+
+
+def test_training_stage_has_no_untracked_run_script_dependency() -> None:
+    downstream = (CONSTRUCT_ROOT / "fixit_downstream_process.py").read_text()
+    assert "run_qwen36-27b.sh" not in downstream
+    assert "/home/ubuntu/tinker-cookbook" not in downstream
+    assert "--remote-python" in downstream
+    assert "accrl/distill/sft/tinker_sft_train.py" in downstream
+
+    sys.path.insert(0, str(CONSTRUCT_ROOT))
+    from fixit_downstream_process import build_train_command
+
+    command = [
+        str(part)
+        for part in build_train_command(
+            SimpleNamespace(
+                base_model="Qwen/Qwen3.6-27B",
+                train_run_tag="published-run",
+                runs_dir=Path("/tmp/published-runs"),
+                train_num_epochs=5,
+                train_learning_rate=4.65e-4,
+                train_load_checkpoint_path=None,
+            ),
+            Path("/tmp/published.parquet"),
+        )
+    ]
+    assert "dataset_path=/tmp/published.parquet" in command
+    assert "model_name=Qwen/Qwen3.6-27B" in command
+    assert "num_epochs=5" in command
+    assert "learning_rate=0.000465" in command
+    assert "behavior_if_log_dir_exists=raise" in command
+
+
+def test_fixit_path_resolver_expands_release_environment(
+    tmp_path: Path, monkeypatch
+) -> None:
+    sys.path.insert(0, str(MINI_ROOT))
+    from accrl.distill.sft.build_sft_dataset_fixit import resolve_path
+    from fib_runtime.multiturn.fix_kernels.synthesize_pair_reasoning_openrouter import (
+        data_path,
+    )
+
+    monkeypatch.setenv("PTXBENCH_DATA_ROOT", str(tmp_path))
+    portable_path = "${PTXBENCH_DATA_ROOT}/eval_runs/example/kernel.cu"
+    expected = tmp_path / "eval_runs" / "example" / "kernel.cu"
+    expected.parent.mkdir(parents=True)
+    expected.write_text("kernel")
+    assert resolve_path(portable_path, base_dir=Path("/unused")) == expected
+    assert data_path(portable_path) == expected
+
+    historical_path = "/old/release/root/eval_runs/example/kernel.cu"
+    assert resolve_path(historical_path, base_dir=Path("/unused")) == expected
+    assert data_path(historical_path) == expected
+
+
+def test_fixit_builder_preserves_archival_paths_while_reading_relocated_data(
+    tmp_path: Path, monkeypatch
+) -> None:
+    sys.path.insert(0, str(MINI_ROOT))
+    from accrl.distill.sft.build_sft_dataset_fixit import build_row
+
+    monkeypatch.setenv("PTXBENCH_DATA_ROOT", str(tmp_path))
+    run = tmp_path / "eval_runs" / "run"
+    wrong_kernel = run / "kernels" / "exp_001" / "kernel_t0.cu"
+    wrong_log = run / "kernels" / "exp_001" / "log_t0.txt"
+    trajectory = run / "trajectories" / "exp_001.json"
+    correct_kernel = run / "success" / "exp_001" / "kernel_v0.cu"
+    for path, content in (
+        (wrong_kernel, "wrong kernel"),
+        (wrong_log, "wrong feedback"),
+        (correct_kernel, "correct kernel"),
+    ):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content)
+    trajectory.parent.mkdir(parents=True, exist_ok=True)
+    trajectory.write_text(
+        json.dumps(
+            {
+                "messages": [
+                    {"role": "system", "content": "system"},
+                    {"role": "user", "content": "task"},
+                    {"role": "assistant", "content": "wrong answer"},
+                    {"role": "user", "content": "evaluation"},
+                ]
+            }
+        )
+    )
+    historical_root = Path("/old/release/root/eval_runs/run")
+    csv_row = {
+        "exp_dir": str(historical_root),
+        "trajectory_id": "exp_001",
+        "wrong_kernel_path": str(
+            historical_root / "kernels" / "exp_001" / "kernel_t0.cu"
+        ),
+        "wrong_log_path": str(
+            historical_root / "kernels" / "exp_001" / "log_t0.txt"
+        ),
+        "wrong_trajectory_path": str(
+            historical_root / "trajectories" / "exp_001.json"
+        ),
+        "wrong_turn": "0",
+        "correct_kernel_path": str(
+            historical_root / "success" / "exp_001" / "kernel_v0.cu"
+        ),
+        "correct_kernel_version": "0",
+    }
+    row = build_row(
+        record={
+            "reasoning": "repair reasoning",
+            "metadata": {"correct_kernel_path": csv_row["correct_kernel_path"]},
+        },
+        csv_row=csv_row,
+        csv_dir=tmp_path,
+        source_label="test",
+    )
+    assert row["metadata"]["correct_kernel_path"] == csv_row["correct_kernel_path"]
+    assert row["metadata"]["wrong_trajectory_path"] == csv_row[
+        "wrong_trajectory_path"
+    ]
+    assert [message["content"] for message in row["messages"]] == [
+        "system",
+        "task",
+        "wrong answer",
+        "evaluation",
+        "<think>\nrepair reasoning\n</think>\n\n```cpp\ncorrect kernel\n```",
+    ]
+
+
+def test_fixit_data_bundle_rewrites_paths_and_includes_implicit_inputs(
+    tmp_path: Path,
+) -> None:
+    data_root = tmp_path / "legacy-data"
+    mini_root = tmp_path / "legacy-mini"
+    project = data_root / "sft_experiments" / "fixit"
+    correct_run = data_root / "eval_runs" / "correct"
+    wrong_run = data_root / "eval_runs" / "wrong"
+    test_path = mini_root / "fib_runtime" / "multiturn" / "test.py"
+    paths = {
+        "test_path": test_path,
+        "wrong_kernel_path": wrong_run / "kernels" / "exp_002" / "kernel_t0.cu",
+        "wrong_log_path": wrong_run / "kernels" / "exp_002" / "log_t0.txt",
+        "wrong_trajectory_path": wrong_run / "trajectories" / "exp_002.json",
+        "correct_kernel_path": correct_run / "success" / "exp_001" / "kernel_v0.cu",
+        "plan_path": correct_run / "plan.json",
+        "turn_csv": correct_run / "figures" / "turn_correctness_arch.csv",
+    }
+    implicit_paths = (
+        correct_run / "trajectories" / "exp_001.json",
+        correct_run / "success" / "exp_001" / "record.json",
+    )
+    for path in (*paths.values(), *implicit_paths):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"fixture for {path.name}\n")
+
+    pairs_csv = project / "fixit-v5-gemini-kernel-pairs.csv"
+    pairs_csv.parent.mkdir(parents=True)
+    fieldnames = [
+        "exp_dir",
+        "arch",
+        "definition",
+        "test_path",
+        "trajectory_id",
+        "prompt_tag",
+        "arch_tag",
+        "wrong_kernel_path",
+        "wrong_log_path",
+        "wrong_trajectory_path",
+        "wrong_turn",
+        "correct_kernel_path",
+        "correct_kernel_version",
+        "plan_path",
+        "turn_csv",
+    ]
+    import csv
+
+    with pairs_csv.open("w", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow(
+            {
+                "exp_dir": correct_run,
+                "arch": "hopper",
+                "definition": "test",
+                "test_path": test_path,
+                "trajectory_id": "exp_001",
+                "prompt_tag": "hopper-00",
+                "arch_tag": "H",
+                "wrong_kernel_path": paths["wrong_kernel_path"],
+                "wrong_log_path": paths["wrong_log_path"],
+                "wrong_trajectory_path": paths["wrong_trajectory_path"],
+                "wrong_turn": 0,
+                "correct_kernel_path": paths["correct_kernel_path"],
+                "correct_kernel_version": 0,
+                "plan_path": paths["plan_path"],
+                "turn_csv": paths["turn_csv"],
+            }
+        )
+
+    archive_path = tmp_path / "fixit-data.tar.gz"
+    subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts" / "build_fixit_v6_data_bundle.py"),
+            "--pairs-csv",
+            str(pairs_csv),
+            "--data-root",
+            str(data_root),
+            "--mini-agent-root",
+            str(mini_root),
+            "--output",
+            str(archive_path),
+        ],
+        cwd=ROOT,
+        check=True,
+    )
+
+    with tarfile.open(archive_path) as archive:
+        names = set(archive.getnames())
+        portable_csv = archive.extractfile(
+            "ptxbench-data/sft_experiments/fixit/fixit-v5-gemini-kernel-pairs.csv"
+        )
+        assert portable_csv is not None
+        portable_text = portable_csv.read().decode()
+    assert "${PTXBENCH_DATA_ROOT}/eval_runs/correct" in portable_text
+    assert (
+        "${MINI_PTX_AGENT_ROOT}/fib_runtime/multiturn/test.py" in portable_text
+    )
+    assert (
+        "ptxbench-data/eval_runs/correct/trajectories/exp_001.json" in names
+    )
+    assert (
+        "ptxbench-data/eval_runs/correct/success/exp_001/record.json" in names
+    )
+    assert "ptxbench-data/fixit-v6-source-manifest.json" in names

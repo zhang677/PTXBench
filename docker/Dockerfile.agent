@@ -25,9 +25,10 @@ WORKDIR /workspace/PTXBench
 COPY pyproject.toml uv.lock README.md ./
 COPY packages packages
 COPY configs configs
+COPY experiments experiments
 COPY scripts scripts
 
-RUN uv sync --frozen --package mini-ptx-agent --no-dev \
+RUN uv sync --frozen --package mini-ptx-agent --extra training --no-dev \
     && rm -rf "$UV_CACHE_DIR"
 
 ENV PATH="/opt/ptxbench-venv/bin:${PATH}"

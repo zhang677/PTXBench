@@ -5,10 +5,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../ptxbench_paths.sh"
 
-PROJECT="$PTXBENCH_FIXIT_PROJECT"
+PROJECT="${PROJECT:-$PTXBENCH_FIXIT_PROJECT}"
 RUNS_DIR="$PROJECT/runs"
-TRAIN_RUN_TAG="qwen36-27b-qwen36-fixit-v6-full-e5-lr4.65e-4-lora32"
-MODEL_PREFIX="qwen36-27b-SFT"
+TRAIN_RUN_TAG="${TRAIN_RUN_TAG:-qwen36-27b-qwen36-fixit-v6-full-e5-lr4.65e-4-lora32}"
+MODEL_PREFIX="${MODEL_PREFIX:-qwen36-27b-SFT}"
+RUN_SUFFIX="${RUN_SUFFIX:-fixit-v6-full-patched}"
 if [[ -z "${BASE_RUN_DATE:-}" ]]; then
   BASE_RUN_DATE="$(python - "$RUNS_DIR" "$TRAIN_RUN_TAG" <<'PY'
 import re
@@ -32,7 +33,7 @@ print(f"{year}-{month}{day}-{hour}{minute}")
 PY
   )"
 fi
-RUN_DATE="${RUN_DATE:-$BASE_RUN_DATE-fixit-v6-full-patched}"
+RUN_DATE="${RUN_DATE:-$BASE_RUN_DATE-$RUN_SUFFIX}"
 MODEL_NAME="${MODEL_NAME:-$MODEL_PREFIX-$BASE_RUN_DATE}"
 SERVICE_URL="${SERVICE_URL:-http://localhost:10002}"
 ACCRL_MODEL_HOST="${ACCRL_MODEL_HOST:-localhost:30052}"

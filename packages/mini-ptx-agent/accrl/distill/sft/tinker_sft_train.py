@@ -1,18 +1,14 @@
-"""SFT for Qwen3.5-35B-A3B on the GLM/Kimi intersection (filtered) mixed parquet.
-
-Parameters mirror /home/ubuntu/AccRL-exps/sft_experiments/glm_kimi_intersection/launch.sh as closely as possible,
-adapted for Tinker (LoRA-only training service).
-"""
+"""Tinker SFT training used by the published PTXBench experiments."""
 
 import asyncio
 import logging
-from datetime import datetime
+import os
+from datetime import UTC, datetime
 from pathlib import Path
 
 import chz
 import datasets
 import tinker
-
 from tinker_cookbook import checkpoint_utils, cli_utils, renderers
 from tinker_cookbook.supervised import train
 from tinker_cookbook.supervised.data import (
@@ -101,8 +97,10 @@ class FromParquetFileBuilder(ChatDatasetBuilder):
 @chz.chz
 class CLIConfig:
     # Data
-    dataset_path: str = (
-        "/home/ubuntu/AccRL-exps/sft_experiments/glm_kimi_intersection_filtered/data/mixed_intersection.parquet"
+    dataset_path: str = str(
+        Path(os.environ.get("PTXBENCH_DATA_ROOT", "data"))
+        / "sft_experiments"
+        / "dataset.parquet"
     )
     test_size: int = 0
     shuffle_seed: int = 0
@@ -146,7 +144,7 @@ class CLIConfig:
 
 def cli_main(cli: CLIConfig):
     model_slug = cli.model_name.replace("/", "-")
-    date = datetime.now().strftime("%Y-%m-%d-%H-%M")
+    date = datetime.now(UTC).strftime("%Y-%m-%d-%H-%M")
     run_name = f"{cli.run_tag}-{model_slug}-{date}"
 
     log_path = str(Path(cli.log_dir) / run_name)

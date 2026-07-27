@@ -133,7 +133,7 @@ class ExperimentConfig:
 def resolve_config_path(value: str | Path | None, *, base_dir: Path) -> Path | None:
     if value is None:
         return None
-    path = Path(value).expanduser()
+    path = Path(os.path.expandvars(str(value))).expanduser()
     if path.is_absolute():
         return path
     return base_dir / path
@@ -239,8 +239,19 @@ def load_completed_keys(path: Path) -> set[str]:
     return completed
 
 
+def data_path(path_text: str) -> Path:
+    path = Path(os.path.expandvars(path_text)).expanduser()
+    data_root = os.environ.get("PTXBENCH_DATA_ROOT")
+    if data_root and "eval_runs" in path.parts:
+        eval_runs_index = path.parts.index("eval_runs")
+        relocated = Path(data_root).expanduser().joinpath(*path.parts[eval_runs_index:])
+        if relocated.exists():
+            return relocated
+    return path
+
+
 def read_text(path_text: str, label: str) -> str:
-    path = Path(path_text).expanduser()
+    path = data_path(path_text)
     if not path.is_file():
         raise FileNotFoundError(f"missing {label}: {path}")
     return path.read_text(errors="replace")
@@ -261,7 +272,7 @@ def parse_optional_int(value: Any) -> int | None:
 
 
 def trajectory_path(row: dict[str, str]) -> Path:
-    return Path(row["exp_dir"]).expanduser() / "trajectories" / f"{row['trajectory_id']}.json"
+    return data_path(row["exp_dir"]) / "trajectories" / f"{row['trajectory_id']}.json"
 
 
 def load_trajectory(row: dict[str, str]) -> dict:
@@ -273,7 +284,7 @@ def load_trajectory(row: dict[str, str]) -> dict:
 
 
 def success_record_path(row: dict[str, str]) -> Path:
-    correct_path = Path(row.get("correct_kernel_path", "")).expanduser()
+    correct_path = data_path(row.get("correct_kernel_path", ""))
     return correct_path.parent / "record.json"
 
 

@@ -5,16 +5,21 @@ from __future__ import annotations
 
 import argparse
 import csv
+import os
 import subprocess
 import sys
 from pathlib import Path
-
 
 ARCH_TAGS = {
     "ampere": "A",
     "hopper": "H",
     "blackwell": "B",
 }
+
+
+def expand_path(value: str) -> Path:
+    """Resolve paths containing PTXBench environment variables."""
+    return Path(os.path.expandvars(value)).expanduser()
 
 
 def parse_args() -> argparse.Namespace:
@@ -84,11 +89,12 @@ def collect_rows(selected_runs_csv: Path, min_speedup: float) -> list[dict[str, 
         if not test_path:
             print(f"warning: missing test_path for exp_dir {run_row.get('exp_dir', '?')}; skipping", file=sys.stderr)
             continue
-        if not Path(test_path).expanduser().is_file():
+        test_path_obj = expand_path(test_path)
+        if not test_path_obj.is_file():
             print(f"warning: test_path does not exist: {test_path}; skipping", file=sys.stderr)
             continue
 
-        exp_dir = Path(run_row["exp_dir"]).expanduser()
+        exp_dir = expand_path(run_row["exp_dir"])
         expected_tag = expected_arch_tag(run_row["arch"])
         turn_csv = exp_dir / "figures" / "turn_correctness_arch.csv"
         if not turn_csv.is_file():
@@ -125,7 +131,7 @@ def collect_rows(selected_runs_csv: Path, min_speedup: float) -> list[dict[str, 
                     "definition": run_row["definition"],
                     "workload": run_row["workload"],
                     "exp_dir": str(exp_dir),
-                    "test_path": str(Path(test_path).expanduser().resolve()),
+                    "test_path": str(test_path_obj.resolve()),
                     "kernel_path": str(kernel_path),
                     "speedup": str(speedup),
                 }
