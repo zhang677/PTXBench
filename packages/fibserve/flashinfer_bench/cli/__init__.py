@@ -1,4 +1,4 @@
-"""Command-line interface for FlashInfer-Bench."""
+"""Command-line interface for FIBServe."""
 
 from .main import cli
 

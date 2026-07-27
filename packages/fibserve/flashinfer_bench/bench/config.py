@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import yaml
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
 
 class EvalConfig(BaseModel):
@@ -59,23 +58,14 @@ class BenchmarkConfig(BaseModel):
     All fields have default values to make configuration optional.
     """
 
-    # System-level
-    use_isolated_runner: bool = False
-    """Whether to use the isolated runner instead of the persistent runner."""
-    definitions: Optional[List[str]] = None
-    """Optional allowlist of definition names to benchmark."""
-    solutions: Optional[List[str]] = None
-    """Optional allowlist of solution names to benchmark."""
+    # Service-level
     timeout_seconds: int = Field(default=300, gt=0)
     """Timeout in seconds for each solution evaluation."""
     max_mem_ratio: float = Field(default=0.85, gt=0, le=1)
     """Fraction of a GPU worker's total HBM that its persistent baseline cache may occupy.
-    Used by ``flashinfer-bench serve`` for per-worker baseline cache admission/eviction."""
+    Used by FIBServe for per-worker baseline cache admission/eviction."""
     profile_baseline: bool = True
     """Whether to profile the reference implementation for baseline latency."""
-    log_dir: Optional[str] = None
-    """Deprecated. Logs are embedded in trace evaluations."""
-
     # Per-definition defaults
     warmup_runs: int = Field(default=10, ge=0)
     """Default warmup iterations before timing for all definitions."""
@@ -100,16 +90,6 @@ class BenchmarkConfig(BaseModel):
     """Per-op-type eval overrides keyed by `definition.op_type`."""
     definition_config: Dict[str, EvalConfig] = Field(default_factory=dict)
     """Per-definition eval overrides keyed by `definition.name`."""
-
-    @model_validator(mode="after")
-    def _validate_fields(self) -> BenchmarkConfig:
-        if self.log_dir is not None:
-            warnings.warn(
-                "log_dir is deprecated and ignored; logs are embedded in trace evaluations",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        return self
 
     @classmethod
     def from_yaml(cls, path: str, **overrides: Any) -> BenchmarkConfig:

@@ -760,7 +760,7 @@ def flashinfer_bench_debug_solution(
             sanitizer_path,
             print_limit=print_limit,
         )
-        logger.info("FlashInfer Bench Debug: Running Command: %s", " ".join(cmd))
+        logger.info("FIBServe debug: Running Command: %s", " ".join(cmd))
         try:
             result = run_managed_subprocess(
                 cmd,
@@ -797,7 +797,7 @@ def flashinfer_bench_debug_solution(
         cmd = _build_direct_runner_command(
             debug_dir, device, Path(trace_set_path) if trace_set_path else None
         )
-        logger.info("FlashInfer Bench Debug: Running direct coredump command: %s", " ".join(cmd))
+        logger.info("FIBServe debug: Running direct coredump command: %s", " ".join(cmd))
         try:
             result = run_managed_subprocess(
                 cmd,

@@ -1,8 +1,7 @@
-"""Benchmark execution engine."""
+"""Configuration and evaluators used by the FIBServe runtime."""
 
 from __future__ import annotations
 
-from .benchmark import Benchmark
 from .config import BenchmarkConfig, EvalConfig, ResolvedEvalConfig
 
-__all__ = ["Benchmark", "BenchmarkConfig", "EvalConfig", "ResolvedEvalConfig"]
+__all__ = ["BenchmarkConfig", "EvalConfig", "ResolvedEvalConfig"]

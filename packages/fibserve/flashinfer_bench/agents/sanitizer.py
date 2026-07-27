@@ -178,7 +178,7 @@ def flashinfer_bench_run_sanitizer(
                 print_limit=print_limit,
             )
 
-            logger.info("FlashInfer Bench Run Sanitizer: Running Command: %s", " ".join(cmd))
+            logger.info("FIBServe sanitizer: Running Command: %s", " ".join(cmd))
 
             try:
                 # run_managed_subprocess: runs in a fresh session so the

@@ -302,7 +302,7 @@ def flashinfer_bench_run_ncu(
         #    CUDA subprocesses in the same group.
         #  * the helper also kills the whole process group on timeout/shutdown,
         #    so the _solution_runner grandchild cannot leak as an orphan.
-        logger.info("FlashInfer Bench Run NCU: Running Command: %s", " ".join(cmd))
+        logger.info("FIBServe NCU: Running Command: %s", " ".join(cmd))
         try:
             result = run_managed_subprocess(cmd, timeout=timeout, env=env)
         except subprocess.TimeoutExpired:

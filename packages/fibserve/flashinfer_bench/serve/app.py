@@ -137,7 +137,7 @@ async def _lifespan(app):
         _scheduler.shutdown()
 
 
-app = FastAPI(title="FlashInfer-Bench Server", version=__version__, lifespan=_lifespan)
+app = FastAPI(title="FIBServe", version=__version__, lifespan=_lifespan)
 
 
 def init_app(scheduler: Scheduler) -> FastAPI:
@@ -151,7 +151,7 @@ def init_app(scheduler: Scheduler) -> FastAPI:
 async def root():
     """Root endpoint returning server info and available endpoints."""
     return {
-        "name": "FlashInfer-Bench Server",
+        "name": "FIBServe",
         "version": __version__,
         "commit": __commit__,
         "upstream": __upstream__,
