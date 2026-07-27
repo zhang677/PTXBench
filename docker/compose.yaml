@@ -11,8 +11,15 @@ services:
       - serve
       - --local
       - /workspace/accrl-training
+      - /workspace/accrl-training-heavy
       - --port
       - "10000"
+      - --host
+      - 0.0.0.0
+      - --timeout
+      - ${FIB_TIMEOUT:-30}
+      - --config
+      - /workspace/PTXBench/packages/fibserve/acc_config.yaml
       - --devices
       - ${FIB_DEVICES:-cuda:0,cuda:1}
     environment:
@@ -21,8 +28,15 @@ services:
       - "${FIBSERVE_PORT:-10000}:10000"
     volumes:
       - ${PTXBENCH_TRACESET_ROOT:?Set PTXBENCH_TRACESET_ROOT to a FlashInfer Trace dataset}:/workspace/accrl-training:ro
+      - ${PTXBENCH_HEAVY_TRACESET_ROOT:?Set PTXBENCH_HEAVY_TRACESET_ROOT to the heavy FlashInfer Trace dataset}:/workspace/accrl-training-heavy:ro
       - ../.ptxbench/cache/fibserve:/root/.cache/flashinfer_bench
-    gpus: all
+    gpus:
+      - driver: nvidia
+        device_ids:
+          - ${FIB_GPU_0:-0}
+          - ${FIB_GPU_1:-1}
+        capabilities:
+          - gpu
     init: true
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:10000/health"]

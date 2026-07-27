@@ -53,8 +53,11 @@ def test_path_resolver_uses_repo_layout() -> None:
     assert paths.config_root == ROOT / "configs"
 
 
-def test_compose_uses_explicit_read_only_traceset_mount() -> None:
+def test_compose_uses_explicit_read_only_traceset_mounts() -> None:
     compose = (ROOT / "docker" / "compose.yaml").read_text()
     assert "PTXBENCH_TRACESET_ROOT:?" in compose
+    assert "PTXBENCH_HEAVY_TRACESET_ROOT:?" in compose
     assert ":/workspace/accrl-training:ro" in compose
+    assert ":/workspace/accrl-training-heavy:ro" in compose
     assert "- /workspace/accrl-training" in compose
+    assert "- /workspace/accrl-training-heavy" in compose
