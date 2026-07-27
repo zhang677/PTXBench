@@ -7,8 +7,8 @@ kernel agents. It contains:
   benchmark workflows ported from AccRL.
 - **FIBServe**: the GPU compilation, correctness, profiling, and evaluation
   service derived from FlashInfer Bench.
-- **mini-swe-agent**: an external, pinned Python dependency used as the agent
-  runtime and Docker environment abstraction.
+- **mini-swe-agent 2.4.6**: an external, exactly pinned Python dependency used
+  as the agent runtime and Docker environment abstraction.
 - **tinker-cookbook**: an optional, locked dependency for reproducing the
   Tinker SFT training and checkpoint-export workflow.
 
