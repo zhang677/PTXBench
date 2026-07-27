@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import csv
 import os
-import subprocess
 import sys
 from pathlib import Path
 
@@ -68,11 +67,9 @@ def ensure_kernels_dir(exp_dir: Path) -> None:
     if kernels_dir.is_dir():
         return
 
-    repo_root = Path(__file__).resolve().parents[3]
-    analyzer = repo_root / "fib_runtime" / "mini_swe_agent_docker" / "plots" / "analyze_kernel_per_turn.py"
-    subprocess.run(
-        [sys.executable, str(analyzer), "--run-dir", str(exp_dir)],
-        check=True,
+    raise FileNotFoundError(
+        f"{kernels_dir} is missing; extract the SFT-v4 source-data bundle "
+        "before collecting kernels"
     )
 
 

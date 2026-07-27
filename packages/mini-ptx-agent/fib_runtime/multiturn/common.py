@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Shared classes, constants, and utilities for multiturn kernel generation.
 
-Used by run.py and run_v1.py — each defines its own build_system_prompt()
-and delegates to run_main() for the rest.
+Used by run_v2.py, which selects a prompt configuration and delegates to
+run_main() for the agent loop.
 """
 
 import argparse

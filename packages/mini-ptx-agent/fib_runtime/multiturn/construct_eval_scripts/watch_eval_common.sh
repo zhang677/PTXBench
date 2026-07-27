@@ -395,7 +395,7 @@ restart_profile_service() {
       profile_host_exec "docker restart $PROFILE_CONTAINER >/dev/null" || return 1
       ;;
     exec)
-      local restart_script="${PROFILE_RESTART_SCRIPT:-/workspace/PTXBench/docker/restart_fibserve.sh}"
+      local restart_script="${PROFILE_RESTART_SCRIPT:-/workspace/PTXBench/packages/fibserve/scripts/restart_profiling.sh}"
       profile_host_exec \
         "docker exec $PROFILE_CONTAINER bash -lc '${restart_env}bash $restart_script'" || return 1
       ;;

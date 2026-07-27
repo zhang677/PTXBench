@@ -91,6 +91,7 @@
     "packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/watch_eval_common.sh",
     "packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts/watch_eval_audit.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/run_parallel_v2.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/run_v2.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/common.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/build_doc_v2.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/launcher_utils.py",

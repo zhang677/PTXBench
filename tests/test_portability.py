@@ -21,6 +21,7 @@ def test_active_fixit_v6_sources_have_no_legacy_absolute_roots() -> None:
         CONSTRUCT_ROOT / "fixit_downstream_process.py",
         CONSTRUCT_ROOT / "watch_eval_common.sh",
         MINI_ROOT / "fib_runtime" / "multiturn" / "run_parallel_v2.py",
+        MINI_ROOT / "fib_runtime" / "multiturn" / "run_v2.py",
         MINI_ROOT / "fib_runtime" / "multiturn" / "common.py",
         MINI_ROOT / "accrl" / "distill" / "inspector.py",
         MINI_ROOT / "accrl" / "distill" / "sft" / "build_sft_dataset_sft_v4.py",
@@ -99,6 +100,38 @@ def test_complete_sft_v4_source_preflight() -> None:
         },
         check=True,
     )
+
+
+def test_multiturn_child_driver_is_in_both_source_closures() -> None:
+    relative_driver = (
+        "packages/mini-ptx-agent/fib_runtime/multiturn/run_v2.py"
+    )
+    launcher = (
+        MINI_ROOT / "fib_runtime" / "multiturn" / "run_parallel_v2.py"
+    ).read_text()
+    assert 'launch_script = SCRIPT_DIR / "run_v2.py"' in launcher
+    assert (ROOT / relative_driver).is_file()
+    for provenance_path in (
+        ROOT / "experiments" / "fixit-v6" / "provenance.json",
+        ROOT / "experiments" / "sft-v4" / "provenance.json",
+    ):
+        provenance = json.loads(provenance_path.read_text())
+        assert relative_driver in provenance["required_source_files"]
+
+
+def test_sft_collector_has_no_hidden_kernel_extractor(tmp_path: Path) -> None:
+    sys.path.insert(0, str(MINI_ROOT))
+    from fib_runtime.multiturn.collect_kernels.collect_correct_kernels import (
+        ensure_kernels_dir,
+    )
+
+    missing_run = tmp_path / "run"
+    try:
+        ensure_kernels_dir(missing_run)
+    except FileNotFoundError as exc:
+        assert "extract the SFT-v4 source-data bundle" in str(exc)
+    else:
+        raise AssertionError("missing kernels directory was silently accepted")
 
 
 def test_sft_v4_provenance_closure_is_present() -> None:

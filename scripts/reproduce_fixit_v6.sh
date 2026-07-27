@@ -40,6 +40,7 @@ check_source() {
     "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_sft_train.py"
     "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_download_weights.py"
     "$MINI_PTX_AGENT_ROOT/accrl/distill/inspector.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_v2.py"
   )
   for path in "${required[@]}"; do
     test -f "$path" || {

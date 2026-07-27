@@ -82,7 +82,7 @@ service is invoked instead of an in-container measurement.
 
 ---
 
-## Stage 2 — Multi-turn introduction (`multiturn/run_parallel.py`)
+## Stage 2 — Multi-turn introduction (retired pre-v2 launcher)
 
 Goal: switch from free tool calls to controlled multiturn. Adds `--max-turns` and
 `--target-speedup`. Same problem as Stage 1.
@@ -107,7 +107,7 @@ flashinfer-bench service measures. Test path changes to `compile_measure_*`.
 | eval_run | Model | Test | Notes |
 |---|---|---|---|
 | 2026-0410-1325 | Qwen3.5-35B-A3B | compile_measure_sm90_cuda_gemm | first remote-only, max-turns 100 |
-| 2026-0411-1350 | gemini-3.1-pro-preview | test_measure_cuda_gemm | `--script run_v1.py` (alternate driver), max-turns 20 |
+| 2026-0411-1350 | gemini-3.1-pro-preview | test_measure_cuda_gemm | alternate pre-v2 driver, max-turns 20 |
 | 2026-0412-1320 | Qwen3.5-35B-A3B | compile_measure_cuda_gemm | drop `_sm90_` from test, max-turns 100 |
 
 ---
@@ -155,7 +155,7 @@ arch-specific guidance). Also introduces **Kimi-K2.6** as a model.
 
 ## Stage 6 — Prompt ensemble (`run_parallel_v2.py` with `--config`)
 
-Major harness change: `run_parallel.py` → **`run_parallel_v2.py`**. Instead of
+Major harness change: the retired launcher was replaced by **`run_parallel_v2.py`**. Instead of
 `-n / --gpus / --max-turns / --target-speedup` flags, runs are driven by a JSON config
 listing prompt tags (`hopper-00`…`hopper-13`, `hopper-no-hint`) with per-tag
 trajectory/turn budgets — i.e., the parallel agents now sweep multiple system prompts in
@@ -171,7 +171,7 @@ Problem: still `gemm_n7168_k5120`.
 | 2026-0422-1538 | gemini-3.1-pro-preview | 2026-0422-1538.json | revised prompt mix |
 | 2026-0422-1834 | gemini-3.1-pro-preview | 2026-0422-1834.json | further prompt revision, max-parallel 6 |
 | 2026-0422-2049 | gemini-3.1-pro-preview | 2026-0422-2049.json | post `cd066e1 Add more prompts` |
-| 2026-0422-2352 | (Kimi/gemini sweep) | (task script) | followed by `2026-0422-2352_rerun` for container-killed experiments via `rerun_failed_experiments.py`; merged into `2026-0422-2352_complete` |
+| 2026-0422-2352 | (Kimi/gemini sweep) | (task script) | followed by a legacy scan/rerun/merge recovery pass into `2026-0422-2352_complete` |
 | 2026-0424-1020 | **DeepSeek-V4:pro** | 2026-0424-0940.json | first DeepSeek run |
 
 ---
@@ -270,8 +270,9 @@ For reference, `experiments.jsonl` also logs:
 - `analyze_patterns_cross_run.py` (`2026-0422-2352_complete` vs `2026-0422-1002`,
   Kimi-K2.6 vs gemini-3.1-pro-preview) — cross-model diversity comparison
 - `draw_pattern_trees_batch.py` (`2026-0420-2305`) — pattern-tree visualization
-- `scan_container_kills.py` + `rerun_failed_experiments.py` — recovery flow for
-  container-killed experiments (used on `2026-0422-2352`)
+- The retired scan/rerun/merge helpers recovered container-killed experiments
+  in `2026-0422-2352`; current launchers use integrated resume handling in
+  `resume_utils.py`.
 - `bash …/tasks/launch_*.sh` and `…/tasks/plot_*.sh` — orchestration scripts that wrap
   the launchers/plotters
 

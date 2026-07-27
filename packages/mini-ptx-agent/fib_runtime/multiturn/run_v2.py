@@ -5,7 +5,7 @@ The model outputs CUDA kernel code directly each turn (no bash commands).
 Docker container handles compilation, the profiling service handles evaluation.
 Uses DefaultAgent + DockerEnvironment for trajectory logging/inspection compatibility.
 
-Unlike run.py / run_v1.py, the system prompt is composed from a `prompt_tag`
+The system prompt is composed from a `prompt_tag`
 that indexes into `prompt_configs/hub.json`. The assembled base prompt is
 expected to already exist at `prompt_configs/<prompt_tag>.md` — build it first
 with `build_doc_v2.py <config.json>`. For parallel sweeps driven by a config
@@ -23,12 +23,11 @@ Usage:
 """
 
 import logging
-import os
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import SCRIPT_DIR, SYSTEM_INSTRUCTIONS, run_main_v2  # noqa: F401
+from common import SCRIPT_DIR, SYSTEM_INSTRUCTIONS, run_main_v2
 
 logger = logging.getLogger(__name__)
 
