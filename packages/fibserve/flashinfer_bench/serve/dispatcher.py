@@ -11,7 +11,7 @@ import argparse
 import asyncio
 import logging
 from contextlib import asynccontextmanager
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import httpx
 import uvicorn
@@ -29,7 +29,7 @@ def _normalize_url(url: str) -> str:
 class Dispatcher:
     """Route requests across FIBServe backends and track task ownership."""
 
-    def __init__(self, urls: List[str], request_timeout: float = 3600.0):
+    def __init__(self, urls: list[str], request_timeout: float = 3600.0):
         self.urls = [_normalize_url(url) for url in urls]
         self.client = httpx.AsyncClient(
             timeout=request_timeout,
@@ -39,17 +39,17 @@ class Dispatcher:
             timeout=10.0,
             limits=httpx.Limits(max_connections=128, max_keepalive_connections=32),
         )
-        self.task_to_url: Dict[str, str] = {}
+        self.task_to_url: dict[str, str] = {}
         self._rr_idx = 0
         self._rr_lock = asyncio.Lock()
 
     async def close(self) -> None:
         await asyncio.gather(self.client.aclose(), self.health_client.aclose())
 
-    async def queue_sizes(self) -> List[Tuple[Optional[int], str]]:
+    async def queue_sizes(self) -> list[tuple[int | None, str]]:
         """Return ``(queue_size, url)`` for every configured backend."""
 
-        async def probe(url: str) -> Tuple[Optional[int], str]:
+        async def probe(url: str) -> tuple[int | None, str]:
             try:
                 response = await self.health_client.get(f"{url}/health", timeout=5.0)
                 if response.status_code == 200:
@@ -57,14 +57,12 @@ class Dispatcher:
                     workers = body.get("workers")
                     if isinstance(workers, list) and workers:
                         healthy_workers = (
-                            bool(worker.get("healthy"))
-                            for worker in workers
-                            if isinstance(worker, dict)
+                            bool(worker.get("healthy")) for worker in workers if isinstance(worker, dict)
                         )
                         if not any(healthy_workers):
                             return None, url
                     return body.get("queue_size", 0), url
-            except Exception as error:
+            except (httpx.HTTPError, ValueError, TypeError, AttributeError) as error:
                 logger.debug("Health probe failed for %s: %s", url, error)
             return None, url
 
@@ -91,7 +89,7 @@ class Dispatcher:
         url: str,
         path: str,
         **kwargs: Any,
-    ) -> Tuple[int, Any]:
+    ) -> tuple[int, Any]:
         response = await self.client.request(method, f"{url}{path}", **kwargs)
         try:
             body: Any = response.json()
@@ -99,21 +97,21 @@ class Dispatcher:
             body = response.text
         return response.status_code, body
 
-    async def try_each(self, method: str, path: str, **kwargs: Any) -> Tuple[int, Any]:
+    async def try_each(self, method: str, path: str, **kwargs: Any) -> tuple[int, Any]:
         """Try backends in order until one returns a non-5xx response."""
-        last: Tuple[int, Any] = (503, "no backends available")
+        last: tuple[int, Any] = (503, "no backends available")
         for url in self.urls:
             try:
                 code, body = await self.forward(method, url, path, **kwargs)
                 if code < 500:
                     return code, body
                 last = (code, body)
-            except Exception as error:
+            except httpx.HTTPError as error:
                 last = (502, str(error))
         return last
 
 
-_dispatcher: Optional[Dispatcher] = None
+_dispatcher: Dispatcher | None = None
 
 
 def _get_dispatcher() -> Dispatcher:
@@ -150,7 +148,7 @@ app = FastAPI(title="FIBServe Dispatcher", lifespan=_lifespan)
 
 
 @app.get("/")
-async def root() -> Dict[str, Any]:
+async def root() -> dict[str, Any]:
     dispatcher = _get_dispatcher()
     return {
         "name": "FIBServe Dispatcher",
@@ -160,13 +158,10 @@ async def root() -> Dict[str, Any]:
 
 
 @app.get("/health")
-async def health() -> Dict[str, Any]:
+async def health() -> dict[str, Any]:
     dispatcher = _get_dispatcher()
     sizes = await dispatcher.queue_sizes()
-    backends = [
-        {"url": url, "queue_size": size, "healthy": size is not None}
-        for size, url in sizes
-    ]
+    backends = [{"url": url, "queue_size": size, "healthy": size is not None} for size, url in sizes]
     total = sum(size for size, _ in sizes if size is not None)
     any_healthy = any(size is not None for size, _ in sizes)
     return {
@@ -203,7 +198,7 @@ async def get_workload(uuid: str) -> Any:
     return await _forward_any_get(f"/workloads/{uuid}")
 
 
-async def _submit(path: str, body: Dict[str, Any]) -> Dict[str, Any]:
+async def _submit(path: str, body: dict[str, Any]) -> dict[str, Any]:
     dispatcher = _get_dispatcher()
     url = await dispatcher.pick_submit_backend()
     try:
@@ -260,21 +255,21 @@ async def get_task(task_id: str, timeout: float = Query(default=0, ge=0, le=3600
 
 
 @app.post("/tasks/batch")
-async def tasks_batch(request: Request) -> List[Any]:
+async def tasks_batch(request: Request) -> list[Any]:
     """Query owning backends in parallel and preserve task order."""
     dispatcher = _get_dispatcher()
     body = await request.json()
-    task_ids: List[str] = body.get("task_ids", [])
+    task_ids: list[str] = body.get("task_ids", [])
     timeout = float(body.get("timeout", 0))
 
-    by_url: Dict[str, List[str]] = {}
+    by_url: dict[str, list[str]] = {}
     for task_id in task_ids:
         url = dispatcher.task_to_url.get(task_id)
         if url is None:
             raise HTTPException(404, detail=f"Task not found: {task_id}")
         by_url.setdefault(url, []).append(task_id)
 
-    async def fetch(url: str, ids: List[str]) -> List[Any]:
+    async def fetch(url: str, ids: list[str]) -> list[Any]:
         try:
             code, data = await dispatcher.forward(
                 "POST",
@@ -288,10 +283,8 @@ async def tasks_batch(request: Request) -> List[Any]:
             _raise(code, data)
         return data
 
-    grouped = await asyncio.gather(
-        *(fetch(url, ids) for url, ids in by_url.items())
-    )
-    flat: Dict[str, Any] = {}
+    grouped = await asyncio.gather(*(fetch(url, ids) for url, ids in by_url.items()))
+    flat: dict[str, Any] = {}
     for ids, results in zip(by_url.values(), grouped):
         for task_id, result in zip(ids, results):
             flat[task_id] = result
@@ -299,14 +292,14 @@ async def tasks_batch(request: Request) -> List[Any]:
 
 
 @app.post("/shutdown")
-async def shutdown() -> Dict[str, Any]:
+async def shutdown() -> dict[str, Any]:
     """Ask every backend to shut down."""
     dispatcher = _get_dispatcher()
 
     async def kill(url: str) -> None:
         try:
             await dispatcher.client.post(f"{url}/shutdown", timeout=5.0)
-        except Exception as error:
+        except httpx.HTTPError as error:
             logger.warning("Shutdown %s failed: %s", url, error)
 
     await asyncio.gather(*(kill(url) for url in dispatcher.urls))

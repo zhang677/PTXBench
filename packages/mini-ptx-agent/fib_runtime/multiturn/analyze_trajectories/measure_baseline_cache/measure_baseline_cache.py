@@ -392,10 +392,12 @@ def plot_results(output_dir: Path, rolling_window: int) -> None:
 
     fig, ax = plt.subplots(figsize=(7.2, 4.8))
     last_request = 0
+    original_y_values: list[float] = []
     for mode in modes:
         rows = [row for row in all_rows if row["mode"] == mode]
-        x = [row["request_index"] for row in rows]
-        cumulative_runtime = [row["cumulative_runtime_s"] for row in rows]
+        x = [0, *(row["request_index"] for row in rows)]
+        cumulative_runtime = [0.0, *(row["cumulative_runtime_s"] for row in rows)]
+        original_y_values.extend(cumulative_runtime[1:])
         last_request = max(last_request, x[-1])
         ax.plot(
             x,
@@ -406,13 +408,14 @@ def plot_results(output_dir: Path, rolling_window: int) -> None:
         )
 
     ax.plot(
-        candidate_request_numbers,
-        candidate_kernel_cumulative_s,
+        [0, *candidate_request_numbers],
+        [0.0, *candidate_kernel_cumulative_s],
         color="#555555",
         linestyle="--",
         linewidth=1.7,
         label="kernel execution",
     )
+    original_y_values.extend(candidate_kernel_cumulative_s)
 
     reuse_total_s = summary["modes"]["reuse"]["total_measured_s"]
     bypass_total_s = summary["modes"]["bypass"]["total_measured_s"]
@@ -425,12 +428,12 @@ def plot_results(output_dir: Path, rolling_window: int) -> None:
         annotation_clip=False,
     )
     ax.text(
-        speedup_x + 1.2,
+        speedup_x - 1.2,
         (reuse_total_s + bypass_total_s) / 2,
         f"{total_runtime_speedup:.2f}×",
         color="#333333",
         fontweight="bold",
-        ha="left",
+        ha="right",
         va="center",
     )
 
@@ -444,12 +447,12 @@ def plot_results(output_dir: Path, rolling_window: int) -> None:
         annotation_clip=False,
     )
     ax.text(
-        kernel_speedup_x + 1.2,
+        kernel_speedup_x - 1.2,
         (candidate_kernel_total_s + reuse_total_s) / 2,
         f"{kernel_speedup:.2f}×",
         color="#333333",
         fontweight="bold",
-        ha="left",
+        ha="right",
         va="center",
     )
 
@@ -457,7 +460,10 @@ def plot_results(output_dir: Path, rolling_window: int) -> None:
     ax.set_ylabel("Cumulative request wall time (s)")
     ax.set_title("Total runtime through each sequential /evaluate request")
     ax.set_xlim(0, last_request + 13)
-    ax.set_ylim(bottom=0)
+    y_margin = ax.margins()[1]
+    original_y_min = min(original_y_values)
+    original_y_max = max(original_y_values)
+    ax.set_ylim(0, original_y_max + y_margin * (original_y_max - original_y_min))
     ax.grid(alpha=0.25)
     ax.legend()
     fig.tight_layout()

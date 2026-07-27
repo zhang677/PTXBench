@@ -13,6 +13,7 @@ RUN apt-get update \
         git \
         gpg-agent \
         ninja-build \
+        procps \
         software-properties-common \
         tmux \
     && add-apt-repository ppa:deadsnakes/ppa \
@@ -33,7 +34,10 @@ COPY packages packages
 
 RUN uv sync --frozen --package fibserve --extra serve --no-dev \
     && chmod +x \
+        packages/fibserve/scripts/gpu_preflight.sh \
         packages/fibserve/scripts/launch_fib_serve_dispatcher.sh \
+        packages/fibserve/scripts/restart_profiling.sh \
+        packages/fibserve/scripts/run_verify.sh \
         packages/fibserve/scripts/run_fibserve_dispatcher_container.sh \
     && rm -rf "$UV_CACHE_DIR"
 

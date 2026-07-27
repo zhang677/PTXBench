@@ -1,5 +1,5 @@
-"""Verify the mha_bwd_h48_d128 reference compiles and runs as a Solution via
-the flashinfer-bench profiling service at $PROFILE_BASE_URL (default
+"""Verify the attention references compile and run as Solutions through
+the FIBServe profiling service at $PROFILE_BASE_URL (default
 localhost:10000).
 
 The Solution source code IS the Definition's reference code (cuDNN attention),
@@ -17,8 +17,7 @@ from typing import Any, Dict, List
 import csv
 
 import requests
-# Add "/home/ubuntu/AccRL" to sys.path to import from accrl.utils
-sys.path.append("/home/ubuntu/AccRL")
+
 from accrl.utils.solution_utils import build_solution
 
 DEFINITION_NAMES = [

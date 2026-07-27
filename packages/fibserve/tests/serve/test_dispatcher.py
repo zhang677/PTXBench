@@ -1,11 +1,10 @@
 """Tests for the FIBServe dispatcher API."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
-from httpx import ASGITransport, AsyncClient
-
 from flashinfer_bench.serve import dispatcher as dispatcher_module
+from httpx import ASGITransport, AsyncClient
 
 pytestmark = pytest.mark.asyncio
 
@@ -13,8 +12,8 @@ pytestmark = pytest.mark.asyncio
 class FakeDispatcher:
     def __init__(self) -> None:
         self.urls = ["http://backend-a"]
-        self.task_to_url: Dict[str, str] = {}
-        self.forwarded: List[Dict[str, Any]] = []
+        self.task_to_url: dict[str, str] = {}
+        self.forwarded: list[dict[str, Any]] = []
 
     async def pick_submit_backend(self) -> str:
         return self.urls[0]
@@ -26,9 +25,7 @@ class FakeDispatcher:
         path: str,
         **kwargs: Any,
     ) -> tuple[int, Any]:
-        self.forwarded.append(
-            {"method": method, "url": url, "path": path, "kwargs": kwargs}
-        )
+        self.forwarded.append({"method": method, "url": url, "path": path, "kwargs": kwargs})
         if path.startswith("/tasks/"):
             return 200, {
                 "task_id": "debug-task",

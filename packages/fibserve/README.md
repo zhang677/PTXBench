@@ -38,6 +38,8 @@ This creates `fib-serve-backend-0`, `fib-serve-backend-1`, and so on, plus
 `fib-serve-dispatcher`. Clients use only
 `PROFILE_BASE_URL=http://localhost:10000`. The dispatcher selects a healthy
 least-loaded backend and retains task-to-backend ownership for `/tasks` polling.
+See [`SERVER.md`](SERVER.md) for the complete request, scheduler, subprocess,
+memory-admission, and dispatcher lifecycle.
 
 The reproducible `docker/compose.yaml` setup uses this same multi-tmux topology
 inside the FIBServe container. It publishes only the dispatcher:
@@ -47,6 +49,21 @@ docker compose --env-file docker/.env -f docker/compose.yaml up -d fibserve
 docker exec ptxbench-fibserve tmux list-sessions
 curl http://localhost:10000/health
 ```
+
+Operational helpers are retained alongside the launcher:
+
+```bash
+# Restart only the tmux-managed service inside an existing container.
+docker exec ptxbench-fibserve \
+  /workspace/PTXBench/packages/fibserve/scripts/restart_profiling.sh
+
+# Verify a local public dispatcher, or set REMOTE and REMOTE_PORT for SSH.
+PROFILE_BASE_URL=http://localhost:10000 \
+  ./packages/fibserve/scripts/run_verify.sh
+```
+
+`gpu_preflight.sh` supplies the CUDA temperature filter used by the restart
+path. `run_verify.sh` calls the retained mini-ptx-agent service verifier.
 
 FIBServe is licensed under Apache-2.0. See `LICENCE` and `NOTICE` for upstream
 attribution.
