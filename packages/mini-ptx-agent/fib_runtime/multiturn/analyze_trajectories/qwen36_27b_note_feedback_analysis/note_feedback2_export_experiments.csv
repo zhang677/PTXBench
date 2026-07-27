@@ -1,9 +1,0 @@
-arch,exp_dir
-hopper,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-mha-d128-d96-8defs-mha-d128
-hopper,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-mha-d128-d96-8defs-mha-d128-causal
-hopper,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-mha-d128-d96-8defs-mha-bwd-d128
-hopper,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-mha-d128-d96-8defs-mha-bwd-d128-causal
-hopper,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-mha-d128-d96-8defs-mha-d96
-hopper,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-mha-d128-d96-8defs-mha-d96-causal
-hopper,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-mha-d128-d96-8defs-mha-bwd-d96
-hopper,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-mha-d128-d96-8defs-mha-bwd-d96-causal

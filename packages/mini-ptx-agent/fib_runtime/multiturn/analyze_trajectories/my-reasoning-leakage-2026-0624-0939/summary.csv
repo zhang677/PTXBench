@@ -1,7 +1,0 @@
-run,total_trajectories,leaked_trajectories,trajectory_leak_rate,total_assistant_turns,leaked_turns,turn_leak_rate,occurrences
-2026-0624-0939-gemm,20,11,0.550,160,18,0.113,23
-2026-0624-0939-mha-bwd-d128,20,11,0.550,160,18,0.113,32
-2026-0624-0939-mha-bwd-d128-causal,20,14,0.700,160,25,0.156,30
-2026-0624-0939-mha-d128,20,13,0.650,160,20,0.125,27
-2026-0624-0939-mha-d128-causal,20,15,0.750,160,20,0.125,22
-TOTAL,100,64,0.640,800,101,0.126,134

@@ -1,4 +1,0 @@
-model,arch,definition,task_id,exp_dir
-gemini-3.1-pro-preview-linfo,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-linfo-mha-bwd-d128
-gemini-3.1-pro-preview-june,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240
-gemini-3.1-pro-preview-may-ncu,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0506-1130

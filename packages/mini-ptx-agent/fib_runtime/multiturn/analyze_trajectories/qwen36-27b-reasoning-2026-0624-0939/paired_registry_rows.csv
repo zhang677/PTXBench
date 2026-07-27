@@ -1,6 +1,0 @@
-arch,definition,workload,baseline_model,baseline_exp_dir,sft_model,sft_exp_dir
-hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/2026-0524-1345,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm
-hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128
-hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal
-hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128
-hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,Qwen3.6-27B,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal,Qwen3.6-27B-fixit-v2-glm,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal

@@ -1,7 +1,0 @@
-run,correct_total,correct_with_next,terminal_correct,stale_failure_after_correct,aligned_correct_or_perf,stale_rate_of_correct_with_next
-2026-0624-0939-gemm,26,23,3,8,15,0.348
-2026-0624-0939-mha-bwd-d128,4,3,1,2,1,0.667
-2026-0624-0939-mha-bwd-d128-causal,6,4,2,1,3,0.250
-2026-0624-0939-mha-d128,26,21,5,13,8,0.619
-2026-0624-0939-mha-d128-causal,8,5,3,5,0,1.000
-TOTAL,70,56,14,29,27,0.518

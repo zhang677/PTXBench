@@ -1,9 +1,0 @@
-definition,group,label,total,Compilation error_count,Runtime error_count,Numerical error_count,Kernel Execution Timeout_count,Extraction error_count,Other error_count,Correct_count,Compilation error_fraction,Runtime error_fraction,Numerical error_fraction,Kernel Execution Timeout_fraction,Extraction error_fraction,Other error_fraction,Correct_fraction
-mha_bwd_d128,left,Before SFT,160,79,41,12,20,5,3,0,0.493750,0.256250,0.075000,0.125000,0.031250,0.018750,0.000000
-mha_bwd_d128,right,After SFT,160,50,39,35,24,8,0,4,0.312500,0.243750,0.218750,0.150000,0.050000,0.000000,0.025000
-mha_bwd_d128_causal,left,Before SFT,160,98,21,14,16,7,3,0,0.612500,0.131250,0.087500,0.100000,0.043750,0.018750,0.000000
-mha_bwd_d128_causal,right,After SFT,160,49,58,31,12,4,0,6,0.306250,0.362500,0.193750,0.075000,0.025000,0.000000,0.037500
-mha_with_lse_d128,left,Before SFT,160,90,31,11,23,3,1,0,0.562500,0.193750,0.068750,0.143750,0.018750,0.006250,0.000000
-mha_with_lse_d128,right,After SFT,160,41,37,43,7,6,0,26,0.256250,0.231250,0.268750,0.043750,0.037500,0.000000,0.162500
-mha_with_lse_d128_causal,left,Before SFT,160,99,24,15,15,6,1,0,0.618750,0.150000,0.093750,0.093750,0.037500,0.006250,0.000000
-mha_with_lse_d128_causal,right,After SFT,160,46,26,43,34,3,0,8,0.287500,0.162500,0.268750,0.212500,0.018750,0.000000,0.050000
