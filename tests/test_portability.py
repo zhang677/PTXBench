@@ -5,7 +5,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 MINI_ROOT = ROOT / "packages" / "mini-ptx-agent"
 CONSTRUCT_ROOT = MINI_ROOT / "fib_runtime" / "multiturn" / "construct_eval_scripts"
@@ -59,5 +58,4 @@ def test_compose_uses_explicit_read_only_traceset_mounts() -> None:
     assert "PTXBENCH_HEAVY_TRACESET_ROOT:?" in compose
     assert ":/workspace/accrl-training:ro" in compose
     assert ":/workspace/accrl-training-heavy:ro" in compose
-    assert "- /workspace/accrl-training" in compose
-    assert "- /workspace/accrl-training-heavy" in compose
+    assert ("DATASET_ROOTS: /workspace/accrl-training:/workspace/accrl-training-heavy") in compose
