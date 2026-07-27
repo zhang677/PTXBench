@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Synthesize reasoning for wrong/correct CUDA kernel pairs via OpenRouter.
 
-Input is the CSV emitted by collect_success_kernel_pairs.py. Output is JSONL in
-the same broad shape as accrl/distill/run_experiment.py's reasoning_pairs.jsonl:
-system_prompt, input, reasoning, thinking, and metadata.
+Input is the CSV emitted by collect_success_kernel_pairs.py. Output is JSONL
+with system_prompt, input, reasoning, thinking, and metadata fields.
 """
 
 from __future__ import annotations

@@ -1,6 +1,0 @@
-name: full-context-best-kernel-v2-deep
-description: "Best kernel per trajectory, maximum reasoning depth"
-selector: best_per_trajectory
-reasoning_model: MiniMax-M2.7
-prompt_version: v2_deep
-min_speedup: 0.3

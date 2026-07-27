@@ -1,6 +1,0 @@
-name: full-context-best-kernel-v1
-description: "Best kernel per trajectory, standard reasoning prompt"
-selector: best_per_trajectory
-reasoning_model: MiniMax-M2.7
-prompt_version: v1
-min_speedup: 0.3

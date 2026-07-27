@@ -1,8 +1,0 @@
-name: trajectory-reasoning
-description: "Full trajectory history, generate reasoning for every turn"
-selector: all_with_history
-reasoning_model: GLM-5.1
-prompt_version: v3_trajectory
-min_speedup: 0.0
-max_tokens: 196000
-enable_thinking: false
