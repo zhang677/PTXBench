@@ -11,6 +11,5 @@ outputs
 **/.codex
 **/.claude
 
-packages/mini-ptx-agent/benchmark/figures
 packages/mini-ptx-agent/fib_runtime/multiturn/analyze_trajectories
 packages/mini-ptx-agent/fib_runtime/multiturn/improve_debug

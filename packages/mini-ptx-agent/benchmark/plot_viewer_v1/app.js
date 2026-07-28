@@ -1,14 +1,14 @@
 const RELEASE_REFERENCE_PATHS = {
-  model: "../model_release_dates.csv",
-  ptx: "../ptx_release_dates.csv",
-  fa: "../fa_release_dates.csv",
+  model: "./data/model_release_dates.csv",
+  ptx: "./data/ptx_release_dates.csv",
+  fa: "./data/fa_release_dates.csv",
 };
 
 const metrics = [
   {
     id: "correctness_rate_by_release_date",
     label: "Correctness rate",
-    csvPath: "../figures/correctness_rate_by_release_date.csv",
+    csvPath: "./data/correctness_rate_by_release_date.csv",
     chartType: "turnSeries",
     valueKey: "correctness_rate",
     yLabel: "Correctness rate",
@@ -17,7 +17,7 @@ const metrics = [
   {
     id: "best_speedup_by_release_date",
     label: "Best speedup",
-    csvPath: "../figures/best_speedup_by_release_date.csv",
+    csvPath: "./data/best_speedup_by_release_date.csv",
     chartType: "turnSeries",
     valueKey: "best_speedup",
     yLabel: "Best speedup",
@@ -27,7 +27,7 @@ const metrics = [
   {
     id: "arch_instruction_correctness_by_release_date",
     label: "Correctness with architecture instructions",
-    csvPath: "../figures/arch_instruction_correctness_by_release_date.csv",
+    csvPath: "./data/arch_instruction_correctness_by_release_date.csv",
     chartType: "turnSeries",
     valueKey: "correct_with_arch_rate",
     yLabel: "Correct + arch rate",
@@ -36,7 +36,7 @@ const metrics = [
   {
     id: "reasoning_tokens_vs_performance",
     label: "Perf-reasoning",
-    csvPath: "../figures/reasoning_tokens_vs_performance.csv",
+    csvPath: "./data/reasoning_tokens_vs_performance.csv",
     chartType: "scatter",
     xKey: "reasoning_tokens",
     yKey: "performance_score",
