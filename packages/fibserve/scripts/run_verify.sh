@@ -72,5 +72,5 @@ curl \
 echo
 
 export PROFILE_BASE_URL="$verify_url"
-export PYTHONPATH="$PTXBENCH_ROOT/packages/mini-ptx-agent${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH="$PTXBENCH_ROOT/packages/mini-ptx-agent:$PTXBENCH_ROOT/packages/fibserve${PYTHONPATH:+:$PYTHONPATH}"
 "$PYTHON" "$VERIFY" --perf-csv "$PERF_CSV" "$@"

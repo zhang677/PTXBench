@@ -60,6 +60,7 @@ from resume_utils import (  # noqa: E402
     prepare_extend_turns,
     prepare_resume,
     trajectory_infra_failure_turn,
+    trajectory_submitted_successfully,
 )
 
 
@@ -502,6 +503,11 @@ def run_single_experiment(
                 f.write(f"=== COMMAND ===\n{' '.join(cmd)}\n\n")
                 f.write(f"=== ERROR ===\n{e}\n")
 
+        correct_kernels = sorted(success_dir.glob("kernel_v*.cu"))
+        result["runner_completed"] = result["status"] == "success"
+        result["generated_candidate"] = (workspace / "kernel.cu").is_file()
+        result["correct_kernel_count"] = len(correct_kernels)
+        result["target_met"] = trajectory_submitted_successfully(trajectory)
         return result
     finally:
         gpu_queue.put(gpu_id)
@@ -513,6 +519,9 @@ def summarize_results(results: list[dict], output_root: Path) -> None:
 
     total = len(results)
     successes = [r for r in results if r["status"] == "success"]
+    correct_results = [r for r in results if int(r.get("correct_kernel_count", 0)) > 0]
+    correct_kernel_versions = sum(int(r.get("correct_kernel_count", 0)) for r in results)
+    target_results = [r for r in results if r.get("target_met")]
     failures = [r for r in results if r["status"] == "failed"]
     infra_failures = [r for r in results if r["status"] == INFRA_FAILED]
     api_failures = [r for r in results if r["status"] == API_FAILED]
@@ -528,7 +537,10 @@ def summarize_results(results: list[dict], output_root: Path) -> None:
     print("SUMMARY")
     print("=" * 60)
     print(f"Total:    {total}")
-    print(f"Success:  {len(successes)}")
+    print(f"Runner completed:    {len(successes)}")
+    print(f"Correct trajectories:{len(correct_results):5d}")
+    print(f"Correct versions:    {correct_kernel_versions:5d}")
+    print(f"Target achieved:     {len(target_results):5d}")
     print(f"Failed:   {len(failures)}")
     print(f"Infra:    {len(infra_failures)}")
     print(f"API:      {len(api_failures)}")
@@ -561,22 +573,40 @@ def summarize_results(results: list[dict], output_root: Path) -> None:
                 API_FAILED: 0,
                 "timeout": 0,
                 "error": 0,
+                "correct_trajectory": 0,
+                "correct_kernel_versions": 0,
+                "target_met": 0,
             },
         )
         bucket["total"] += 1
         bucket[r["status"]] = bucket.get(r["status"], 0) + 1
+        if int(r.get("correct_kernel_count", 0)) > 0:
+            bucket["correct_trajectory"] += 1
+        bucket["correct_kernel_versions"] += int(r.get("correct_kernel_count", 0))
+        if r.get("target_met"):
+            bucket["target_met"] += 1
     if by_tag:
         print("\nPer prompt_tag:")
         for tag, b in sorted(by_tag.items()):
             print(f"  {tag}: total={b['total']} success={b.get('success', 0)} "
                   f"failed={b.get('failed', 0)} infra={b.get(INFRA_FAILED, 0)} "
                   f"api={b.get(API_FAILED, 0)} "
-                  f"timeout={b.get('timeout', 0)} error={b.get('error', 0)}")
+                  f"timeout={b.get('timeout', 0)} error={b.get('error', 0)} "
+                  f"correct={b['correct_trajectory']} target={b['target_met']}")
 
     summary = {
         "timestamp": datetime.now().isoformat(),
         "total": total,
+        "completed": len(successes),
+        "correct_trajectory": len(correct_results),
+        "correct_kernel_versions": correct_kernel_versions,
+        "target_met": len(target_results),
         "success": len(successes),
+        "success_semantics": (
+            "Legacy compatibility field: child processes that completed without an "
+            "infrastructure/API/process error. Use correct_trajectory and target_met "
+            "for kernel outcomes."
+        ),
         "failed": len(failures),
         "infra_failed": len(infra_failures),
         "api_failed": len(api_failures),

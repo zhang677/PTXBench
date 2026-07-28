@@ -26,6 +26,57 @@ docker/                   Agent, evaluator, FIBServe, and Compose definitions
 data/                     Local datasets and run artifacts (git-ignored)
 ```
 
+## Get a first result
+
+The smallest real PTXBench run asks one model to optimize one GEMM for three
+turns. It needs:
+
+- an NVIDIA Hopper/H100-class FIBServe instance loaded with the two FlashInfer
+  Trace datasets;
+- the `ptxbench-eval:dev` Docker image; and
+- either an OpenAI-compatible Qwen endpoint or credentials for one of the
+  hosted models supported by `mini-ptx-agent`.
+
+Set up the Python environment and evaluator image:
+
+```bash
+uv sync --all-packages --group dev
+docker build -f docker/Dockerfile.eval -t ptxbench-eval:dev .
+```
+
+Start FIBServe as described below, then select a model. For a Qwen endpoint,
+the served ID must exactly match `MODEL_NAME`:
+
+```bash
+export MODEL_NAME=Qwen3.6-27B
+export ACCRL_MODEL_HOST=localhost:30062
+export SERVICE_URL=http://localhost:10000
+
+uv run ptxbench quickstart --check
+uv run ptxbench quickstart --run
+```
+
+For example, a hosted OpenAI model can be used without
+`ACCRL_MODEL_HOST`:
+
+```bash
+export MODEL_NAME=GPT-5.4
+export OPENAI_API_KEY=...
+uv run ptxbench quickstart --run
+```
+
+Every run leaves the full `trajectories/exp_000.json`, evaluator logs, and a
+concise `quickstart-result.json` under
+`data/eval_runs/quickstart-...-gemm/`. When the model emits a CUDA candidate,
+it is saved as `exp_000/kernel.cu`; a correctness-passing kernel is
+additionally saved as `success/exp_000/kernel_vN.cu`. The report deliberately
+distinguishes “the runner completed” from “the kernel was correct” and “the
+1.0x target was achieved.” Reprint any run with:
+
+```bash
+uv run ptxbench quickstart --report data/eval_runs/quickstart-...-gemm
+```
+
 ## Local paths
 
 All ported scripts accept these environment variables:
@@ -79,7 +130,7 @@ test -d "$PTXBENCH_TRACESET_ROOT/definitions"
 test -d "$PTXBENCH_TRACESET_ROOT/workloads"
 test -d "$PTXBENCH_HEAVY_TRACESET_ROOT/definitions"
 test -d "$PTXBENCH_HEAVY_TRACESET_ROOT/workloads"
-docker compose -f docker/compose.yaml up --build fibserve
+docker compose --env-file docker/.env -f docker/compose.yaml up --build fibserve
 ```
 
 The public experiment index starts at [`experiments/README.md`](experiments/README.md).

@@ -66,6 +66,150 @@ def test_path_resolver_uses_repo_layout() -> None:
     assert paths.fixit_v6_root == ROOT / "experiments" / "fixit-v6"
 
 
+def test_quickstart_report_distinguishes_attempt_from_correct_kernel(
+    tmp_path: Path,
+) -> None:
+    sys.path.insert(0, str(MINI_ROOT))
+    from mini_ptx_agent.quickstart import build_result, write_result
+
+    output_root = tmp_path / "quickstart"
+    (output_root / "exp_000").mkdir(parents=True)
+    (output_root / "exp_000" / "kernel.cu").write_text("generated but incorrect")
+    (output_root / "trajectories").mkdir()
+    (output_root / "trajectories" / "exp_000.json").write_text(
+        json.dumps(
+            {
+                "messages": [
+                    {"role": "system", "content": "system"},
+                    {"role": "user", "content": "task"},
+                    {"role": "assistant", "content": "candidate"},
+                    {
+                        "role": "user",
+                        "content": "<output>test.py failed: compile error</output>",
+                    },
+                    {
+                        "role": "exit",
+                        "content": "LimitsExceeded",
+                        "extra": {"exit_status": "LimitsExceeded"},
+                    },
+                ]
+            }
+        )
+    )
+    (output_root / "plan.json").write_text(
+        json.dumps(
+            {
+                "plan": [
+                    {
+                        "exp_index": 0,
+                        "definition": "gemm_n7168_k5120",
+                        "num_turns": 1,
+                    }
+                ]
+            }
+        )
+    )
+    (output_root / "summary.json").write_text(
+        json.dumps(
+            {
+                "success": 1,
+                "results": [
+                    {
+                        "exp_name": "exp_000",
+                        "definition": "gemm_n7168_k5120",
+                        "status": "success",
+                    }
+                ],
+            }
+        )
+    )
+
+    result = build_result(output_root)
+    assert result["runner"]["completed_processes"] == 1
+    assert result["outcome"] == {
+        "generated_candidate_count": 1,
+        "correct_kernel_count": 0,
+        "target_achieved_count": 0,
+    }
+    assert result["experiments"][0]["feedback_excerpt"] == (
+        "test.py failed: compile error"
+    )
+    result_path, written = write_result(output_root)
+    assert json.loads(result_path.read_text()) == written
+
+
+def test_quickstart_report_identifies_correct_target_kernel(tmp_path: Path) -> None:
+    sys.path.insert(0, str(MINI_ROOT))
+    from mini_ptx_agent.quickstart import build_result
+
+    output_root = tmp_path / "quickstart"
+    success = output_root / "success" / "exp_000"
+    success.mkdir(parents=True)
+    (success / "kernel_v0.cu").write_text("correct kernel")
+    (success / "record.json").write_text(json.dumps([{"version": 0, "turn": 0}]))
+    trajectories = output_root / "trajectories"
+    trajectories.mkdir()
+    (trajectories / "exp_000.json").write_text(
+        json.dumps(
+            {
+                "messages": [
+                    {"role": "system", "content": "system"},
+                    {"role": "user", "content": "task"},
+                    {
+                        "role": "exit",
+                        "content": "Target speedup achieved.",
+                        "extra": {"exit_status": "Submitted"},
+                    },
+                ]
+            }
+        )
+    )
+
+    result = build_result(output_root)
+    assert result["outcome"]["generated_candidate_count"] == 0
+    assert result["outcome"]["correct_kernel_count"] == 1
+    assert result["outcome"]["target_achieved_count"] == 1
+    assert result["experiments"][0]["correct_kernels"] == [
+        "success/exp_000/kernel_v0.cu"
+    ]
+
+
+def test_parallel_summary_separates_completion_correctness_and_target(
+    tmp_path: Path,
+) -> None:
+    sys.path.insert(0, str(MINI_ROOT / "fib_runtime" / "multiturn"))
+    from run_parallel_v2 import summarize_results
+
+    results = [
+        {
+            "exp_index": 0,
+            "exp_name": "exp_000",
+            "prompt_tag": "hopper-no-hint",
+            "status": "success",
+            "duration": 1.0,
+            "correct_kernel_count": 0,
+            "target_met": False,
+        },
+        {
+            "exp_index": 1,
+            "exp_name": "exp_001",
+            "prompt_tag": "hopper-no-hint",
+            "status": "success",
+            "duration": 2.0,
+            "correct_kernel_count": 2,
+            "target_met": True,
+        },
+    ]
+    summarize_results(results, tmp_path)
+    summary = json.loads((tmp_path / "summary.json").read_text())
+    assert summary["completed"] == 2
+    assert summary["success"] == 2
+    assert summary["correct_trajectory"] == 1
+    assert summary["correct_kernel_versions"] == 2
+    assert summary["target_met"] == 1
+    assert "Legacy compatibility field" in summary["success_semantics"]
+
+
 def test_construct_eval_directory_contains_only_shared_implementation() -> None:
     expected = {
         "README.md",
@@ -89,6 +233,11 @@ def test_compose_uses_explicit_read_only_traceset_mounts() -> None:
     assert ":/workspace/accrl-training:ro" in compose
     assert ":/workspace/accrl-training-heavy:ro" in compose
     assert ("DATASET_ROOTS: /workspace/accrl-training:/workspace/accrl-training-heavy") in compose
+
+
+def test_fibserve_verifier_imports_both_workspace_packages() -> None:
+    verifier = (ROOT / "packages" / "fibserve" / "scripts" / "run_verify.sh").read_text()
+    assert "$PTXBENCH_ROOT/packages/mini-ptx-agent:$PTXBENCH_ROOT/packages/fibserve" in verifier
 
 
 def test_complete_fixit_v6_source_preflight() -> None:
