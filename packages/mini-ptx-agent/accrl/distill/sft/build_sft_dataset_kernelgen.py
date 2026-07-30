@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rebuild the three-message dataset used for the published ``sft-v4`` run.
+"""Rebuild the three-message dataset used for the published ``kernelgen`` run.
 
 Each reasoning record points at an original Gemini trajectory and turn.  The
 training row intentionally keeps only the trajectory's system message, first
@@ -375,7 +375,7 @@ def main() -> int:
         "assistant_chars": summarize_ints([len(row["messages"][-1]["content"]) for row in rows]),
     }
     manifest = {
-        "builder": "accrl.distill.sft.build_sft_dataset_sft_v4",
+        "builder": "accrl.distill.sft.build_sft_dataset_kernelgen",
         "pairs_path": str(args.pairs),
         "pairs_sha256": file_sha256(args.pairs),
         "output": str(args.output),

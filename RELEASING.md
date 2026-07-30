@@ -35,16 +35,16 @@ scripts/reproduce_kernelgen.sh --check
 Large source inputs are published separately from Git source:
 
 ```bash
-python scripts/build_fixit_v6_data_bundle.py \
+python scripts/build_fixit_data_bundle.py \
   --pairs-csv /path/to/fixit-v5-gemini-kernel-pairs.csv \
   --data-root /path/to/AccRL-exps \
   --mini-agent-root /path/to/AccRL \
-  --output dist/fixit-v6-source-data.tar.gz
+  --output dist/fixit-source-data.tar.gz
 
-python scripts/build_sft_v4_data_bundle.py \
+python scripts/build_kernelgen_data_bundle.py \
   --data-root /path/to/AccRL-exps \
   --mini-agent-root /path/to/AccRL \
-  --output dist/sft-v4-source-data.tar.gz
+  --output dist/kernelgen-source-data.tar.gz
 ```
 
 These deterministic archives contain source trajectories, selected kernels,

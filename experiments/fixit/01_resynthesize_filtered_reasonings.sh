@@ -7,10 +7,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/paths.sh"
 
 PROJECT="$PTXBENCH_FIXIT_PROJECT"
-SYNTH_CONFIG="$PROJECT/qwen36-27b-fixit-v6-config.yaml"
-DEFAULT_CONFIG="$PROJECT/qwen36-27b-fixit-v6-resynthesis-config.yaml"
+SYNTH_CONFIG="$PROJECT/qwen36-27b-fixit-config.yaml"
+DEFAULT_CONFIG="$PROJECT/qwen36-27b-fixit-resynthesis-config.yaml"
 PAIRS_CSV="$PROJECT/fixit-v5-gemini-kernel-pairs.csv"
-INPUT_JSONL="$PROJECT/reasoning_pairs.qwen36-27b-fixit-v6.jsonl"
+INPUT_JSONL="$PROJECT/reasoning_pairs.qwen36-27b-fixit.jsonl"
 PROCESS="$PTXBENCH_CONSTRUCT_EVAL_ROOT/fixit_downstream_process.py"
 SCRIPT="$PTXBENCH_MULTITURN_ROOT/fix_kernels/resynthesize_filtered_reasonings_openrouter.py"
 
@@ -64,20 +64,20 @@ project = Path(sys.argv[3])
 
 config = yaml.safe_load(synth_config.read_text()) or {}
 config["description"] = (
-    "Resynthesize filtered Qwen3.6-27B reasoning for the full fixit-v6 dataset."
+    "Resynthesize filtered Qwen3.6-27B reasoning for the full fixit dataset."
 )
 config["resynthesis"] = {
-    "input_jsonl": str(project / "reasoning_pairs.qwen36-27b-fixit-v6.jsonl"),
+    "input_jsonl": str(project / "reasoning_pairs.qwen36-27b-fixit.jsonl"),
     "kernel_pairs_csv": str(project / "fixit-v5-gemini-kernel-pairs.csv"),
-    "output_jsonl": str(project / "reasoning_pairs.qwen36-27b-fixit-v6-full.jsonl"),
+    "output_jsonl": str(project / "reasoning_pairs.qwen36-27b-fixit-full.jsonl"),
     "checkpoint_jsonl": str(
-        project / "reasoning_pairs.qwen36-27b-fixit-v6-full.repairs.jsonl"
+        project / "reasoning_pairs.qwen36-27b-fixit-full.repairs.jsonl"
     ),
     "provenance_json": str(
-        project / "reasoning_pairs.qwen36-27b-fixit-v6-full.provenance.json"
+        project / "reasoning_pairs.qwen36-27b-fixit-full.provenance.json"
     ),
     "tokenizer": "Qwen/Qwen3.6-27B",
-    "source_label": "fixit-v6-qwen36-27b",
+    "source_label": "fixit-qwen36-27b",
     "max_sequence_tokens": 65536,
     "safety_tokens": 1024,
     "min_target_ratio": 0.95,

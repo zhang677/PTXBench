@@ -68,7 +68,7 @@ def ensure_kernels_dir(exp_dir: Path) -> None:
         return
 
     raise FileNotFoundError(
-        f"{kernels_dir} is missing; extract the SFT-v4 source-data bundle "
+        f"{kernels_dir} is missing; extract the KernelGen source-data bundle "
         "before collecting kernels"
     )
 

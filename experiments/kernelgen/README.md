@@ -1,7 +1,7 @@
 # KernelGen
 
-This directory preserves the historical `sft-v4` variant of KernelGen. The
-supported user entrypoint is `scripts/reproduce_kernelgen.sh`.
+This directory contains the KernelGen recipe. The supported user entrypoint
+is `scripts/reproduce_kernelgen.sh`.
 
 KernelGen trains on successful kernels rather than repair pairs:
 
@@ -55,10 +55,10 @@ scripts/reproduce_kernelgen.sh 05
 Release maintainers can package the deterministic 12-run input closure with:
 
 ```bash
-python scripts/build_sft_v4_data_bundle.py \
+python scripts/build_kernelgen_data_bundle.py \
   --data-root /path/to/AccRL-exps \
   --mini-agent-root /path/to/AccRL \
-  --output dist/sft-v4-source-data.tar.gz
+  --output dist/kernelgen-source-data.tar.gz
 ```
 
 The final parquet uses exactly three messages: the original Gemini system

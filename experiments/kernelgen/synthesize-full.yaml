@@ -1,6 +1,6 @@
-input_csv: ${SFT_V4_PROJECT}/correct-kernels.enriched.csv
-output_jsonl: ${SFT_V4_PROJECT}/reasoning_pairs.jsonl
-provenance_json: ${SFT_V4_PROJECT}/provenance.json
+input_csv: ${KERNELGEN_PROJECT}/correct-kernels.enriched.csv
+output_jsonl: ${KERNELGEN_PROJECT}/reasoning_pairs.jsonl
+provenance_json: ${KERNELGEN_PROJECT}/provenance.json
 name: gemini_hopper_mha_correct_kernel_reasoning
 description: Correct-kernel reasoning synthesis using latest prompt-tag base knowledge and one correct kernel.
 reasoning_model: openrouter/z-ai/glm-5.2

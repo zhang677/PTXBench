@@ -5,8 +5,8 @@ launchers. It is not an experiment entrypoint.
 
 New users should start with:
 
-- `experiments/fixit-v6/README.md` for Fixit-v6.
-- `experiments/sft-v4/README.md` for SFT-v4.
+- `experiments/fixit/README.md` for Fixit.
+- `experiments/kernelgen/README.md` for KernelGen.
 
 The retained files have one shared responsibility each:
 

@@ -6,8 +6,8 @@ source "$SCRIPT_DIR/paths.sh"
 
 PROJECT="$PTXBENCH_FIXIT_PROJECT"
 PAIRS_CSV="$PROJECT/fixit-v5-gemini-kernel-pairs.csv"
-REASONING_JSONL="$PROJECT/reasoning_pairs.qwen36-27b-fixit-v6-full.jsonl"
-PARQUET="$PROJECT/data/qwen36-27b-fixit-v6-full.parquet"
+REASONING_JSONL="$PROJECT/reasoning_pairs.qwen36-27b-fixit-full.jsonl"
+PARQUET="$PROJECT/data/qwen36-27b-fixit-full.parquet"
 TOKENIZER="Qwen/Qwen3.6-27B"
 MAX_TOKENS="65536"
 SHUFFLE_SEED="42"
@@ -26,6 +26,6 @@ python "$PROCESS" \
   --parquet "$PARQUET" \
   --tokenizer "$TOKENIZER" \
   --parquet-max-tokens "$MAX_TOKENS" \
-  --source-label fixit-v6-qwen36-27b \
+  --source-label fixit-qwen36-27b \
   --shuffle \
   --shuffle-seed "$SHUFFLE_SEED"

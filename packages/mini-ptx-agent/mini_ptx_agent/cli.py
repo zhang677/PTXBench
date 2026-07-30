@@ -35,8 +35,8 @@ def doctor() -> None:
         ("multiturn runner", (resolved.multiturn_root / "run_parallel_v2.py").is_file(), str(resolved.multiturn_root)),
         (
             "Fixit experiment",
-            (resolved.fixit_v6_root / "05_watch_5defs_eval.sh").is_file(),
-            str(resolved.fixit_v6_root),
+            (resolved.fixit_root / "05_watch_5defs_eval.sh").is_file(),
+            str(resolved.fixit_root),
         ),
         ("FIBServe source", (resolved.repo_root / "packages" / "fibserve" / "pyproject.toml").is_file(), "packages/fibserve"),
         ("docker", shutil.which("docker") is not None, shutil.which("docker") or "not found"),

@@ -6,14 +6,14 @@ PTXBENCH_ROOT="${PTXBENCH_ROOT:-$(cd "$SCRIPT_DIR/.." && pwd)}"
 MINI_PTX_AGENT_ROOT="${MINI_PTX_AGENT_ROOT:-$PTXBENCH_ROOT/packages/mini-ptx-agent}"
 PTXBENCH_DATA_ROOT="${PTXBENCH_DATA_ROOT:-$PTXBENCH_ROOT/data}"
 CONSTRUCT_ROOT="$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts"
-FIXIT_ROOT="$PTXBENCH_ROOT/experiments/fixit-v6"
-WATCHER="${FIXIT_V6_WATCHER:-$FIXIT_ROOT/05_watch_5defs_eval.sh}"
+FIXIT_ROOT="$PTXBENCH_ROOT/experiments/fixit"
+WATCHER="${FIXIT_WATCHER:-$FIXIT_ROOT/05_watch_5defs_eval.sh}"
 
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/smoke_fixit_v6.sh --check
-  MODEL_NAME=... ACCRL_MODEL_HOST=host:port scripts/smoke_fixit_v6.sh --run
+  scripts/smoke_fixit.sh --check
+  MODEL_NAME=... ACCRL_MODEL_HOST=host:port scripts/smoke_fixit.sh --run
 
 Environment:
   SERVICE_URL          FIBServe URL (default http://localhost:10000)
@@ -36,7 +36,7 @@ case "$mode" in
     ;;
 esac
 
-SMOKE_CONFIG="$PTXBENCH_ROOT/configs/fixit-v6/smoke-patched.json"
+SMOKE_CONFIG="$PTXBENCH_ROOT/configs/fixit/smoke-patched.json"
 
 required=(
   "$WATCHER"
@@ -63,13 +63,13 @@ python -m compileall -q \
   "$CONSTRUCT_ROOT/fixit_downstream_process.py" \
   "$CONSTRUCT_ROOT/watch_eval_audit.py"
 
-echo "Fixit-v6 static smoke preflight passed"
+echo "Fixit static smoke preflight passed"
 echo "watcher=$WATCHER"
 echo "config=$SMOKE_CONFIG"
 
 if [[ "$mode" == "--check" ]]; then
   BASE_RUN_DATE=smoke \
-  RUN_DATE=smoke-fixit-v6 \
+  RUN_DATE=smoke-fixit \
   MODEL_NAME=smoke-model \
   ACCRL_MODEL_HOST=localhost:1 \
   SERVICE_URL=http://localhost:1 \
@@ -91,7 +91,7 @@ fi
 
 export PTXBENCH_ROOT MINI_PTX_AGENT_ROOT PTXBENCH_DATA_ROOT
 export BASE_RUN_DATE="${BASE_RUN_DATE:-smoke}"
-export RUN_DATE="${RUN_DATE:-smoke-fixit-v6}"
+export RUN_DATE="${RUN_DATE:-smoke-fixit}"
 export SERVICE_URL="${SERVICE_URL:-http://localhost:10000}"
 export PROFILE_LOCAL="${PROFILE_LOCAL:-1}"
 export PROFILE_CONTAINER="${PROFILE_CONTAINER:-ptxbench-fibserve}"

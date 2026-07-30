@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a deterministic, relocatable SFT-v4 source-data archive."""
+"""Build a deterministic, relocatable KernelGen source-data archive."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_SOURCE_RUNS = ROOT / "experiments" / "sft-v4" / "source-runs.csv"
+DEFAULT_SOURCE_RUNS = ROOT / "experiments" / "kernelgen" / "source-runs.csv"
 COLLECTOR = (
     ROOT
     / "packages"
@@ -37,7 +37,7 @@ ENRICHER = (
     / "enrich_correct_kernels_for_reasoning.py"
 )
 ARCHIVE_ROOT = Path("ptxbench-data")
-MANIFEST_NAME = "sft-v4-source-manifest.json"
+MANIFEST_NAME = "kernelgen-source-manifest.json"
 EXPECTED_SOURCE_RUNS = 12
 EXPECTED_SELECTED_ROWS = 521
 
@@ -209,7 +209,7 @@ def main() -> int:
             f"found {len(source_runs)}"
         )
 
-    with tempfile.TemporaryDirectory(prefix="ptxbench-sft-v4-bundle.") as temp:
+    with tempfile.TemporaryDirectory(prefix="ptxbench-kernelgen-bundle.") as temp:
         correct, enriched = generated_source_rows(
             source_runs_csv,
             data_root=data_root,
@@ -244,7 +244,7 @@ def main() -> int:
         if missing:
             preview = "\n".join(str(path) for path in missing[:20])
             raise SystemExit(
-                f"SFT-v4 source closure has {len(missing)} missing files:\n{preview}"
+                f"KernelGen source closure has {len(missing)} missing files:\n{preview}"
             )
 
         mapped_files: dict[Path, Path] = {}
@@ -289,7 +289,7 @@ def main() -> int:
         )
         manifest = {
             "format_version": 1,
-            "experiment": "sft-v4",
+            "experiment": "kernelgen",
             "archive_root": ARCHIVE_ROOT.as_posix(),
             "source_runs": len(source_runs),
             "selected_rows": len(enriched_rows),

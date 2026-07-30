@@ -8,10 +8,10 @@ python "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts/fixit_
   --execute-serve \
   --stages serve \
   --wait-for-checkpoint \
-  --parquet "$SFT_V4_PARQUET" \
-  --runs-dir "$SFT_V4_PROJECT/runs" \
+  --parquet "$KERNELGEN_PARQUET" \
+  --runs-dir "$KERNELGEN_PROJECT/runs" \
   --base-model Qwen/Qwen3.6-27B \
-  --train-run-tag "$SFT_V4_RUN_TAG" \
+  --train-run-tag "$KERNELGEN_RUN_TAG" \
   --remote "${REMOTE:-ion-b200}" \
   --container "${CONTAINER:-sglang-genghan}" \
   --remote-port "${REMOTE_PORT:-9001}" \

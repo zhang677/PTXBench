@@ -1,8 +1,8 @@
 # Fixit
 
-This directory preserves the historical `fixit-v6` variant of the Fixit
-recipe. The supported user entrypoint is `scripts/reproduce_fixit.sh`; files
-under `packages/` are shared implementation details.
+This directory contains the Fixit recipe. The supported user entrypoint is
+`scripts/reproduce_fixit.sh`; files under `packages/` are shared
+implementation details.
 
 ## Pipeline from scratch
 
@@ -106,19 +106,19 @@ plan, and correctness export referenced by the pair CSV.
 Release maintainers can build that bundle with:
 
 ```bash
-python scripts/build_fixit_v6_data_bundle.py \
+python scripts/build_fixit_data_bundle.py \
   --pairs-csv /path/to/fixit-v5-gemini-kernel-pairs.csv \
   --data-root /path/to/AccRL-exps \
   --mini-agent-root /path/to/AccRL \
-  --output dist/fixit-v6-source-data.tar.gz
+  --output dist/fixit-source-data.tar.gz
 ```
 
 ## Layout
 
 | Location | Purpose |
 | --- | --- |
-| `experiments/fixit-v6/` | Fixit orchestration and run instructions |
-| `configs/fixit-v6/` | source-mining and expert-guided evaluation plans |
+| `experiments/fixit/` | Fixit orchestration and run instructions |
+| `configs/fixit/` | source-mining and expert-guided evaluation plans |
 | `packages/mini-ptx-agent/` | reusable collection, synthesis, training, and agent code |
 | `packages/fibserve/` | independent GPU correctness/profiling service |
 | `$PTXBENCH_DATA_ROOT/` | source runs and generated artifacts |
@@ -126,5 +126,5 @@ python scripts/build_fixit_v6_data_bundle.py \
 For an evaluation-only static preflight, use:
 
 ```bash
-scripts/smoke_fixit_v6.sh --check
+scripts/smoke_fixit.sh --check
 ```

@@ -20,7 +20,7 @@ FIBServe remain separate runtime images even though users clone one repository.
 ```text
 packages/mini-ptx-agent/  Agent, prompts, Fixit scripts, inspector, benchmark
 packages/fibserve/        GPU evaluation service
-configs/fixit-v6/         Portable Fixit prompt configurations
+configs/fixit/            Portable Fixit prompt configurations
 experiments/              Public experiment index, launchers, and instructions
 docker/                   Agent, evaluator, FIBServe, and Compose definitions
 data/                     Local datasets and run artifacts (git-ignored)
@@ -143,17 +143,16 @@ The public experiment index starts at [`experiments/README.md`](experiments/READ
 The source/data boundary and release procedure are documented in
 [`RELEASING.md`](RELEASING.md).
 For Fixit, use
-[`experiments/fixit-v6/README.md`](experiments/fixit-v6/README.md) as the
-single start page. The directory name preserves the historical `fixit-v6`
-variant; the user-facing entrypoint is `scripts/reproduce_fixit.sh`.
+[`experiments/fixit/README.md`](experiments/fixit/README.md) as the
+single start page and `scripts/reproduce_fixit.sh` as the runnable entrypoint.
 
-Use `scripts/smoke_fixit_v6.sh --check` for a non-mutating dependency and
+Use `scripts/smoke_fixit.sh --check` for a non-mutating dependency and
 configuration preflight.
 
 Use `scripts/reproduce_fixit.sh --check` to validate the complete source
 closure and `from-scratch` to run failure mining, Gemini repair, SFT, and the
-paper's expert-guided evaluation in order. KernelGen is preserved under the
-historical `experiments/sft-v4` path and uses
+paper's expert-guided evaluation in order. KernelGen starts at
+[`experiments/kernelgen/README.md`](experiments/kernelgen/README.md) and uses
 `scripts/reproduce_kernelgen.sh`. `ptxbench-inspect` remains part of the
 supported CLI.
 
@@ -164,7 +163,7 @@ does not default to a shared model serve:
 MODEL_NAME=Qwen3.6-27B \
 ACCRL_MODEL_HOST=localhost:30062 \
 SERVICE_URL=http://localhost:11000 \
-scripts/smoke_fixit_v6.sh --run
+scripts/smoke_fixit.sh --run
 ```
 
 To run the same orchestration from the agent container, set
@@ -175,7 +174,7 @@ the Docker socket can mount trajectory workspaces correctly:
 ```bash
 export PTXBENCH_HOST_ROOT="$(pwd)"
 docker compose -f docker/compose.yaml run --rm \
-  --entrypoint bash agent scripts/smoke_fixit_v6.sh --check
+  --entrypoint bash agent scripts/smoke_fixit.sh --check
 ```
 
 ## Licensing and provenance

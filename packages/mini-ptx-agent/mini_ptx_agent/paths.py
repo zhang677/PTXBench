@@ -15,8 +15,8 @@ class PTXBenchPaths:
     multiturn_root: Path
     construct_eval_root: Path
     config_root: Path
-    fixit_v6_root: Path
-    fixit_v6_project: Path
+    fixit_root: Path
+    fixit_project: Path
     eval_runs_root: Path
 
 
@@ -41,7 +41,7 @@ def resolve_paths() -> PTXBenchPaths:
         multiturn_root=multiturn_root,
         construct_eval_root=multiturn_root / "construct_eval_scripts",
         config_root=config_root,
-        fixit_v6_root=repo_root / "experiments" / "fixit-v6",
-        fixit_v6_project=project,
+        fixit_root=repo_root / "experiments" / "fixit",
+        fixit_project=project,
         eval_runs_root=data_root / "eval_runs",
     )

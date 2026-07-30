@@ -12,11 +12,11 @@ from types import SimpleNamespace
 ROOT = Path(__file__).resolve().parents[1]
 MINI_ROOT = ROOT / "packages" / "mini-ptx-agent"
 CONSTRUCT_ROOT = MINI_ROOT / "fib_runtime" / "multiturn" / "construct_eval_scripts"
-FIXIT_ROOT = ROOT / "experiments" / "fixit-v6"
-SFT_V4_ROOT = ROOT / "experiments" / "sft-v4"
+FIXIT_ROOT = ROOT / "experiments" / "fixit"
+KERNELGEN_ROOT = ROOT / "experiments" / "kernelgen"
 
 
-def test_active_fixit_v6_sources_have_no_legacy_absolute_roots() -> None:
+def test_active_fixit_sources_have_no_legacy_absolute_roots() -> None:
     paths = [
         *FIXIT_ROOT.glob("*.sh"),
         MINI_ROOT / "benchmark" / "export_turn_correctness_arch.py",
@@ -39,14 +39,14 @@ def test_active_fixit_v6_sources_have_no_legacy_absolute_roots() -> None:
         MINI_ROOT / "fib_runtime" / "multiturn" / "run_v2.py",
         MINI_ROOT / "fib_runtime" / "multiturn" / "common.py",
         MINI_ROOT / "accrl" / "distill" / "inspector.py",
-        MINI_ROOT / "accrl" / "distill" / "sft" / "build_sft_dataset_sft_v4.py",
+        MINI_ROOT / "accrl" / "distill" / "sft" / "build_sft_dataset_kernelgen.py",
         MINI_ROOT
         / "fib_runtime"
         / "multiturn"
         / "task_to_correct_kernels"
         / "synthesize_correct_kernel_reasoning_openrouter.py",
         MINI_ROOT / "fib_runtime" / "multiturn" / "collect_notes" / "note_feedback.py",
-        *SFT_V4_ROOT.glob("*.sh"),
+        *KERNELGEN_ROOT.glob("*.sh"),
     ]
     legacy_roots = ("/home/ubuntu/AccRL", "/home/ubuntu/AccRL-exps")
     for path in paths:
@@ -55,9 +55,9 @@ def test_active_fixit_v6_sources_have_no_legacy_absolute_roots() -> None:
             assert root not in text, f"{path.relative_to(ROOT)} still contains {root}"
 
 
-def test_fixit_v6_static_preflight() -> None:
+def test_fixit_static_preflight() -> None:
     subprocess.run(
-        ["bash", str(ROOT / "scripts" / "smoke_fixit_v6.sh"), "--check"],
+        ["bash", str(ROOT / "scripts" / "smoke_fixit.sh"), "--check"],
         cwd=ROOT,
         env={
             **os.environ,
@@ -78,7 +78,7 @@ def test_path_resolver_uses_repo_layout() -> None:
     assert paths.mini_ptx_agent_root == MINI_ROOT
     assert paths.multiturn_root == MINI_ROOT / "fib_runtime" / "multiturn"
     assert paths.config_root == ROOT / "configs"
-    assert paths.fixit_v6_root == ROOT / "experiments" / "fixit-v6"
+    assert paths.fixit_root == ROOT / "experiments" / "fixit"
 
 
 def test_quickstart_report_distinguishes_attempt_from_correct_kernel(
@@ -257,9 +257,9 @@ def test_fibserve_verifier_imports_both_workspace_packages() -> None:
     assert "$PTXBENCH_ROOT/packages/mini-ptx-agent:$PTXBENCH_ROOT/packages/fibserve" in verifier
 
 
-def test_complete_fixit_v6_source_preflight() -> None:
+def test_complete_fixit_source_preflight() -> None:
     subprocess.run(
-        ["bash", str(ROOT / "scripts" / "reproduce_fixit_v6.sh"), "--check"],
+        ["bash", str(ROOT / "scripts" / "reproduce_fixit.sh"), "--check"],
         cwd=ROOT,
         env={
             **os.environ,
@@ -272,7 +272,7 @@ def test_complete_fixit_v6_source_preflight() -> None:
 
 
 def test_fixit_from_scratch_stages_and_expert_guided_eval() -> None:
-    driver = (ROOT / "scripts" / "reproduce_fixit_v6.sh").read_text()
+    driver = (ROOT / "scripts" / "reproduce_fixit.sh").read_text()
     for stage in [
         "source_00_watch_qwen36_linfo_mha.sh",
         "source_01_prepare_gemini_repairs.sh",
@@ -290,20 +290,21 @@ def test_fixit_from_scratch_stages_and_expert_guided_eval() -> None:
     watcher = (FIXIT_ROOT / "05_watch_5defs_eval.sh").read_text()
     assert "mha-p4-mha-patched.json" in watcher
     assert "mha-bwd-p4-mha-patched.json" in watcher
-    assert not (FIXIT_ROOT / "06_serve_patched_remote_full.sh").exists()
-    assert not (FIXIT_ROOT / "07_watch_v6_full_5defs_eval.sh").exists()
+    assert not list(FIXIT_ROOT.glob("0[67]_*.sh"))
 
 
-def test_generic_recipe_entrypoints_delegate_to_historical_drivers() -> None:
+def test_recipe_entrypoints_are_canonical_drivers() -> None:
     fixit = (ROOT / "scripts" / "reproduce_fixit.sh").read_text()
     kernelgen = (ROOT / "scripts" / "reproduce_kernelgen.sh").read_text()
-    assert 'exec "$SCRIPT_DIR/reproduce_fixit_v6.sh" "$@"' in fixit
-    assert 'exec "$SCRIPT_DIR/reproduce_sft_v4.sh" "$@"' in kernelgen
+    assert 'FIXIT_ROOT="$PTXBENCH_ROOT/experiments/fixit"' in fixit
+    assert 'EXPERIMENT_ROOT="$PTXBENCH_ROOT/experiments/kernelgen"' in kernelgen
+    assert "declare -a STAGES=(" in fixit
+    assert "declare -a STAGES=(" in kernelgen
 
 
-def test_complete_sft_v4_source_preflight() -> None:
+def test_complete_kernelgen_source_preflight() -> None:
     subprocess.run(
-        ["bash", str(ROOT / "scripts" / "reproduce_sft_v4.sh"), "--check"],
+        ["bash", str(ROOT / "scripts" / "reproduce_kernelgen.sh"), "--check"],
         cwd=ROOT,
         env={
             **os.environ,
@@ -325,8 +326,8 @@ def test_multiturn_child_driver_is_checked_by_both_recipes() -> None:
     assert 'launch_script = SCRIPT_DIR / "run_v2.py"' in launcher
     assert (ROOT / relative_driver).is_file()
     for driver_path in (
-        ROOT / "scripts" / "reproduce_fixit_v6.sh",
-        ROOT / "scripts" / "reproduce_sft_v4.sh",
+        ROOT / "scripts" / "reproduce_fixit.sh",
+        ROOT / "scripts" / "reproduce_kernelgen.sh",
     ):
         assert "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_v2.py" in (
             driver_path.read_text()
@@ -343,24 +344,24 @@ def test_sft_collector_has_no_hidden_kernel_extractor(tmp_path: Path) -> None:
     try:
         ensure_kernels_dir(missing_run)
     except FileNotFoundError as exc:
-        assert "extract the SFT-v4 source-data bundle" in str(exc)
+        assert "extract the KernelGen source-data bundle" in str(exc)
     else:
         raise AssertionError("missing kernels directory was silently accepted")
 
 
 def test_kernelgen_runnable_sources_are_present() -> None:
-    assert len(list(csv.DictReader((SFT_V4_ROOT / "source-runs.csv").open()))) == 12
+    assert len(list(csv.DictReader((KERNELGEN_ROOT / "source-runs.csv").open()))) == 12
     assert (MINI_ROOT / "accrl" / "distill" / "inspector.py").is_file()
     assert 'ptxbench-inspect = "accrl.distill.inspector:app"' in (
         MINI_ROOT / "pyproject.toml"
     ).read_text()
 
 
-def test_sft_v4_builder_uses_first_prompt_and_selected_answer(
+def test_kernelgen_builder_uses_first_prompt_and_selected_answer(
     tmp_path: Path, monkeypatch
 ) -> None:
     sys.path.insert(0, str(MINI_ROOT))
-    from accrl.distill.sft.build_sft_dataset_sft_v4 import convert_record
+    from accrl.distill.sft.build_sft_dataset_kernelgen import convert_record
 
     monkeypatch.setenv("PTXBENCH_DATA_ROOT", str(tmp_path))
     trajectory = tmp_path / "trajectory.json"
@@ -403,7 +404,7 @@ def test_sft_v4_builder_uses_first_prompt_and_selected_answer(
     )
 
 
-def test_sft_v4_bundle_csv_paths_are_relocatable(tmp_path: Path) -> None:
+def test_kernelgen_bundle_csv_paths_are_relocatable(tmp_path: Path) -> None:
     import csv
     import importlib.util
 
@@ -435,8 +436,8 @@ def test_sft_v4_bundle_csv_paths_are_relocatable(tmp_path: Path) -> None:
             }
         )
 
-    script = ROOT / "scripts" / "build_sft_v4_data_bundle.py"
-    spec = importlib.util.spec_from_file_location("sft_v4_bundle", script)
+    script = ROOT / "scripts" / "build_kernelgen_data_bundle.py"
+    spec = importlib.util.spec_from_file_location("kernelgen_bundle", script)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -647,7 +648,7 @@ def test_fixit_data_bundle_rewrites_paths_and_includes_implicit_inputs(
     subprocess.run(
         [
             sys.executable,
-            str(ROOT / "scripts" / "build_fixit_v6_data_bundle.py"),
+            str(ROOT / "scripts" / "build_fixit_data_bundle.py"),
             "--pairs-csv",
             str(pairs_csv),
             "--data-root",
@@ -678,4 +679,4 @@ def test_fixit_data_bundle_rewrites_paths_and_includes_implicit_inputs(
     assert (
         "ptxbench-data/eval_runs/correct/success/exp_001/record.json" in names
     )
-    assert "ptxbench-data/fixit-v6-source-manifest.json" in names
+    assert "ptxbench-data/fixit-source-manifest.json" in names

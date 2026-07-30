@@ -8,10 +8,10 @@ source "$SCRIPT_DIR/paths.sh"
 
 python "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts/fixit_downstream_process.py" \
   --stages train \
-  --parquet "$SFT_V4_PARQUET" \
-  --runs-dir "$SFT_V4_PROJECT/runs" \
+  --parquet "$KERNELGEN_PARQUET" \
+  --runs-dir "$KERNELGEN_PROJECT/runs" \
   --base-model Qwen/Qwen3.6-27B \
   --train-session train-mha-8def-glm52 \
-  --train-run-tag "$SFT_V4_RUN_TAG" \
+  --train-run-tag "$KERNELGEN_RUN_TAG" \
   --train-num-epochs 5 \
   --train-learning-rate 4.65e-4

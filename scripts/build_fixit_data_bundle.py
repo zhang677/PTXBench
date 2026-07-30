@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a relocatable Fixit-v6 source-data archive from a legacy data tree."""
+"""Build a relocatable Fixit source-data archive from a legacy data tree."""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ PATH_COLUMNS = (
 COPIED_PATH_COLUMNS = tuple(column for column in PATH_COLUMNS if column != "test_path")
 PAIRS_NAME = "fixit-v5-gemini-kernel-pairs.csv"
 ARCHIVE_ROOT = Path("ptxbench-data")
-MANIFEST_NAME = "fixit-v6-source-manifest.json"
+MANIFEST_NAME = "fixit-source-manifest.json"
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -176,7 +176,7 @@ def main() -> int:
     if missing_files:
         preview = "\n".join(str(path) for path in missing_files[:20])
         raise SystemExit(
-            f"Fixit-v6 source closure has {len(missing_files)} missing files:\n{preview}"
+            f"Fixit source closure has {len(missing_files)} missing files:\n{preview}"
         )
 
     mapped_files: dict[Path, Path] = {}
@@ -213,7 +213,7 @@ def main() -> int:
     )
     manifest = {
         "format_version": 1,
-        "experiment": "fixit-v6",
+        "experiment": "fixit",
         "archive_root": ARCHIVE_ROOT.as_posix(),
         "pairs_csv": portable_pairs_path.as_posix(),
         "source_pairs_sha256": sha256_file(pairs_csv),
