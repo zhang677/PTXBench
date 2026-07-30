@@ -96,7 +96,11 @@ repository for authorized users.
 
 `PTXBENCH_TRACESET_ROOT` and `PTXBENCH_HEAVY_TRACESET_ROOT` are different:
 they must point to FlashInfer Trace datasets containing `definitions/` and
-`workloads/`. Compose mounts them read-only at `/workspace/accrl-training` and
+`workloads/`. Download the light trace set from
+[`AccRL/accrl-training`](https://huggingface.co/datasets/AccRL/accrl-training)
+and the heavy trace set from
+[`Genghan/accrl-training-heavy`](https://huggingface.co/datasets/Genghan/accrl-training-heavy).
+Compose mounts them read-only at `/workspace/accrl-training` and
 `/workspace/accrl-training-heavy` inside FIBServe. The datasets remain outside
 the Git checkout and are never copied into a Docker image.
 
