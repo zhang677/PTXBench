@@ -34,8 +34,8 @@ def doctor() -> None:
         ("mini-ptx-agent", resolved.mini_ptx_agent_root.is_dir(), str(resolved.mini_ptx_agent_root)),
         ("multiturn runner", (resolved.multiturn_root / "run_parallel_v2.py").is_file(), str(resolved.multiturn_root)),
         (
-            "Fixit-v6 experiment",
-            (resolved.fixit_v6_root / "07_watch_v6_full_5defs_eval.sh").is_file(),
+            "Fixit experiment",
+            (resolved.fixit_v6_root / "05_watch_5defs_eval.sh").is_file(),
             str(resolved.fixit_v6_root),
         ),
         ("FIBServe source", (resolved.repo_root / "packages" / "fibserve" / "pyproject.toml").is_file(), "packages/fibserve"),

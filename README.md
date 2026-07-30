@@ -20,8 +20,8 @@ FIBServe remain separate runtime images even though users clone one repository.
 ```text
 packages/mini-ptx-agent/  Agent, prompts, Fixit scripts, inspector, benchmark
 packages/fibserve/        GPU evaluation service
-configs/fixit-v6/         Portable Fixit-v6 prompt configurations
-experiments/              Public experiment index, launchers, and provenance
+configs/fixit-v6/         Portable Fixit prompt configurations
+experiments/              Public experiment index, launchers, and instructions
 docker/                   Agent, evaluator, FIBServe, and Compose definitions
 data/                     Local datasets and run artifacts (git-ignored)
 ```
@@ -89,8 +89,10 @@ export PTXBENCH_HEAVY_TRACESET_ROOT=/home/ubuntu/accrl-training-heavy
 export MINI_PTX_AGENT_ROOT="$PTXBENCH_ROOT/packages/mini-ptx-agent"
 ```
 
-`PTXBENCH_DATA_ROOT` may temporarily point at an existing AccRL-exps tree while
-the public Hugging Face datasets are being prepared.
+`PTXBENCH_DATA_ROOT` may point at an existing AccRL-exps tree. The byte-exact
+historical s0-s6 training parquets are also retained in the private
+[`Genghan/PTXBench-Qwen3.6-27B-SFT`](https://huggingface.co/datasets/Genghan/PTXBench-Qwen3.6-27B-SFT)
+repository for authorized users.
 
 `PTXBENCH_TRACESET_ROOT` and `PTXBENCH_HEAVY_TRACESET_ROOT` are different:
 they must point to FlashInfer Trace datasets containing `definitions/` and
@@ -136,19 +138,19 @@ docker compose --env-file docker/.env -f docker/compose.yaml up --build fibserve
 The public experiment index starts at [`experiments/README.md`](experiments/README.md).
 The source/data boundary and release procedure are documented in
 [`RELEASING.md`](RELEASING.md).
-For Fixit-v6, use
+For Fixit, use
 [`experiments/fixit-v6/README.md`](experiments/fixit-v6/README.md) as the
-single start page. Its numbered launchers are the supported user interface;
-the files under `packages/` are shared implementation details.
+single start page. The directory name preserves the historical `fixit-v6`
+variant; the user-facing entrypoint is `scripts/reproduce_fixit.sh`.
 
 Use `scripts/smoke_fixit_v6.sh --check` for a non-mutating dependency and
 configuration preflight.
 
-Use `scripts/reproduce_fixit_v6.sh --check` to validate the complete eight-stage
-source closure and `--check-data` to validate the external 258-pair input
-bundle before a full run. The SFT-v4 dataset/training lineage is preserved
-separately under `experiments/sft-v4` and has the corresponding
-`scripts/reproduce_sft_v4.sh` entrypoint. `ptxbench-inspect` remains part of the
+Use `scripts/reproduce_fixit.sh --check` to validate the complete source
+closure and `from-scratch` to run failure mining, Gemini repair, SFT, and the
+paper's expert-guided evaluation in order. KernelGen is preserved under the
+historical `experiments/sft-v4` path and uses
+`scripts/reproduce_kernelgen.sh`. `ptxbench-inspect` remains part of the
 supported CLI.
 
 For a live run, select a dedicated OpenAI-compatible model endpoint. PTXBench

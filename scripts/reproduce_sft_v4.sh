@@ -18,7 +18,7 @@ declare -a STAGES=(
 )
 
 usage() {
-  echo "Usage: $0 --check | --check-data | 00..05 | all" >&2
+  echo "Usage: scripts/reproduce_kernelgen.sh --check | --check-data | 00..05 | all" >&2
 }
 
 check_source() {
@@ -29,54 +29,45 @@ check_source() {
     }
     bash -n "$EXPERIMENT_ROOT/$script"
   done
-  python - "$PTXBENCH_ROOT" "$EXPERIMENT_ROOT/provenance.json" <<'PY'
-import json
-import sys
-from pathlib import Path
-
-root = Path(sys.argv[1])
-provenance = json.loads(Path(sys.argv[2]).read_text())
-missing = [
-    relative_path
-    for relative_path in provenance["required_source_files"]
-    if not (root / relative_path).is_file()
-]
-if missing:
-    raise SystemExit("missing retained SFT-v4 source:\n" + "\n".join(missing))
-
-multiturn = root / "packages/mini-ptx-agent/fib_runtime/multiturn"
-hub_path = multiturn / "prompt_configs/hub.json"
-hub = json.loads(hub_path.read_text())
-seen = set()
-fragments = set()
-
-def visit(tag):
-    if tag in seen:
-        return
-    seen.add(tag)
-    if tag not in hub:
-        raise SystemExit(f"{hub_path}: missing required prompt tag {tag!r}")
-    for item in hub[tag]:
-        if "/" in item:
-            fragments.add(item)
-        else:
-            visit(item)
-
-for tag in provenance["required_prompt_tags"]:
-    visit(tag)
-missing_fragments = [
-    relative_path
-    for relative_path in sorted(fragments)
-    if not (multiturn.parent / relative_path).is_file()
-]
-if missing_fragments:
-    raise SystemExit("missing retained SFT-v4 prompt fragments:\n" + "\n".join(missing_fragments))
-print(
-    "SFT-v4 source closure passed: "
-    f"{len(provenance['required_source_files'])} retained files, "
-    f"{len(seen)} prompt tags, {len(fragments)} prompt fragments"
-)
-PY
+  local required=(
+    "$MINI_PTX_AGENT_ROOT/accrl/distill/inspector.py"
+    "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/build_sft_dataset_sft_v4.py"
+    "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_download_weights.py"
+    "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_sft_train.py"
+    "$MINI_PTX_AGENT_ROOT/accrl/utils/code_utils.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/analyze_pattern.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/build_doc_v2.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/common.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/launcher_utils.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/resume_utils.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_parallel_v2.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_v2.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/collect_kernels/collect_correct_kernels.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/collect_notes/note_feedback.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts/fixit_downstream_process.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/task_to_correct_kernels/enrich_correct_kernels_for_reasoning.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/task_to_correct_kernels/synthesize_correct_kernel_reasoning_openrouter.py"
+  )
+  for path in "${required[@]}"; do
+    test -f "$path" || {
+      echo "missing required source: $path" >&2
+      return 1
+    }
+  done
+  python -m compileall -q "${required[@]}"
+  local support=(
+    "$EXPERIMENT_ROOT/source-runs.csv"
+    "$PTXBENCH_ROOT/experiments/fixit-v6/05_watch_5defs_eval.sh"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/user_template.txt"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/prompt_configs/hub.json"
+  )
+  for path in "${support[@]}"; do
+    test -f "$path" || {
+      echo "missing required source: $path" >&2
+      return 1
+    }
+  done
+  echo "KernelGen source check passed: ${#STAGES[@]} pipeline stages"
 }
 
 check_data() {
@@ -136,10 +127,10 @@ for row in rows:
                 missing.append((row["exp_dir"], label, path))
 if missing:
     preview = "\n".join(f"{run}: missing {label}: {path}" for run, label, path in missing[:20])
-    raise SystemExit(f"SFT-v4 bundle has {len(missing)} missing paths:\n{preview}")
+    raise SystemExit(f"KernelGen bundle has {len(missing)} missing paths:\n{preview}")
 if selected_rows != 521:
-    raise SystemExit(f"SFT-v4 bundle expected 521 selected rows, found {selected_rows}")
-print(f"SFT-v4 source-run data closure passed: {len(rows)} runs, {selected_rows} rows")
+    raise SystemExit(f"KernelGen bundle expected 521 selected rows, found {selected_rows}")
+print(f"KernelGen source-run data closure passed: {len(rows)} runs, {selected_rows} rows")
 PY
 }
 

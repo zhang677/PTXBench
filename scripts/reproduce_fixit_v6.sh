@@ -9,23 +9,28 @@ FIXIT_ROOT="$PTXBENCH_ROOT/experiments/fixit-v6"
 PROJECT="${PTXBENCH_FIXIT_PROJECT:-$PTXBENCH_DATA_ROOT/sft_experiments/test-fixit-qwen36-27b-gemini-glm}"
 export PTXBENCH_ROOT MINI_PTX_AGENT_ROOT PTXBENCH_DATA_ROOT
 
+declare -a SOURCE_STAGES=(
+  source_00_watch_qwen36_linfo_mha.sh
+  source_01_prepare_gemini_repairs.sh
+  source_02_watch_gemini_repairs.sh
+  source_03_collect_kernel_pairs.sh
+)
+
 declare -a STAGES=(
   00_synthesize_qwen36-27b_reasoning.sh
   01_resynthesize_filtered_reasonings.sh
   02_build_full_parquet.sh
   03_train_sft_full.sh
   04_serve_remote_full.sh
-  05_watch_v6_full_5defs_eval.sh
-  06_serve_patched_remote_full.sh
-  07_watch_v6_full_5defs_eval.sh
+  05_watch_5defs_eval.sh
 )
 
 usage() {
-  echo "Usage: $0 --check | --check-data | 00..07 | all" >&2
+  echo "Usage: scripts/reproduce_fixit.sh --check | --check-data | source-00..source-03 | source-all | 00..05 | all | from-scratch" >&2
 }
 
 check_source() {
-  for script in "${STAGES[@]}"; do
+  for script in "${SOURCE_STAGES[@]}" "${STAGES[@]}"; do
     test -x "$FIXIT_ROOT/$script" || {
       echo "missing executable stage: $FIXIT_ROOT/$script" >&2
       return 1
@@ -33,14 +38,29 @@ check_source() {
     bash -n "$FIXIT_ROOT/$script"
   done
   local required=(
+    "$MINI_PTX_AGENT_ROOT/accrl/distill/inspector.py"
+    "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/build_sft_dataset_fixit.py"
+    "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_download_weights.py"
+    "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_sft_train.py"
+    "$MINI_PTX_AGENT_ROOT/accrl/utils/code_utils.py"
+    "$MINI_PTX_AGENT_ROOT/benchmark/export_turn_correctness_arch.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/analyze_kernel_per_turn.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/analyze_pattern.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/build_doc_v2.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/common.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/launcher_utils.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/resume_utils.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_parallel_v2.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_v2.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/collect_notes/note_feedback.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts/fixit_downstream_process.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts/build_rebalanced_fixit_error_collection.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts/filter_fixit_error_kernels_by_prompt_tag.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/fix_kernels/select_failed_kernels.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/fix_kernels/run_parallel_fix_v2.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/fix_kernels/collect_success_kernel_pairs.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/fix_kernels/synthesize_pair_reasoning_openrouter.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/fix_kernels/resynthesize_filtered_reasonings_openrouter.py"
-    "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/build_sft_dataset_fixit.py"
-    "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_sft_train.py"
-    "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_download_weights.py"
-    "$MINI_PTX_AGENT_ROOT/accrl/distill/inspector.py"
-    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_v2.py"
   )
   for path in "${required[@]}"; do
     test -f "$path" || {
@@ -49,62 +69,30 @@ check_source() {
     }
   done
   python -m compileall -q "${required[@]}"
-  python - "$PTXBENCH_ROOT" "$PTXBENCH_ROOT/experiments/fixit-v6/provenance.json" <<'PY'
-import json
-import sys
-from pathlib import Path
-
-root = Path(sys.argv[1])
-provenance_path = Path(sys.argv[2])
-provenance = json.loads(provenance_path.read_text())
-missing = [
-    relative_path
-    for relative_path in provenance["required_source_files"]
-    if not (root / relative_path).is_file()
-]
-if missing:
-    raise SystemExit("missing retained Fixit-v6 source:\n" + "\n".join(missing))
-
-multiturn = root / "packages/mini-ptx-agent/fib_runtime/multiturn"
-hub_path = multiturn / "prompt_configs/hub.json"
-hub = json.loads(hub_path.read_text())
-seen = set()
-fragments = set()
-
-def visit(tag):
-    if tag in seen:
-        return
-    seen.add(tag)
-    if tag not in hub:
-        raise SystemExit(f"{hub_path}: missing required prompt tag {tag!r}")
-    for item in hub[tag]:
-        if "/" in item:
-            fragments.add(item)
-        else:
-            visit(item)
-
-for tag in provenance["required_prompt_tags"]:
-    visit(tag)
-missing_fragments = [
-    relative_path
-    for relative_path in sorted(fragments)
-    if not (multiturn.parent / relative_path).is_file()
-]
-if missing_fragments:
-    raise SystemExit("missing retained Fixit-v6 prompt fragments:\n" + "\n".join(missing_fragments))
-print(
-    "Fixit-v6 source closure passed: "
-    f"{len(provenance['required_source_files'])} retained files, "
-    f"{len(seen)} prompt tags, {len(fragments)} prompt fragments"
-)
-PY
+  local support=(
+    "$FIXIT_ROOT/source-runs.csv"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/user_template.txt"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/prompt_configs/hub.json"
+    "$PTXBENCH_ROOT/configs/fixit-v6/2026-0605-mha-p4.json"
+    "$PTXBENCH_ROOT/configs/fixit-v6/2026-0605-mha-bwd-p4.json"
+    "$PTXBENCH_ROOT/configs/fixit-v6/2026-0605-mha-p4-mha-patched.json"
+    "$PTXBENCH_ROOT/configs/fixit-v6/2026-0605-mha-bwd-p4-mha-patched.json"
+    "$PTXBENCH_ROOT/configs/fixit-v6/gemm-5-r8-p4.json"
+  )
+  for path in "${support[@]}"; do
+    test -f "$path" || {
+      echo "missing required source: $path" >&2
+      return 1
+    }
+  done
+  echo "Fixit source check passed: ${#SOURCE_STAGES[@]} source stages, ${#STAGES[@]} pipeline stages"
 }
 
 check_data() {
   check_source
   local pairs="$PROJECT/fixit-v5-gemini-kernel-pairs.csv"
   test -f "$pairs" || {
-    echo "missing Fixit-v6 input bundle entry: $pairs" >&2
+    echo "missing Fixit input bundle entry: $pairs" >&2
     return 1
   }
   python - "$pairs" <<'PY'
@@ -164,8 +152,8 @@ for index, row in enumerate(rows, 2):
         missing.append((index, "success_record", str(success_record)))
 if missing:
     preview = "\n".join(f"row {index}: missing {key}={value}" for index, key, value in missing[:20])
-    raise SystemExit(f"Fixit-v6 bundle has {len(missing)} missing referenced files:\n{preview}")
-print(f"Fixit-v6 data closure passed: {len(rows)} pairs")
+    raise SystemExit(f"Fixit bundle has {len(missing)} missing referenced files:\n{preview}")
+print(f"Fixit data closure passed: {len(rows)} pairs")
 PY
 }
 
@@ -177,13 +165,29 @@ case "$mode" in
   --check-data)
     check_data
     ;;
+  source-all)
+    check_source
+    for script in "${SOURCE_STAGES[@]}"; do
+      bash "$FIXIT_ROOT/$script"
+    done
+    ;;
+  source-0[0-3])
+    source_index="${mode#source-}"
+    bash "$FIXIT_ROOT/${SOURCE_STAGES[10#$source_index]}"
+    ;;
   all)
     check_data
     for script in "${STAGES[@]}"; do
       bash "$FIXIT_ROOT/$script"
     done
     ;;
-  0[0-7])
+  from-scratch)
+    check_source
+    for script in "${SOURCE_STAGES[@]}" "${STAGES[@]}"; do
+      bash "$FIXIT_ROOT/$script"
+    done
+    ;;
+  0[0-5])
     bash "$FIXIT_ROOT/${STAGES[10#$mode]}"
     ;;
   -h|--help)

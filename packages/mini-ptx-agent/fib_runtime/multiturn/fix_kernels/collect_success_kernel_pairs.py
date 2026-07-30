@@ -19,11 +19,13 @@ import tempfile
 from pathlib import Path
 
 
-ACCRL_ROOT = Path("/home/ubuntu/AccRL")
-sys.path.insert(0, str(ACCRL_ROOT))
+MINI_PTX_AGENT_ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(MINI_PTX_AGENT_ROOT))
 from accrl.utils.code_utils import extract_code_block  # noqa: E402
 
-EXPORT_TURN_CORRECTNESS = ACCRL_ROOT / "benchmark" / "export_turn_correctness_arch.py"
+EXPORT_TURN_CORRECTNESS = (
+    MINI_PTX_AGENT_ROOT / "benchmark" / "export_turn_correctness_arch.py"
+)
 TURN_CSV_REL = Path("figures") / "turn_correctness_arch.csv"
 EXP_ID_RE = re.compile(r"^exp_(\d+)$")
 KERNEL_VERSION_RE = re.compile(r"kernel_v(\d+)\.cu$")

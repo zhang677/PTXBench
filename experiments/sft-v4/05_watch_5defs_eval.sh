@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/paths.sh"
 
-WATCHER="$PTXBENCH_ROOT/experiments/fixit-v6/05_watch_v6_full_5defs_eval.sh"
+WATCHER="$PTXBENCH_ROOT/experiments/fixit-v6/05_watch_5defs_eval.sh"
 
 export PROJECT="$SFT_V4_PROJECT"
 export TRAIN_RUN_TAG="$SFT_V4_RUN_TAG"

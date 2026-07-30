@@ -2,7 +2,7 @@
 
 PTXBench has two independent runtime products:
 
-- `mini-ptx-agent` runs the Fixit-v6 and SFT-v4 experiment pipelines.
+- `mini-ptx-agent` runs the Fixit and KernelGen experiment pipelines.
 - `FIBServe` evaluates CUDA kernels against locally mounted FlashInfer Trace
   datasets.
 
@@ -11,26 +11,23 @@ mounts, or either experiment data bundle.
 
 ## Source release
 
-Build the audited source distribution with:
+Build the runnable source distribution with:
 
 ```bash
 python scripts/build_public_release.py \
   --output dist/ptxbench-source.tar.gz
 ```
 
-The archive is the union of the source closures declared by
-`experiments/fixit-v6/provenance.json` and
-`experiments/sft-v4/provenance.json`, plus FIBServe, package metadata,
-containers, tests, and public entrypoints. It intentionally excludes unrelated
-AccRL analyses, historical output plots, debug experiments, and obsolete SFT
-pipelines. `accrl/distill/inspector.py` is explicitly retained.
+The archive contains the Fixit and KernelGen launchers, their required
+mini-ptx-agent implementations, FIBServe, package metadata, containers, tests,
+and public entrypoints.
 
 Every archive contains `RELEASE-MANIFEST.sha256`. Verify it after extraction:
 
 ```bash
 sha256sum -c RELEASE-MANIFEST.sha256
-scripts/reproduce_fixit_v6.sh --check
-scripts/reproduce_sft_v4.sh --check
+scripts/reproduce_fixit.sh --check
+scripts/reproduce_kernelgen.sh --check
 ```
 
 ## Input-data releases
@@ -57,16 +54,40 @@ parquets, checkpoints, or evaluation outputs.
 After extraction, point `PTXBENCH_DATA_ROOT` at the archive's
 `ptxbench-data` directory and run the corresponding `--check-data` command.
 
+## Private historical SFT artifacts
+
+The byte-exact Qwen3.6-27B s0-s6 training parquets are stored in the private
+[`Genghan/PTXBench-Qwen3.6-27B-SFT`](https://huggingface.co/datasets/Genghan/PTXBench-Qwen3.6-27B-SFT)
+dataset repository. The corresponding final PEFT adapters are private model
+repositories named `Genghan/PTXBench-Qwen3.6-27B-s0` through
+`Genghan/PTXBench-Qwen3.6-27B-s6`. Hugging Face authentication and explicit
+repository access are required. All eight repositories are indexed in the
+private
+[`PTXBench Qwen3.6-27B SFT Series`](https://huggingface.co/collections/Genghan/ptxbench-qwen36-27b-sft-series-6a6bd1594f2f23d31e25ca1f)
+collection.
+
+Release maintainers can reproduce the private staging trees and upload them
+with:
+
+```bash
+python scripts/publish_qwen36_sft_series.py stage \
+  --adapter-root /path/to/qwen36-adapters \
+  --stage-root /path/to/staging
+
+python scripts/publish_qwen36_sft_series.py upload \
+  --adapter-root /path/to/qwen36-adapters \
+  --stage-root /path/to/staging
+```
+
+The uploader creates private repositories, reapplies private visibility before
+every upload, verifies visibility afterward, and adds all eight repositories
+to a private Hugging Face collection.
+
 ## Reproduction contract
 
 A public rerun executes the numbered stages from the source inputs. Generated
-reasoning and downstream artifacts are expected to satisfy the recorded schema,
-row-count, filtering, and stage-order contracts. They are not required to be
-byte-identical to the historical artifacts: model sampling and hosted model
-revisions can change generated text.
-
-Historical hashes in each experiment's `provenance.json` identify the original
-reported run. They are reference evidence, not downloads or runtime gates.
+reasoning, parquets, and checkpoints may differ because model sampling and
+hosted-model revisions can change generated text.
 
 The external services needed for a live rerun are:
 

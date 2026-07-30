@@ -10,18 +10,17 @@ The two public workflows expect:
 
 ```text
 sft_experiments/
-  test-fixit-qwen36-27b-gemini-glm/             Fixit-v6 input/output project
-  mha-8def-single-turn-qwen36-27b-gemini-glm/   SFT-v4 input/output project
+  test-fixit-qwen36-27b-gemini-glm/             Fixit input/output project
+  mha-8def-single-turn-qwen36-27b-gemini-glm/   KernelGen input/output project
 eval_runs/                                      referenced trajectories/kernels
 ```
 
-Exact artifact names, counts, and known hashes are recorded under
-`experiments/fixit-v6` and `experiments/sft-v4`. Until the public artifact
-repositories are available, set `PTXBENCH_DATA_ROOT` to an existing compatible
-data tree. Source preflight and data-closure validation are intentionally
-separate.
+Authorized users can retrieve the published s0-s6 training parquets from the private
+[`Genghan/PTXBench-Qwen3.6-27B-SFT`](https://huggingface.co/datasets/Genghan/PTXBench-Qwen3.6-27B-SFT)
+repository. Otherwise, set `PTXBENCH_DATA_ROOT` to an existing compatible data
+tree. Source preflight and data-closure validation are intentionally separate.
 
-Release maintainers can export the historical Fixit-v6 source inputs without
+Release maintainers can export the historical Fixit source inputs without
 preserving machine-specific paths:
 
 ```bash
@@ -32,7 +31,7 @@ python scripts/build_fixit_v6_data_bundle.py \
   --output dist/fixit-v6-source-data.tar.gz
 ```
 
-The SFT-v4 source runs have a separate deterministic exporter:
+The KernelGen source runs have a separate deterministic exporter:
 
 ```bash
 python scripts/build_sft_v4_data_bundle.py \

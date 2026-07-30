@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Resolve the repository once for every Fixit-v6 stage.
+# Resolve the repository once for every Fixit stage.
 
 _FIXIT_V6_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PTXBENCH_ROOT="${PTXBENCH_ROOT:-$(cd "$_FIXIT_V6_DIR/../.." && pwd)}"

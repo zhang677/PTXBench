@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -22,11 +23,12 @@ from collections import defaultdict
 from pathlib import Path
 
 
-ACCRL_ROOT = Path("/home/ubuntu/AccRL")
-EXPORT_TURN_CORRECTNESS = ACCRL_ROOT / "benchmark" / "export_turn_correctness_arch.py"
-ANALYZE_KERNEL_PER_TURN = (
-    ACCRL_ROOT / "fib_runtime" / "mini_swe_agent_docker" / "plots" / "analyze_kernel_per_turn.py"
+MINI_PTX_AGENT_ROOT = Path(__file__).resolve().parents[3]
+MULTITURN_ROOT = Path(__file__).resolve().parents[1]
+EXPORT_TURN_CORRECTNESS = (
+    MINI_PTX_AGENT_ROOT / "benchmark" / "export_turn_correctness_arch.py"
 )
+ANALYZE_KERNEL_PER_TURN = MULTITURN_ROOT / "analyze_kernel_per_turn.py"
 TURN_CSV_REL = Path("figures") / "turn_correctness_arch.csv"
 DEFAULT_FAILURE_LABELS = (
     "Runtime error",
@@ -112,6 +114,10 @@ def load_run_rows(args: argparse.Namespace) -> list[dict[str, str]]:
     fieldnames, rows = read_csv_rows(args.selected_runs_csv)
     if "exp_dir" not in fieldnames:
         raise ValueError(f"{args.selected_runs_csv} is missing required exp_dir column")
+    for row in rows:
+        for field in ("exp_dir", "test_path"):
+            if row.get(field):
+                row[field] = os.path.expandvars(row[field])
     return rows
 
 

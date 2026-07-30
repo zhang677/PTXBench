@@ -2,22 +2,20 @@
 
 This directory is the public experiment index. Runtime implementations live in
 the two packages, while each experiment directory contains only its ordered
-launchers, provenance, artifact contract, and reproduction notes.
+launchers and runnable instructions.
 
 | Experiment | Scope |
 | --- | --- |
-| [`fixit-v6`](fixit-v6/README.md) | reasoning synthesis, filtered repair, parquet build, SFT, two serving lanes, and base/patched five-definition evaluation |
-| [`sft-v4`](sft-v4/README.md) | correct-kernel collection enrichment, GLM-5.2 reasoning synthesis, the exact three-message parquet contract, SFT, serving, and evaluation |
+| [Fixit](fixit-v6/README.md) | base-Qwen failure mining, Gemini repair, pair-reasoning synthesis, SFT, and expert-guided evaluation; `fixit-v6` is the retained historical variant name |
+| [KernelGen](sft-v4/README.md) | correct-kernel collection, GLM-5.2 reasoning synthesis, the three-message SFT contract, and expert-guided evaluation; `sft-v4` is the retained historical variant name |
 
-Large trajectories, kernels, reasoning JSONL, parquet, and checkpoints are data
-artifacts rather than source files. Their expected locations and hashes are
-recorded with each experiment.
+Large trajectories, kernels, reasoning JSONL, parquet, and checkpoints are
+published data artifacts rather than source files.
 
 For a narrow public source bundle, run
 `python scripts/build_public_release.py`. The archive includes FIBServe,
-mini-ptx-agent's CLI and inspector, and the union of the two audited experiment
-closures; legacy analysis outputs and unrelated AccRL scripts are excluded.
+mini-ptx-agent's runnable pipeline sources, and both experiment directories.
 Use `python scripts/build_fixit_v6_data_bundle.py` separately to export the
-large, relocatable Fixit-v6 source-data archive.
+large, relocatable historical Fixit source-data archive.
 Use `python scripts/build_sft_v4_data_bundle.py` for the corresponding
-12-run/521-row SFT-v4 source closure.
+12-run/521-row KernelGen source closure.

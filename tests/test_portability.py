@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 import os
 import subprocess
@@ -18,8 +19,22 @@ SFT_V4_ROOT = ROOT / "experiments" / "sft-v4"
 def test_active_fixit_v6_sources_have_no_legacy_absolute_roots() -> None:
     paths = [
         *FIXIT_ROOT.glob("*.sh"),
+        MINI_ROOT / "benchmark" / "export_turn_correctness_arch.py",
+        MINI_ROOT / "fib_runtime" / "multiturn" / "analyze_kernel_per_turn.py",
+        CONSTRUCT_ROOT / "build_rebalanced_fixit_error_collection.py",
+        CONSTRUCT_ROOT / "filter_fixit_error_kernels_by_prompt_tag.py",
         CONSTRUCT_ROOT / "fixit_downstream_process.py",
         CONSTRUCT_ROOT / "watch_eval_common.sh",
+        MINI_ROOT
+        / "fib_runtime"
+        / "multiturn"
+        / "fix_kernels"
+        / "collect_success_kernel_pairs.py",
+        MINI_ROOT
+        / "fib_runtime"
+        / "multiturn"
+        / "fix_kernels"
+        / "select_failed_kernels.py",
         MINI_ROOT / "fib_runtime" / "multiturn" / "run_parallel_v2.py",
         MINI_ROOT / "fib_runtime" / "multiturn" / "run_v2.py",
         MINI_ROOT / "fib_runtime" / "multiturn" / "common.py",
@@ -213,6 +228,8 @@ def test_parallel_summary_separates_completion_correctness_and_target(
 def test_construct_eval_directory_contains_only_shared_implementation() -> None:
     expected = {
         "README.md",
+        "build_rebalanced_fixit_error_collection.py",
+        "filter_fixit_error_kernels_by_prompt_tag.py",
         "fixit_downstream_process.py",
         "ptxbench_paths.sh",
         "watch_eval_audit.py",
@@ -254,6 +271,36 @@ def test_complete_fixit_v6_source_preflight() -> None:
     )
 
 
+def test_fixit_from_scratch_stages_and_expert_guided_eval() -> None:
+    driver = (ROOT / "scripts" / "reproduce_fixit_v6.sh").read_text()
+    for stage in [
+        "source_00_watch_qwen36_linfo_mha.sh",
+        "source_01_prepare_gemini_repairs.sh",
+        "source_02_watch_gemini_repairs.sh",
+        "source_03_collect_kernel_pairs.sh",
+        "00_synthesize_qwen36-27b_reasoning.sh",
+        "01_resynthesize_filtered_reasonings.sh",
+        "02_build_full_parquet.sh",
+        "03_train_sft_full.sh",
+        "04_serve_remote_full.sh",
+        "05_watch_5defs_eval.sh",
+    ]:
+        assert stage in driver
+    assert len(list(csv.DictReader((FIXIT_ROOT / "source-runs.csv").open()))) == 8
+    watcher = (FIXIT_ROOT / "05_watch_5defs_eval.sh").read_text()
+    assert "mha-p4-mha-patched.json" in watcher
+    assert "mha-bwd-p4-mha-patched.json" in watcher
+    assert not (FIXIT_ROOT / "06_serve_patched_remote_full.sh").exists()
+    assert not (FIXIT_ROOT / "07_watch_v6_full_5defs_eval.sh").exists()
+
+
+def test_generic_recipe_entrypoints_delegate_to_historical_drivers() -> None:
+    fixit = (ROOT / "scripts" / "reproduce_fixit.sh").read_text()
+    kernelgen = (ROOT / "scripts" / "reproduce_kernelgen.sh").read_text()
+    assert 'exec "$SCRIPT_DIR/reproduce_fixit_v6.sh" "$@"' in fixit
+    assert 'exec "$SCRIPT_DIR/reproduce_sft_v4.sh" "$@"' in kernelgen
+
+
 def test_complete_sft_v4_source_preflight() -> None:
     subprocess.run(
         ["bash", str(ROOT / "scripts" / "reproduce_sft_v4.sh"), "--check"],
@@ -268,7 +315,7 @@ def test_complete_sft_v4_source_preflight() -> None:
     )
 
 
-def test_multiturn_child_driver_is_in_both_source_closures() -> None:
+def test_multiturn_child_driver_is_checked_by_both_recipes() -> None:
     relative_driver = (
         "packages/mini-ptx-agent/fib_runtime/multiturn/run_v2.py"
     )
@@ -277,12 +324,13 @@ def test_multiturn_child_driver_is_in_both_source_closures() -> None:
     ).read_text()
     assert 'launch_script = SCRIPT_DIR / "run_v2.py"' in launcher
     assert (ROOT / relative_driver).is_file()
-    for provenance_path in (
-        ROOT / "experiments" / "fixit-v6" / "provenance.json",
-        ROOT / "experiments" / "sft-v4" / "provenance.json",
+    for driver_path in (
+        ROOT / "scripts" / "reproduce_fixit_v6.sh",
+        ROOT / "scripts" / "reproduce_sft_v4.sh",
     ):
-        provenance = json.loads(provenance_path.read_text())
-        assert relative_driver in provenance["required_source_files"]
+        assert "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_v2.py" in (
+            driver_path.read_text()
+        )
 
 
 def test_sft_collector_has_no_hidden_kernel_extractor(tmp_path: Path) -> None:
@@ -300,14 +348,8 @@ def test_sft_collector_has_no_hidden_kernel_extractor(tmp_path: Path) -> None:
         raise AssertionError("missing kernels directory was silently accepted")
 
 
-def test_sft_v4_provenance_closure_is_present() -> None:
-    provenance = json.loads((SFT_V4_ROOT / "provenance.json").read_text())
-    assert provenance["artifact"]["rows"] == 494
-    assert provenance["artifact"]["built_rows_before_max_token_filter"] == 521
-    assert provenance["artifact"]["max_token_filtered_rows"] == 27
-    assert provenance["artifact"]["message_roles"] == ["system", "user", "assistant"]
-    for relative_path in provenance["required_source_files"]:
-        assert (ROOT / relative_path).is_file(), relative_path
+def test_kernelgen_runnable_sources_are_present() -> None:
+    assert len(list(csv.DictReader((SFT_V4_ROOT / "source-runs.csv").open()))) == 12
     assert (MINI_ROOT / "accrl" / "distill" / "inspector.py").is_file()
     assert 'ptxbench-inspect = "accrl.distill.inspector:app"' in (
         MINI_ROOT / "pyproject.toml"

@@ -7,7 +7,7 @@ MINI_PTX_AGENT_ROOT="${MINI_PTX_AGENT_ROOT:-$PTXBENCH_ROOT/packages/mini-ptx-age
 PTXBENCH_DATA_ROOT="${PTXBENCH_DATA_ROOT:-$PTXBENCH_ROOT/data}"
 CONSTRUCT_ROOT="$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts"
 FIXIT_ROOT="$PTXBENCH_ROOT/experiments/fixit-v6"
-WATCHER="${FIXIT_V6_WATCHER:-$FIXIT_ROOT/05_watch_v6_full_5defs_eval.sh}"
+WATCHER="${FIXIT_V6_WATCHER:-$FIXIT_ROOT/05_watch_5defs_eval.sh}"
 
 usage() {
   cat <<'EOF'
@@ -20,7 +20,6 @@ Environment:
   PROFILE_CONTAINER    local FIBServe container (default ptxbench-fibserve)
   MODEL_NAME           exact ID returned by the OpenAI-compatible model endpoint
   ACCRL_MODEL_HOST     model endpoint host:port
-  SMOKE_PATCHED=1      use the patched prompt lane and script 07
 EOF
 }
 
@@ -37,12 +36,7 @@ case "$mode" in
     ;;
 esac
 
-if [[ "${SMOKE_PATCHED:-0}" == "1" ]]; then
-  WATCHER="$FIXIT_ROOT/07_watch_v6_full_5defs_eval.sh"
-  SMOKE_CONFIG="$PTXBENCH_ROOT/configs/fixit-v6/smoke-patched.json"
-else
-  SMOKE_CONFIG="$PTXBENCH_ROOT/configs/fixit-v6/smoke-base.json"
-fi
+SMOKE_CONFIG="$PTXBENCH_ROOT/configs/fixit-v6/smoke-patched.json"
 
 required=(
   "$WATCHER"

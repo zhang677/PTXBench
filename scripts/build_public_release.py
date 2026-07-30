@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a narrow PTXBench source archive from the experiment closures."""
+"""Build a PTXBench source archive containing the runnable pipelines."""
 
 from __future__ import annotations
 
@@ -7,17 +7,11 @@ import argparse
 import gzip
 import hashlib
 import io
-import json
 import subprocess
 import tarfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-MINI_ROOT = ROOT / "packages" / "mini-ptx-agent"
-PROVENANCE_FILES = (
-    ROOT / "experiments" / "fixit-v6" / "provenance.json",
-    ROOT / "experiments" / "sft-v4" / "provenance.json",
-)
 TREE_ROOTS = (
     "configs",
     "docker",
@@ -25,7 +19,37 @@ TREE_ROOTS = (
     "scripts",
     "tests",
     "packages/fibserve",
+    "packages/mini-ptx-agent/accrl",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/construct_eval_scripts",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/fix_kernels",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/prompt_configs",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/task_to_correct_kernels",
     "packages/mini-ptx-agent/mini_ptx_agent",
+)
+SOURCE_FILES = (
+    "packages/mini-ptx-agent/benchmark/export_turn_correctness_arch.py",
+    "packages/mini-ptx-agent/fib_runtime/mini_swe_agent_docker/envs/example.cu",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0413-1611/gemm_n7168_k5120_94920358-01a8-4c5b-9209-3103fd490e94.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0426-1410/mha_with_lse_d128_bc38b351-d595-451b-9153-8e225702e53b.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0426-1410/mha_with_lse_d128_causal_6d2f67a7-225a-4af5-87d3-cbb99b496325.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0426-1410/mha_with_lse_d64_7d2575a0-bcc2-42a0-812f-6a7e9a57d97f.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0426-1410/mha_with_lse_d64_causal_b69f7675-568f-40f2-9a4b-8bbe374b4a59.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0427-1308/mha_bwd_d128_38c3b07c-f006-5f5e-9860-ba214c805a6b.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0427-1308/mha_bwd_d128_causal_c119b3f0-c051-5e96-9c2a-2268d992fe1a.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0427-1308/mha_bwd_d128_f5645ae3-e24f-5534-9d30-c46b68a8ffea.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0427-1308/mha_bwd_d64_causal_5799ea50-77aa-56cb-9f62-a4c1f5473770.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0427-1308/mha_bwd_d64_d3bcb902-6a13-5ada-9251-fa841b10cd0b.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/analyze_kernel_per_turn.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/analyze_pattern.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/build_doc_v2.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/collect_kernels/collect_correct_kernels.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/collect_notes/note_feedback.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/common.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/launcher_utils.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/resume_utils.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/run_parallel_v2.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/run_v2.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/user_template.txt",
 )
 ROOT_FILES = (
     ".dockerignore",
@@ -53,30 +77,11 @@ def source_files() -> set[str]:
         text=True,
         stdout=subprocess.PIPE,
     )
-    return {line for line in process.stdout.splitlines() if line}
-
-
-def prompt_fragments(provenance: dict) -> set[str]:
-    multiturn = MINI_ROOT / "fib_runtime" / "multiturn"
-    hub = json.loads((multiturn / "prompt_configs" / "hub.json").read_text())
-    fragments: set[str] = set()
-    seen: set[str] = set()
-
-    def visit(tag: str) -> None:
-        if tag in seen:
-            return
-        seen.add(tag)
-        if tag not in hub:
-            raise ValueError(f"prompt tag {tag!r} is absent from prompt_configs/hub.json")
-        for item in hub[tag]:
-            if "/" in item:
-                fragments.add(f"packages/mini-ptx-agent/fib_runtime/{item}")
-            else:
-                visit(item)
-
-    for tag in provenance["required_prompt_tags"]:
-        visit(tag)
-    return fragments
+    return {
+        line
+        for line in process.stdout.splitlines()
+        if line and (ROOT / line).is_file()
+    }
 
 
 def parent_init_files(path: str, tracked: set[str]) -> set[str]:
@@ -91,20 +96,10 @@ def parent_init_files(path: str, tracked: set[str]) -> set[str]:
 
 
 def release_files(available: set[str]) -> list[str]:
-    selected: set[str] = set(ROOT_FILES)
+    selected: set[str] = set(ROOT_FILES) | set(SOURCE_FILES)
     for tree_root in TREE_ROOTS:
         prefix = tree_root.rstrip("/") + "/"
         selected.update(path for path in available if path.startswith(prefix))
-
-    for provenance_path in PROVENANCE_FILES:
-        provenance = json.loads(provenance_path.read_text())
-        selected.update(provenance["required_source_files"])
-        selected.update(prompt_fragments(provenance))
-        if provenance_path.parent.name == "fixit-v6":
-            selected.update(
-                f"experiments/fixit-v6/{stage}"
-                for stage in provenance["ordered_stages"]
-            )
 
     for path in tuple(selected):
         selected.update(parent_init_files(path, available))

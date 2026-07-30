@@ -33,6 +33,8 @@ import argparse
 import json
 import os
 import sys
+import tempfile
+import urllib.request
 from pathlib import Path
 
 
@@ -46,6 +48,33 @@ def find_checkpoint(checkpoints_jsonl: Path, name: str) -> dict:
     raise SystemExit(
         f"checkpoint {name!r} not found in {checkpoints_jsonl}. Available: {available}"
     )
+
+
+def download_adapter(
+    *,
+    tinker_path: str,
+    output_dir: Path,
+    timeout_seconds: float,
+) -> str:
+    """Download with a timeout long enough for Tinker to build large archives."""
+    import tinker
+    from tinker_cookbook.weights._download import _safe_extract_tar
+
+    service_client = tinker.ServiceClient(timeout=timeout_seconds)
+    rest_client = service_client.create_rest_client()
+    response = rest_client.get_checkpoint_archive_url_from_tinker_path(
+        tinker_path
+    ).result()
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(suffix=".tar", delete=False) as tmp:
+        archive_path = Path(tmp.name)
+    try:
+        urllib.request.urlretrieve(response.url, str(archive_path))
+        _safe_extract_tar(archive_path, output_dir)
+    finally:
+        archive_path.unlink(missing_ok=True)
+    return str(output_dir)
 
 
 def main() -> int:
@@ -63,6 +92,12 @@ def main() -> int:
                              "Defaults to <output>/../tinker_adapter_<name>.")
     parser.add_argument("--force", action="store_true",
                         help="Re-download/re-convert even if outputs already exist.")
+    parser.add_argument(
+        "--tinker-timeout-seconds",
+        type=float,
+        default=1800,
+        help="HTTP timeout while Tinker builds the checkpoint archive (default: 1800).",
+    )
     args = parser.parse_args()
 
     if args.peft_output is None and args.hf_output is None:
@@ -93,9 +128,10 @@ def main() -> int:
         print(f"raw Tinker adapter already present at {adapter_dir} -- skipping download")
     else:
         adapter_dir.mkdir(parents=True, exist_ok=True)
-        downloaded = weights.download(
+        downloaded = download_adapter(
             tinker_path=sampler_path,
-            output_dir=str(adapter_dir),
+            output_dir=adapter_dir,
+            timeout_seconds=args.tinker_timeout_seconds,
         )
         print(f"raw Tinker adapter downloaded to: {downloaded}")
 
