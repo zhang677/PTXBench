@@ -2,7 +2,9 @@
 
 This directory is intentionally not populated by the source repository.
 
-- `datasets/` holds mounted or downloaded FIBServe trace datasets.
+- `datasets/` is the collection root mounted into FIBServe. Each child trace
+  dataset listed in `DATASET_ROOTS` contains its own `definitions/` and
+  `workloads/` directories.
 - `eval_runs/` holds mini-ptx-agent trajectories, plans, logs, and successful kernels.
 - `sft_experiments/` holds optional Fixit synthesis/training artifacts.
 

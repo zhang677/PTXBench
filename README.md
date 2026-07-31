@@ -3,36 +3,22 @@
 PTXBench is an open-source workspace for building and evaluating PTX/CUDA
 kernel agents. It contains:
 
-- **mini-ptx-agent**: the reusable agent, prompt, distillation-inspection, and
-  benchmark implementation ported from AccRL.
-- **FIBServe**: the GPU compilation, correctness, profiling, and evaluation
-  service derived from FlashInfer Bench.
+- **mini-ptx-agent**: the reusable agent, prompt, trajectory inspection, and
+  benchmark implementation.
+- **FIBServe**: the GPU profiling service derived from FlashInfer Bench.
 - **mini-swe-agent 2.4.6**: an external, exactly pinned Python dependency used
   as the agent runtime and Docker environment abstraction.
 - **tinker-cookbook**: an optional, locked dependency for reproducing the
   Tinker SFT training and checkpoint-export workflow.
-
-The repository is a modular monorepo. The agent, isolated evaluator, and
-FIBServe remain separate runtime images even though users clone one repository.
-
-## Repository layout
-
-```text
-packages/mini-ptx-agent/  Agent, prompts, Fixit scripts, inspector, benchmark
-packages/fibserve/        GPU evaluation service
-configs/fixit/            Portable Fixit prompt configurations
-experiments/              Public experiment index, launchers, and instructions
-docker/                   Agent, evaluator, FIBServe, and Compose definitions
-data/                     Local datasets and run artifacts (git-ignored)
-```
 
 ## Get a first result
 
 The smallest real PTXBench run asks one model to optimize one GEMM for three
 turns. It needs:
 
-- an NVIDIA Hopper/H100-class FIBServe instance loaded with the two FlashInfer
-  Trace datasets;
+- an NVIDIA Hopper/H100-class FIBServe instance loaded with the
+  [`AccRL/accrl-training`](https://huggingface.co/datasets/AccRL/accrl-training)
+  FlashInfer Trace dataset;
 - the `ptxbench-eval:dev` Docker image; and
 - either an OpenAI-compatible Qwen endpoint or credentials for one of the
   hosted models supported by `mini-ptx-agent`.
@@ -71,7 +57,9 @@ concise `quickstart-result.json` under
 it is saved as `exp_000/kernel.cu`; a correctness-passing kernel is
 additionally saved as `success/exp_000/kernel_vN.cu`. The report deliberately
 distinguishes “the runner completed” from “the kernel was correct” and “the
-1.0x target was achieved.” Reprint any run with:
+1.0x target was achieved.” mini-ptx-agent writes trajectories in a JSON format
+compatible with mini-swe-agent and its trajectory tooling. Reprint any run
+with:
 
 ```bash
 uv run ptxbench quickstart --report data/eval_runs/quickstart-...-gemm
@@ -79,13 +67,14 @@ uv run ptxbench quickstart --report data/eval_runs/quickstart-...-gemm
 
 ## Local paths
 
-All ported scripts accept these environment variables:
+For local development, configure the project/data paths and the Compose
+trace-set collection:
 
 ```bash
 export PTXBENCH_ROOT=/home/ubuntu/PTXBench
 export PTXBENCH_DATA_ROOT="$PTXBENCH_ROOT/data"
-export PTXBENCH_TRACESET_ROOT=/home/ubuntu/accrl-training
-export PTXBENCH_HEAVY_TRACESET_ROOT=/home/ubuntu/accrl-training-heavy
+export PTXBENCH_TRACESETS_ROOT="$PTXBENCH_ROOT/data/datasets"
+export DATASET_ROOTS=/workspace/trace-sets/accrl-training
 export MINI_PTX_AGENT_ROOT="$PTXBENCH_ROOT/packages/mini-ptx-agent"
 ```
 
@@ -94,15 +83,44 @@ historical s0-s6 training parquets are also retained in the private
 [`Genghan/PTXBench-Qwen3.6-27B-SFT`](https://huggingface.co/datasets/Genghan/PTXBench-Qwen3.6-27B-SFT)
 repository for authorized users.
 
-`PTXBENCH_TRACESET_ROOT` and `PTXBENCH_HEAVY_TRACESET_ROOT` are different:
-they must point to FlashInfer Trace datasets containing `definitions/` and
-`workloads/`. Download the light trace set from
+`PTXBENCH_TRACESETS_ROOT` is a shared parent directory on the host. Each child
+is a complete FlashInfer Trace dataset with its own `definitions/` and
+`workloads/` directories. For example:
+
+```text
+$PTXBENCH_TRACESETS_ROOT/
+├── accrl-training/
+│   ├── definitions/
+│   └── workloads/
+└── another-trace-set/
+    ├── definitions/
+    └── workloads/
+```
+
+Other example datasets include non-4096 sequence-length attention workload records at [`Genghan/accrl-training-heavy`](https://huggingface.co/datasets/Genghan/accrl-training-heavy) and a more diverse [`flashinfer-ai/flashinfer-trace`](https://huggingface.co/datasets/flashinfer-ai/flashinfer-trace)
+
+Compose bind-mounts that parent directory read-only at `/workspace/trace-sets`:
+
+```text
+host:      /home/ubuntu/PTXBench/data/datasets
+container: /workspace/trace-sets
+```
+
+`DATASET_ROOTS` is always a colon-separated list selecting dataset directories
+inside the mount; a single dataset is simply a one-item list. Compose uses the
+shared parent because it cannot expand one environment variable into a variable
+number of bind mounts.
+
+Download the quickstart trace set from
 [`AccRL/accrl-training`](https://huggingface.co/datasets/AccRL/accrl-training)
-and the heavy trace set from
-[`Genghan/accrl-training-heavy`](https://huggingface.co/datasets/Genghan/accrl-training-heavy).
-Compose mounts them read-only at `/workspace/accrl-training` and
-`/workspace/accrl-training-heavy` inside FIBServe. The datasets remain outside
-the Git checkout and are never copied into a Docker image.
+into `$PTXBENCH_TRACESETS_ROOT/accrl-training`. To load another trace set,
+place it alongside that directory and extend the list:
+
+```bash
+export DATASET_ROOTS=/workspace/trace-sets/accrl-training:/workspace/trace-sets/another-trace-set
+```
+
+No files are merged on disk, and no dataset is copied into a Docker image.
 
 ## Development setup
 
@@ -132,10 +150,6 @@ Build and start FIBServe:
 
 ```bash
 cp .env.example docker/.env
-test -d "$PTXBENCH_TRACESET_ROOT/definitions"
-test -d "$PTXBENCH_TRACESET_ROOT/workloads"
-test -d "$PTXBENCH_HEAVY_TRACESET_ROOT/definitions"
-test -d "$PTXBENCH_HEAVY_TRACESET_ROOT/workloads"
 docker compose --env-file docker/.env -f docker/compose.yaml up --build fibserve
 ```
 

@@ -243,13 +243,15 @@ def test_construct_eval_directory_contains_only_shared_implementation() -> None:
     assert actual == expected
 
 
-def test_compose_uses_explicit_read_only_traceset_mounts() -> None:
+def test_compose_uses_one_collection_mount_and_dataset_roots_list() -> None:
     compose = (ROOT / "docker" / "compose.yaml").read_text()
-    assert "PTXBENCH_TRACESET_ROOT:?" in compose
-    assert "PTXBENCH_HEAVY_TRACESET_ROOT:?" in compose
-    assert ":/workspace/accrl-training:ro" in compose
-    assert ":/workspace/accrl-training-heavy:ro" in compose
-    assert ("DATASET_ROOTS: /workspace/accrl-training:/workspace/accrl-training-heavy") in compose
+    env_example = (ROOT / ".env.example").read_text()
+    assert "PTXBENCH_TRACESETS_ROOT:?" in compose
+    assert ":/workspace/trace-sets:ro" in compose
+    assert "DATASET_ROOTS: ${DATASET_ROOTS:?" in compose
+    assert "PTXBENCH_TRACESETS_ROOT=/home/ubuntu/PTXBench/data/datasets" in env_example
+    assert "DATASET_ROOTS=/workspace/trace-sets/accrl-training" in env_example
+    assert not (ROOT / "docker" / "compose.multitrace.yaml").exists()
 
 
 def test_fibserve_verifier_imports_both_workspace_packages() -> None:

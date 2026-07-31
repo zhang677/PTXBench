@@ -495,8 +495,10 @@ and the dispatcher exposes a single profiling endpoint.
 
 The deployment behavior is:
 
-1. Compose creates `ptxbench-fibserve` with two read-only dataset mounts,
-   selected GPU device IDs, Docker init, and one published dispatcher port.
+1. Compose mounts the host trace-set collection read-only, then passes the
+   colon-separated `DATASET_ROOTS` list selecting one or more dataset
+   directories within that mount. It also configures the selected GPU device
+   IDs, Docker init, and one published dispatcher port.
 2. `run_fibserve_dispatcher_container.sh` invokes
    `launch_fib_serve_dispatcher.sh` with `BENCH_ROOT`, `DATASET_ROOTS`,
    `CONFIG_PATH`, `DISPATCH_PORT`, `TIMEOUT`, `TMUX_PREFIX`, and `DEVICES`.

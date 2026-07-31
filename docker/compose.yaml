@@ -11,7 +11,7 @@ services:
       BASE_PORT: ${FIB_BACKEND_BASE_PORT:-40001}
       BENCH_ROOT: /workspace/PTXBench/packages/fibserve
       CONFIG_PATH: /workspace/PTXBench/packages/fibserve/acc_config.yaml
-      DATASET_ROOTS: /workspace/accrl-training:/workspace/accrl-training-heavy
+      DATASET_ROOTS: ${DATASET_ROOTS:?Set DATASET_ROOTS to a colon-separated list of trace-set paths inside /workspace/trace-sets}
       DEVICES: ${FIB_DEVICES:-cuda:0,cuda:1}
       DISPATCH_PORT: "10000"
       HOST: 0.0.0.0
@@ -21,8 +21,7 @@ services:
     ports:
       - "${FIBSERVE_PORT:-10000}:10000"
     volumes:
-      - ${PTXBENCH_TRACESET_ROOT:?Set PTXBENCH_TRACESET_ROOT to a FlashInfer Trace dataset}:/workspace/accrl-training:ro
-      - ${PTXBENCH_HEAVY_TRACESET_ROOT:?Set PTXBENCH_HEAVY_TRACESET_ROOT to the heavy FlashInfer Trace dataset}:/workspace/accrl-training-heavy:ro
+      - ${PTXBENCH_TRACESETS_ROOT:?Set PTXBENCH_TRACESETS_ROOT to a directory containing FlashInfer Trace datasets}:/workspace/trace-sets:ro
       - ../.ptxbench/cache/fibserve:/root/.cache/flashinfer_bench
     gpus:
       - driver: nvidia

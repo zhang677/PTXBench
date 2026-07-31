@@ -11,8 +11,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PTXBENCH_ROOT="${PTXBENCH_ROOT:-$(cd "$HERE/../../.." && pwd)}"
 BENCH_ROOT="${BENCH_ROOT:-$PTXBENCH_ROOT/packages/fibserve}"
 FIB_DATASET_DIR="${FIB_DATASET_DIR:-${DATASET_ROOT:-/workspace/accrl-training}}"
-FIB_HEAVY_DATASET_DIR="${FIB_HEAVY_DATASET_DIR:-/workspace/accrl-training-heavy}"
-FIB_DATASET_DIRS="${FIB_DATASET_DIRS:-${DATASET_ROOTS:-$FIB_DATASET_DIR:$FIB_HEAVY_DATASET_DIR}}"
+FIB_DATASET_DIRS="${FIB_DATASET_DIRS:-${DATASET_ROOTS:-$FIB_DATASET_DIR}}"
 PORT="${DISPATCH_PORT:-${PROFILE_PORT:-10000}}"
 FIB_TIMEOUT="${FIB_TIMEOUT:-30}"
 VENV_DIR="${VENV_DIR:-$PTXBENCH_ROOT/.venv}"
@@ -42,7 +41,7 @@ IFS=':' read -r -a FIB_DATASET_DIR_LIST <<< "$FIB_DATASET_DIRS"
 for dataset_dir in "${FIB_DATASET_DIR_LIST[@]}"; do
     if [ ! -d "$dataset_dir" ]; then
         echo "[restart_profiling] ERROR: dataset dir is missing: $dataset_dir" >&2
-        echo "[restart_profiling] Recreate the container with both PTXBench trace-set mounts." >&2
+        echo "[restart_profiling] Recreate the container with all configured trace-set mounts." >&2
         exit 1
     fi
 done

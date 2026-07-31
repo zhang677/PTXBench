@@ -18,10 +18,14 @@ For one process, start FIBServe from the PTXBench workspace:
 
 ```bash
 uv run --package fibserve --extra serve fibserve serve \
-  --local /path/to/accrl-training /path/to/accrl-training-heavy \
+  --local /path/to/accrl-training \
   --devices cuda:0,cuda:1 \
   --port 10000
 ```
+
+`--local` accepts one or more trace-set paths. Multiple paths are merged in
+memory; identical overlaps are de-duplicated and conflicting objects are
+rejected.
 
 The production-compatible topology starts one backend tmux session per GPU and
 one dispatcher tmux session that exposes a single API:
@@ -33,6 +37,9 @@ DEVICES=cuda:0,cuda:1,cuda:2,cuda:3 \
 DISPATCH_PORT=10000 \
 ./scripts/launch_fib_serve_dispatcher.sh
 ```
+
+`DATASET_ROOTS` is optional for a single dataset (`DATASET_ROOT` is also
+accepted) and is a colon-separated list when multiple trace sets are desired.
 
 This creates `fib-serve-backend-0`, `fib-serve-backend-1`, and so on, plus
 `fib-serve-dispatcher`. Clients use only
