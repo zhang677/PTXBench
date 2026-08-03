@@ -6,6 +6,7 @@ __pycache__/
 .mypy_cache/
 
 .ptxbench/
+.harbor/
 data/*
 !data/README.md
 !data/datasets/
@@ -20,3 +21,5 @@ build/
 .env
 .env.*
 !.env.example
+
+.harbor/

@@ -1,0 +1,26 @@
+FROM ptxbench-eval:dev
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/ptxbench-src
+COPY packages/mini-ptx-agent/pyproject.toml \
+     packages/mini-ptx-agent/README.md \
+     packages/mini-ptx-agent/LICENSE \
+     ./
+COPY packages/mini-ptx-agent/mini_ptx_agent ./mini_ptx_agent
+
+RUN uv pip install --system --python /usr/bin/python3.12 \
+      requests \
+      setuptools \
+      typer \
+      wheel \
+    && uv pip install --system --python /usr/bin/python3.12 --no-deps .
+
+WORKDIR /workspace
+CMD ["sleep", "8h"]

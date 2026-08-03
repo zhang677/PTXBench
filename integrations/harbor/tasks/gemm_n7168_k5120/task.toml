@@ -1,0 +1,38 @@
+schema_version = "1.4"
+
+[task]
+name = "ptxbench/gemm-n7168-k5120"
+version = "0.1.0"
+description = "Optimize one H100 BF16 GEMM kernel with PTXBench feedback."
+authors = []
+keywords = ["cuda", "gemm", "h100", "ptxbench"]
+
+[metadata]
+difficulty = "hard"
+category = "gpu-kernel-optimization"
+tags = ["cuda", "gemm", "h100", "ptxbench"]
+
+[agent]
+timeout_sec = 1800.0
+
+[verifier]
+timeout_sec = 900.0
+
+[environment]
+build_timeout_sec = 1200.0
+cpus = 4
+memory_mb = 8192
+storage_mb = 20480
+gpus = 0
+workdir = "/workspace"
+mcp_servers = []
+
+[environment.env]
+PTXBENCH_TASK_CONFIG = "/opt/ptxbench/task.json"
+PTXBENCH_SERVICE_URL = "${PTXBENCH_HARBOR_SERVICE_URL:-http://host.docker.internal:11000}"
+
+[verifier.env]
+PTXBENCH_TASK_CONFIG = "/tests/task.json"
+PTXBENCH_SERVICE_URL = "${PTXBENCH_HARBOR_SERVICE_URL:-http://host.docker.internal:11000}"
+
+[solution.env]

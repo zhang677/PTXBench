@@ -1,0 +1,16 @@
+{
+  "task_id": "gemm-n7168-k5120-m8192-h100",
+  "definition": "gemm_n7168_k5120",
+  "workload_uuids": [
+    "94920358-01a8-4c5b-9209-3103fd490e94"
+  ],
+  "target_hardware": [
+    "H100"
+  ],
+  "nvcc_gencode": "arch=compute_90a,code=sm_90a",
+  "tvm_ffi_dir": "/usr/local/lib/python3.12/dist-packages/tvm_ffi",
+  "max_check_runs": 2,
+  "queue_timeout_sec": 240,
+  "sanitizer_timeout_sec": 120,
+  "target_speedup": 1.0
+}

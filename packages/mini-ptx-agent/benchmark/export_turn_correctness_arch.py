@@ -19,11 +19,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-
 ACCRL_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ACCRL_ROOT))
-from accrl.utils.code_utils import extract_code_block  # noqa: E402
-
+from accrl.utils.code_utils import extract_code_block
 
 
 def default_tvm_ffi_dir() -> Path:
@@ -94,6 +92,7 @@ def compile_to_ptx(cu_path: Path, gpu_arch: str, tvm_ffi_dir: Path) -> str | Non
             capture_output=True,
             text=True,
             timeout=30,
+            check=False,
         )
         if result.returncode != 0:
             _ptx_cache[key] = None
@@ -108,10 +107,10 @@ def compile_to_ptx(cu_path: Path, gpu_arch: str, tvm_ffi_dir: Path) -> str | Non
         ptx_path.unlink(missing_ok=True)
 
 
-def check_arch_from_text(text: str) -> str:
+def check_arch_from_ptx(ptx_text: str) -> str:
     arch_tags = []
     if any(
-        kw in text
+        kw in ptx_text
         for kw in [
             "cp.async.cg.shared.global",
             "cp.async.ca.shared.global",
@@ -124,7 +123,7 @@ def check_arch_from_text(text: str) -> str:
     ):
         arch_tags.append("A")
     if any(
-        kw in text
+        kw in ptx_text
         for kw in [
             "stmatrix.sync.aligned",
             "cp.async.bulk.tensor",
@@ -133,23 +132,20 @@ def check_arch_from_text(text: str) -> str:
             "elect.sync",
             "mapa.",
             "mbarrier",
-            "wgmma."
+            "wgmma.",
         ]
     ):
         arch_tags.append("H")
-    if any(kw in text for kw in [
-            "tcgen05", 
-            "red.global.v4"
-        ]):
+    if any(kw in ptx_text for kw in ["tcgen05", "red.global.v4"]):
         arch_tags.append("B")
     return ", ".join(arch_tags) if arch_tags else "G"
 
 
 def check_arch(kernel_path: Path, gpu_arch: str, tvm_ffi_dir: Path) -> str:
     ptx = compile_to_ptx(kernel_path, gpu_arch, tvm_ffi_dir)
-    if ptx is not None:
-        return check_arch_from_text(ptx)
-    return check_arch_from_text(kernel_path.read_text(errors="replace"))
+    if ptx is None:
+        return ""
+    return check_arch_from_ptx(ptx)
 
 
 def check_arch_from_source(source: str, gpu_arch: str, tvm_ffi_dir: Path) -> str:
@@ -275,20 +271,6 @@ def assistant_eval_turns(traj: dict) -> list[tuple[int, dict, dict]]:
             pending_assistant = msg
 
     return turns
-
-
-def best_arch_tag_from_trajectory(traj: dict) -> str:
-    best_speedup = None
-    best_content = ""
-    for _turn, assistant_message, eval_message in assistant_eval_turns(traj):
-        speedup = speedup_from_eval_message(eval_message)
-        if speedup is None or speedup <= 0:
-            continue
-        if best_speedup is None or speedup > best_speedup:
-            content = assistant_message.get("content", "")
-            best_speedup = speedup
-            best_content = content if isinstance(content, str) else ""
-    return check_arch_from_text(best_content) if best_content else ""
 
 
 def extract_turn_arch_tags(

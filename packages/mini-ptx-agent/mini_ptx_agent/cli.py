@@ -10,6 +10,12 @@ from typing import Annotated
 
 import typer
 
+from .evaluation import (
+    EvaluationInfrastructureError,
+    evaluate_kernel,
+    infrastructure_error_result,
+    load_task,
+)
 from .paths import resolve_paths
 from .quickstart import preflight as quickstart_preflight
 from .quickstart import print_result as print_quickstart_result
@@ -17,6 +23,51 @@ from .quickstart import run as run_quickstart
 from .quickstart import write_result as write_quickstart_result
 
 app = typer.Typer(add_completion=False, no_args_is_help=True)
+
+
+@app.command("eval")
+def eval_kernel_command(
+    kernel: Annotated[Path, typer.Argument(help="CUDA kernel source to evaluate.")],
+    task_config: Annotated[
+        Path,
+        typer.Option(
+            "--task-config",
+            envvar="PTXBENCH_TASK_CONFIG",
+            help="Read-only PTXBench task manifest.",
+        ),
+    ] = Path("/opt/ptxbench/task.json"),
+    service_url: Annotated[
+        str,
+        typer.Option(
+            "--service-url",
+            envvar="PTXBENCH_SERVICE_URL",
+            help="FIBServe base URL.",
+        ),
+    ] = "http://localhost:10000",
+    json_output: Annotated[
+        bool,
+        typer.Option("--json", help="Emit the complete machine-readable result."),
+    ] = False,
+) -> None:
+    """Evaluate one task-bound CUDA candidate with FIBServe."""
+    exit_code = 0
+    try:
+        task = load_task(task_config)
+        result = evaluate_kernel(kernel.resolve(), task, service_url)
+    except (EvaluationInfrastructureError, ValueError) as exc:
+        result = infrastructure_error_result(str(exc))
+        exit_code = 2
+
+    if json_output:
+        typer.echo(json.dumps(result, separators=(",", ":")))
+    else:
+        typer.echo(f"{result['status']}: {result.get('definition', 'unknown task')}")
+        if result.get("min_speedup") is not None:
+            typer.echo(f"minimum speedup: {result['min_speedup']:.4f}x")
+        if result.get("error"):
+            typer.echo(result["error"], err=True)
+    if exit_code:
+        raise typer.Exit(exit_code)
 
 
 @app.command()
@@ -38,7 +89,11 @@ def doctor() -> None:
             (resolved.fixit_root / "05_watch_5defs_eval.sh").is_file(),
             str(resolved.fixit_root),
         ),
-        ("FIBServe source", (resolved.repo_root / "packages" / "fibserve" / "pyproject.toml").is_file(), "packages/fibserve"),
+        (
+            "FIBServe source",
+            (resolved.repo_root / "packages" / "fibserve" / "pyproject.toml").is_file(),
+            "packages/fibserve",
+        ),
         ("docker", shutil.which("docker") is not None, shutil.which("docker") or "not found"),
         ("tmux", shutil.which("tmux") is not None, shutil.which("tmux") or "not found"),
     ]
