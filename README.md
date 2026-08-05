@@ -78,10 +78,7 @@ export DATASET_ROOTS=/workspace/trace-sets/accrl-training
 export MINI_PTX_AGENT_ROOT="$PTXBENCH_ROOT/packages/mini-ptx-agent"
 ```
 
-`PTXBENCH_DATA_ROOT` may point at an existing AccRL-exps tree. The byte-exact
-historical s0-s6 training parquets are also retained in the private
-[`Genghan/PTXBench-Qwen3.6-27B-SFT`](https://huggingface.co/datasets/Genghan/PTXBench-Qwen3.6-27B-SFT)
-repository for authorized users.
+`PTXBENCH_DATA_ROOT` may point at an existing directory to hold experiment artifacts.
 
 `PTXBENCH_TRACESETS_ROOT` is a shared parent directory on the host. Each child
 is a complete FlashInfer Trace dataset with its own `definitions/` and
@@ -96,8 +93,6 @@ $PTXBENCH_TRACESETS_ROOT/
     ├── definitions/
     └── workloads/
 ```
-
-Other example datasets include non-4096 sequence-length attention workload records at [`Genghan/accrl-training-heavy`](https://huggingface.co/datasets/Genghan/accrl-training-heavy) and a more diverse [`flashinfer-ai/flashinfer-trace`](https://huggingface.co/datasets/flashinfer-ai/flashinfer-trace)
 
 Compose bind-mounts that parent directory read-only at `/workspace/trace-sets`:
 
@@ -189,6 +184,20 @@ export PTXBENCH_HOST_ROOT="$(pwd)"
 docker compose -f docker/compose.yaml run --rm \
   --entrypoint bash agent scripts/smoke_fixit.sh --check
 ```
+
+## Harbor
+
+PTXBench includes [Harbor-compatible tasks](integrations/harbor/README.md) that
+run on an unmodified Harbor checkout while using `ptxbench eval` and FIBServe
+for compilation, sanitization, and H100 benchmarking. The agent creates its implementation
+from scratch; before launching a run, the checked-in instruction can be
+refreshed from the live FIBServe definition to keep its task encoding aligned
+with AccRL. The integration guide covers image builds, prompt rendering, Harbor
+launch options, and the resulting ATIF trajectory.
+
+## Huggingface
+Other example datasets include non-4096 sequence-length attention workload records at [`Genghan/accrl-training-heavy`](https://huggingface.co/datasets/Genghan/accrl-training-heavy) and a more diverse [`flashinfer-ai/flashinfer-trace`](https://huggingface.co/datasets/flashinfer-ai/flashinfer-trace). The byte-exact historical s0-s6 training parquets are also retained in
+[`Genghan/PTXBench-Qwen3.6-27B-SFT`](https://huggingface.co/datasets/Genghan/PTXBench-Qwen3.6-27B-SFT).
 
 ## Licensing and provenance
 
