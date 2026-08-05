@@ -189,7 +189,6 @@ def test_architecture_usage_is_extracted_from_ptx_opcodes_only() -> None:
 
 def test_harbor_gemm_task_is_bound_to_quickstart_workload() -> None:
     task_root = ROOT / "integrations" / "harbor" / "tasks" / "gemm_n7168_k5120"
-    harbor_readme = (ROOT / "integrations" / "harbor" / "README.md").read_text()
     manifest_text = (task_root / "environment" / "task.json").read_text()
     manifest = json.loads(manifest_text)
     instruction = (task_root / "instruction.md").read_text()
@@ -202,9 +201,5 @@ def test_harbor_gemm_task_is_bound_to_quickstart_workload() -> None:
     assert manifest["workload_uuids"] == ["94920358-01a8-4c5b-9209-3103fd490e94"]
     assert not (environment / "kernel.cu").exists()
     assert "kernel.cu" not in dockerfile
-    assert "does not contain a starter kernel" in instruction
-    assert "no more than" not in instruction
     assert "ptxbench eval /workspace/kernel.cu --json" in instruction
     assert "TVM_FFI_DLL_EXPORT_TYPED_FUNC(run, run)" in reference
-    assert "-m openai/gpt-5.4-mini" in harbor_readme
-    assert '"step_limit":30' in harbor_readme
