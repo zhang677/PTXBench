@@ -33,4 +33,4 @@ RUN uv sync --frozen --package mini-ptx-agent --extra training --no-dev \
 
 ENV PATH="/opt/ptxbench-venv/bin:${PATH}"
 ENTRYPOINT ["ptxbench"]
-CMD ["doctor"]
+CMD ["--help"]

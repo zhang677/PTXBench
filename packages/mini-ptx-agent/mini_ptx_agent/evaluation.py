@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -22,6 +23,22 @@ SUPPORTED_GENCODES = {
     "arch=compute_90a,code=sm_90a": ["H100"],
     "arch=compute_100a,code=sm_100a": ["Blackwell"],
 }
+_CUBLAS_PATTERN = re.compile(
+    r"""
+    (?:^\s*\#\s*include\s*[<"]\s*cublas(?:_v2)?\.h\s*[>"])
+    |
+    (?:\bcublas[A-Za-z0-9_]*\s*\()
+    |
+    (?:\bcublasHandle_t\b)
+    """,
+    re.MULTILINE | re.IGNORECASE | re.VERBOSE,
+)
+_CUDNN_PATTERN = re.compile(r"cudnn|cudnnCreate|cudnn\.h|cudnnConvolution|cudnnSetTensor", re.IGNORECASE)
+_LIBRARY_BANNED_MSG = (
+    "ERROR: Your kernel uses {library} library calls instead of a hand-written kernel. "
+    "Please implement the kernel using CUDA directly — "
+    "cuBLAS, cuDNN, and other library shortcuts are not allowed."
+)
 
 
 class EvaluationInfrastructureError(RuntimeError):
@@ -120,6 +137,49 @@ def build_solution(task: EvaluationTask, kernel_source: str) -> dict[str, Any]:
         "author": "eval",
         "sources": [{"path": "kernel.cu", "content": kernel_source}],
     }
+
+
+def _strip_cpp_comments(source: str) -> str:
+    """Remove C/C++ comments while preserving quoted strings and line boundaries."""
+    output: list[str] = []
+    index = 0
+    while index < len(source):
+        character = source[index]
+        if character in {'"', "'"}:
+            quote = character
+            end = index + 1
+            while end < len(source):
+                if source[end] == "\\" and end + 1 < len(source):
+                    end += 2
+                    continue
+                if source[end] == quote:
+                    end += 1
+                    break
+                end += 1
+            output.append(source[index:end])
+            index = end
+            continue
+        if source.startswith("//", index):
+            newline = source.find("\n", index + 2)
+            index = len(source) if newline == -1 else newline
+            continue
+        if source.startswith("/*", index):
+            end = source.find("*/", index + 2)
+            comment_end = len(source) if end == -1 else end + 2
+            output.extend("\n" for character in source[index:comment_end] if character == "\n")
+            index = comment_end
+            continue
+        output.append(character)
+        index += 1
+    return "".join(output)
+
+
+def _banned_library_error(kernel_source: str) -> str | None:
+    source_without_comments = _strip_cpp_comments(kernel_source)
+    for library, pattern in (("cuBLAS", _CUBLAS_PATTERN), ("cuDNN", _CUDNN_PATTERN)):
+        if pattern.search(source_without_comments):
+            return _LIBRARY_BANNED_MSG.format(library=library)
+    return None
 
 
 def _ptx_gencode(nvcc_gencode: str) -> tuple[str, str]:
@@ -363,6 +423,19 @@ def evaluate_kernel(kernel_path: Path, task: EvaluationTask, service_url: str) -
     except OSError as exc:
         raise ValueError(f"cannot read kernel {kernel_path}: {exc}") from exc
     kernel_sha256 = hashlib.sha256(kernel_source.encode()).hexdigest()
+    if library_error := _banned_library_error(kernel_source):
+        traces = _synthetic_failure_traces(task, "COMPILE_ERROR", [], library_error)
+        return _result_envelope(
+            task,
+            kernel_sha256,
+            status="COMPILE_ERROR",
+            traces=traces,
+            sanitizer_runs=0,
+            sanitizer_clean=False,
+            compile_log=library_error,
+            ptx=None,
+        )
+
     compiled, compile_log, ptx = compile_candidate(task, kernel_path)
     if not compiled:
         traces = _synthetic_failure_traces(task, "COMPILE_ERROR", [], compile_log)

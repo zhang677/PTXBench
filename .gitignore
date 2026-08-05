@@ -23,3 +23,4 @@ build/
 !.env.example
 
 .harbor/
+jobs/

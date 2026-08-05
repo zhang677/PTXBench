@@ -23,15 +23,29 @@ docker build -f docker/Dockerfile.harbor -t ptxbench/harbor:dev .
 ```
 
 Start FIBServe with the trace set containing the task definition and workload,
-then run the local dataset from the Harbor checkout:
+then render the task instruction from the definition returned by that service:
+
+```bash
+python integrations/harbor/render_instruction.py \
+  integrations/harbor/tasks/gemm_n7168_k5120 \
+  --service-url http://localhost:11000
+```
+
+The renderer mirrors AccRL prompt synthesis: it fetches
+`/definitions/<definition>`, removes the top-level `tags` field, formats the
+remaining object with two-space JSON indentation, and substitutes it for
+`{task_content}` in `instruction.template.md`. The definition name comes from
+the task's `environment/task.json`.
+
+Run the local dataset from the Harbor checkout:
 
 ```bash
 PTXBENCH_HARBOR_SERVICE_URL=http://host.docker.internal:11000 \
 harbor run \
   -p /path/to/PTXBench/integrations/harbor/tasks \
   -a mini-swe-agent \
-  -m openrouter/z-ai/glm-5.2 \
-  --ak 'config={"agent":{"step_limit":15},"environment":{"timeout":600}}'
+  -m openai/gpt-5.4-mini \
+  --ak 'config={"agent":{"step_limit":30},"environment":{"timeout":600}}'
 ```
 
 The environment timeout override is required because mini-swe-agent defaults

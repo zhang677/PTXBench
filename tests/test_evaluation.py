@@ -55,6 +55,52 @@ def test_compile_error_is_a_structured_candidate_result(tmp_path: Path, monkeypa
     assert result["traces"][0]["evaluation"]["status"] == "COMPILE_ERROR"
 
 
+def test_cublas_and_cudnn_are_rejected_before_compilation(tmp_path: Path, monkeypatch) -> None:
+    task = write_task(tmp_path / "task.json")
+    kernel = tmp_path / "kernel.cu"
+
+    def unexpected_compile(task, path):
+        raise AssertionError("banned library source reached nvcc")
+
+    monkeypatch.setattr(evaluation, "compile_candidate", unexpected_compile)
+    cases = (
+        ("#include <cublas_v2.h>\nvoid f() { cublasGemmEx(); }", "cuBLAS"),
+        ("#include <cudnn.h>\nvoid f() { cudnnCreate(nullptr); }", "cuDNN"),
+    )
+    for source, library in cases:
+        kernel.write_text(source)
+        result = evaluation.evaluate_kernel(kernel, task, "http://unused")
+
+        assert result["status"] == "COMPILE_ERROR"
+        assert result["all_passed"] is False
+        assert result["sanitizer"]["completed_runs"] == 0
+        assert result["ptx"] is None
+        assert f"uses {library} library calls" in result["compile_log"]
+        assert result["traces"][0]["evaluation"]["log"] == result["compile_log"]
+
+
+def test_library_names_in_comments_and_cutlass_are_allowed(tmp_path: Path, monkeypatch) -> None:
+    task = write_task(tmp_path / "task.json")
+    kernel = tmp_path / "kernel.cu"
+    source = """
+// cublasGemmEx() is not actually called.
+/* cudnnCreate(nullptr); */
+#include <cutlass/gemm/device/gemm.h>
+"""
+    kernel.write_text(source)
+    compiled_sources: list[str] = []
+
+    def fake_compile(task, path):
+        compiled_sources.append(path.read_text())
+        return False, "nvcc reached", None
+
+    monkeypatch.setattr(evaluation, "compile_candidate", fake_compile)
+    result = evaluation.evaluate_kernel(kernel, task, "http://unused")
+
+    assert compiled_sources == [source]
+    assert result["compile_log"] == "nvcc reached"
+
+
 def test_success_runs_two_sanitizers_then_evaluate(tmp_path: Path, monkeypatch) -> None:
     task = write_task(tmp_path / "task.json")
     kernel = tmp_path / "kernel.cu"
@@ -143,11 +189,22 @@ def test_architecture_usage_is_extracted_from_ptx_opcodes_only() -> None:
 
 def test_harbor_gemm_task_is_bound_to_quickstart_workload() -> None:
     task_root = ROOT / "integrations" / "harbor" / "tasks" / "gemm_n7168_k5120"
+    harbor_readme = (ROOT / "integrations" / "harbor" / "README.md").read_text()
     manifest_text = (task_root / "environment" / "task.json").read_text()
     manifest = json.loads(manifest_text)
     instruction = (task_root / "instruction.md").read_text()
+    environment = task_root / "environment"
+    dockerfile = (environment / "Dockerfile").read_text()
+    reference = (environment / "reference" / "README.md").read_text()
 
     assert json.loads((task_root / "tests" / "task.json").read_text()) == manifest
     assert manifest["definition"] == "gemm_n7168_k5120"
     assert manifest["workload_uuids"] == ["94920358-01a8-4c5b-9209-3103fd490e94"]
+    assert not (environment / "kernel.cu").exists()
+    assert "kernel.cu" not in dockerfile
+    assert "does not contain a starter kernel" in instruction
+    assert "no more than" not in instruction
     assert "ptxbench eval /workspace/kernel.cu --json" in instruction
+    assert "TVM_FFI_DLL_EXPORT_TYPED_FUNC(run, run)" in reference
+    assert "-m openai/gpt-5.4-mini" in harbor_readme
+    assert '"step_limit":30' in harbor_readme

@@ -8,8 +8,6 @@ variables.
 The stable CLI entry points are:
 
 ```bash
-ptxbench doctor
 ptxbench paths
 ptxbench-inspect DATA.jsonl
 ```
-

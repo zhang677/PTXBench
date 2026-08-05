@@ -126,7 +126,6 @@ No files are merged on disk, and no dataset is copied into a Docker image.
 
 ```bash
 uv sync --all-packages --group dev
-uv run ptxbench doctor
 ```
 
 Install the optional Tinker training stack when reproducing an AccRL training
