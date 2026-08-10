@@ -91,8 +91,9 @@ class ProfileRequest(BaseModel):
     solution: Solution
     workload_uuids: Optional[List[str]] = None
     # NCU configuration (mirrors flashinfer_bench_run_ncu)
-    set: str = "detailed"
+    set: Optional[str] = "detailed"
     sections: Optional[List[str]] = None
+    metrics: Optional[List[str]] = None
     kernel_name: Optional[str] = None
     page: str = "details"
     ncu_path: str = "ncu"
@@ -272,6 +273,7 @@ async def profile(req: ProfileRequest):
         req.workload_uuids,
         ncu_set=req.set,
         ncu_sections=req.sections,
+        ncu_metrics=req.metrics,
         ncu_kernel_name=req.kernel_name,
         ncu_page=req.page,
         ncu_path=req.ncu_path,

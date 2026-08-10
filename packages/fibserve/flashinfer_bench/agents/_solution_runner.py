@@ -33,6 +33,10 @@ def main():
 
     data_dir = Path(args.data_dir)
     device = args.device
+    cuda_device = torch.device(device)
+    if cuda_device.type != "cuda":
+        parser.error(f"--device must be a CUDA device, got {args.device!r}")
+    torch.cuda.set_device(cuda_device)
     trace_set_path = Path(args.trace_set_path) if args.trace_set_path else None
 
     # Load data from JSON files
@@ -58,13 +62,13 @@ def main():
     # Warmup run to trigger JIT compilation
     with torch.no_grad():
         runnable.call_destination_passing(*inputs, *outputs)
-    torch.cuda.synchronize()
+    torch.cuda.synchronize(cuda_device)
 
     # Actual run for profiling (marked with NVTX for NCU filtering)
     with torch.cuda.nvtx.range("flashinfer_bench_ncu_profile"):
         with torch.no_grad():
             runnable.call_destination_passing(*inputs, *outputs)
-        torch.cuda.synchronize()
+        torch.cuda.synchronize(cuda_device)
 
     # Cleanup
     runnable.cleanup()

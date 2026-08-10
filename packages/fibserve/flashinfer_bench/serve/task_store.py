@@ -57,8 +57,9 @@ class Task:
     completed_at: Optional[float] = None
 
     # Profile (NCU) configuration
-    ncu_set: str = "detailed"
+    ncu_set: Optional[str] = "detailed"
     ncu_sections: Optional[List[str]] = None
+    ncu_metrics: Optional[List[str]] = None
     ncu_kernel_name: Optional[str] = None
     ncu_page: str = "details"
     ncu_path: str = "ncu"
@@ -103,8 +104,9 @@ class TaskStore:
         *,
         kind: TaskKind = TaskKind.EVALUATE,
         # Profile (NCU) configuration
-        ncu_set: str = "detailed",
+        ncu_set: Optional[str] = "detailed",
         ncu_sections: Optional[List[str]] = None,
+        ncu_metrics: Optional[List[str]] = None,
         ncu_kernel_name: Optional[str] = None,
         ncu_page: str = "details",
         ncu_path: str = "ncu",
@@ -138,6 +140,7 @@ class TaskStore:
             kind=kind,
             ncu_set=ncu_set,
             ncu_sections=ncu_sections,
+            ncu_metrics=ncu_metrics,
             ncu_kernel_name=ncu_kernel_name,
             ncu_page=ncu_page,
             ncu_path=ncu_path,

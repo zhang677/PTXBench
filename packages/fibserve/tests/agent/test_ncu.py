@@ -2,13 +2,31 @@
 
 import pytest
 
-from flashinfer_bench.agents.ncu import flashinfer_bench_run_ncu
+from flashinfer_bench.agents.ncu import _build_ncu_command, flashinfer_bench_run_ncu
 from flashinfer_bench.data import Solution, TraceSet
 from flashinfer_bench.data.workload import Workload
 from flashinfer_bench.env import get_fib_dataset_path
 
 TRACE_SET_PATH = str(get_fib_dataset_path())
 DEFN_NAME = "gemm_n128_k2048"
+
+
+def test_build_ncu_command_with_metrics_and_no_set(tmp_path):
+    cmd = _build_ncu_command(
+        data_dir=tmp_path,
+        set=None,
+        sections=None,
+        metrics=["inst_executed", "thread_inst_executed_true"],
+        kernel_name=None,
+        page="source",
+        device="cuda:0",
+        trace_set_path=None,
+        ncu_path="ncu",
+    )
+
+    assert "--set" not in cmd
+    metrics_index = cmd.index("--metrics")
+    assert cmd[metrics_index + 1] == "inst_executed,thread_inst_executed_true"
 
 
 def _load_gemm_fixture():

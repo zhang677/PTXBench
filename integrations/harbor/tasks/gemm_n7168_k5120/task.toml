@@ -13,7 +13,7 @@ category = "gpu-kernel-optimization"
 tags = ["cuda", "gemm", "h100", "ptxbench"]
 
 [agent]
-timeout_sec = 1800.0
+timeout_sec = 300.0
 
 [verifier]
 timeout_sec = 900.0

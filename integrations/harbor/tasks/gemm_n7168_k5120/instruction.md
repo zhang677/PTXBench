@@ -6,11 +6,6 @@ Task:
   "name": "gemm_n7168_k5120",
   "op_type": "gemm",
   "axes": {
-    "K": {
-      "type": "const",
-      "value": 5120,
-      "description": null
-    },
     "M": {
       "type": "var",
       "description": null
@@ -18,6 +13,11 @@ Task:
     "N": {
       "type": "const",
       "value": 7168,
+      "description": null
+    },
+    "K": {
+      "type": "const",
+      "value": 5120,
       "description": null
     }
   },

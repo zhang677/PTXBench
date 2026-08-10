@@ -78,8 +78,9 @@ def flashinfer_bench_list_ncu_options(ncu_path: str = "ncu") -> str:
 
 def _build_ncu_command(
     data_dir: Path,
-    set: str,
+    set: Optional[str],
     sections: Optional[List[str]],
+    metrics: Optional[List[str]],
     kernel_name: Optional[str],
     page: str,
     device: str,
@@ -92,8 +93,6 @@ def _build_ncu_command(
         ncu_path,
         "--page",
         page,
-        "--set",
-        set,
         "--nvtx",
         "--nvtx-include",
         "flashinfer_bench_ncu_profile]",
@@ -109,10 +108,19 @@ def _build_ncu_command(
         "application",
     ]
 
+    # NCU collects its default set unless at least one explicit section or metric
+    # is given.  Allow callers to omit --set so a narrow --metrics request does
+    # not also collect a broad predefined set.
+    if set:
+        cmd.extend(["--set", set])
+
     # Add extra sections
     if sections:
         for section in sections:
             cmd.extend(["--section", section])
+
+    if metrics:
+        cmd.extend(["--metrics", ",".join(metrics)])
 
     # Kernel filter
     if kernel_name:
@@ -159,8 +167,9 @@ def flashinfer_bench_run_ncu(
     device: str = "cuda:0",
     trace_set_path: Optional[str] = None,
     # NCU configuration
-    set: str = "detailed",
+    set: Optional[str] = "detailed",
     sections: Optional[List[str]] = None,
+    metrics: Optional[List[str]] = None,
     kernel_name: Optional[str] = None,
     page: str = "details",
     ncu_path: str = "ncu",
@@ -191,10 +200,14 @@ def flashinfer_bench_run_ncu(
         Path to the trace set. If not provided, uses FIB_DATASET_PATH environment variable.
     set : str, optional
         NCU section set to collect. Use `flashinfer_bench_list_ncu_options` to see
-        available sets. Default is "detailed".
+        available sets. Set to None to omit --set, for example when requesting
+        only explicit metrics. Default is "detailed".
     sections : List[str], optional
         Additional sections to collect beyond the set. Use `flashinfer_bench_list_ncu_options`
         to see available sections.
+    metrics : List[str], optional
+        Explicit NCU metrics to collect. These are passed as a comma-separated
+        value to --metrics.
     kernel_name : str, optional
         Filter to profile only kernels matching this name (supports regex).
     page : str, optional
@@ -282,6 +295,7 @@ def flashinfer_bench_run_ncu(
             build_path,
             set,
             sections,
+            metrics,
             kernel_name,
             page,
             device,

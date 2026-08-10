@@ -262,7 +262,7 @@ class TestSamplingEvaluatorDPS:
         definition = _sampling_def()
         cfg = BenchmarkConfig(
             num_trials=1, warmup_runs=0, iterations=1, sampling_validation_trials=1
-        )
+        ).resolve_eval_config(definition)
         device = "cuda:0"
         dev = torch.device(device)
         probs = torch.softmax(torch.randn(2, 100, device=dev), dim=-1)
@@ -290,7 +290,7 @@ class TestSamplingEvaluatorDPS:
         definition = _sampling_def()
         cfg = BenchmarkConfig(
             num_trials=1, warmup_runs=0, iterations=1, sampling_validation_trials=1
-        )
+        ).resolve_eval_config(definition)
         device = "cuda:0"
         dev = torch.device(device)
         runnable = MagicMock()
@@ -323,7 +323,7 @@ class TestSamplingEvaluatorVR:
         definition = _sampling_def()
         cfg = BenchmarkConfig(
             num_trials=1, warmup_runs=0, iterations=1, sampling_validation_trials=1
-        )
+        ).resolve_eval_config(definition)
         device = "cuda:0"
         dev = torch.device(device)
         probs = torch.softmax(torch.randn(2, 100, device=dev), dim=-1)
