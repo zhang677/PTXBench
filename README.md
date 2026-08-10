@@ -11,6 +11,10 @@ kernel agents. It contains:
 - **tinker-cookbook**: an optional, locked dependency for reproducing the
   Tinker SFT training and checkpoint-export workflow.
 
+## System overview
+
+![PTXBench system diagram](assets/ptxbench-system.png)
+
 ## Get a first result
 
 The smallest real PTXBench run asks one model to optimize one GEMM for three
