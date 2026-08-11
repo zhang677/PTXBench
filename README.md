@@ -6,10 +6,6 @@ kernel agents. It contains:
 - **mini-ptx-agent**: the reusable agent, prompt, trajectory inspection, and
   benchmark implementation.
 - **FIBServe**: the GPU profiling service derived from FlashInfer Bench.
-- **mini-swe-agent 2.4.6**: an external, exactly pinned Python dependency used
-  as the agent runtime and Docker environment abstraction.
-- **tinker-cookbook**: an optional, locked dependency for reproducing the
-  Tinker SFT training and checkpoint-export workflow.
 
 ## System overview
 
@@ -202,6 +198,12 @@ launch options, and the resulting ATIF trajectory.
 ## Huggingface
 Other example datasets include non-4096 sequence-length attention workload records at [`Genghan/accrl-training-heavy`](https://huggingface.co/datasets/Genghan/accrl-training-heavy) and a more diverse [`flashinfer-ai/flashinfer-trace`](https://huggingface.co/datasets/flashinfer-ai/flashinfer-trace). The byte-exact historical s0-s6 training parquets are also retained in
 [`Genghan/PTXBench-Qwen3.6-27B-SFT`](https://huggingface.co/datasets/Genghan/PTXBench-Qwen3.6-27B-SFT).
+
+## Major dependencies
+- **mini-swe-agent 2.4.6**: an external, exactly pinned Python dependency used
+  as the agent runtime and Docker environment abstraction.
+- **tinker-cookbook**: an optional, locked dependency for reproducing the
+  Tinker SFT training and checkpoint-export workflow.
 
 ## Licensing and provenance
 
