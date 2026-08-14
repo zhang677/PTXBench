@@ -16,17 +16,5 @@
         "num_turns": 8,
         "target_speedup": 1.2,
         "prompt_tag": "hopper-08"
-    },
-    {
-        "num_trajectories": 4,
-        "num_turns": 8,
-        "target_speedup": 1.2,
-        "prompt_tag": "hopper-09"
-    },
-    {
-        "num_trajectories": 4,
-        "num_turns": 8,
-        "target_speedup": 1.2,
-        "prompt_tag": "hopper-014"
     }
 ]

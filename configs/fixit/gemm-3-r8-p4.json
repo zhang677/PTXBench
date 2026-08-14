@@ -3,18 +3,18 @@
         "num_trajectories": 4,
         "num_turns": 8,
         "target_speedup": 1.2,
-        "prompt_tag": "hopper-no-hint-mha-patched"
+        "prompt_tag": "hopper-no-hint"
     },
     {
         "num_trajectories": 4,
         "num_turns": 8,
         "target_speedup": 1.2,
-        "prompt_tag": "hopper-012-mha-patched"
+        "prompt_tag": "hopper-00"
     },
     {
         "num_trajectories": 4,
         "num_turns": 8,
         "target_speedup": 1.2,
-        "prompt_tag": "hopper-013-mha-patched"
+        "prompt_tag": "hopper-05"
     }
 ]

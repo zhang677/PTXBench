@@ -77,7 +77,7 @@ check_source() {
     "$PTXBENCH_ROOT/configs/fixit/2026-0605-mha-bwd-p4.json"
     "$PTXBENCH_ROOT/configs/fixit/2026-0605-mha-p4-mha-patched.json"
     "$PTXBENCH_ROOT/configs/fixit/2026-0605-mha-bwd-p4-mha-patched.json"
-    "$PTXBENCH_ROOT/configs/fixit/gemm-5-r8-p4.json"
+    "$PTXBENCH_ROOT/configs/fixit/gemm-3-r8-p4.json"
   )
   for path in "${support[@]}"; do
     test -f "$path" || {

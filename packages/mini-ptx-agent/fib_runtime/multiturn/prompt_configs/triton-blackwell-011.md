@@ -1,0 +1,838 @@
+# Triton Contract for NVIDIA Blackwell B200 (SM100/SM100a)
+
+This document is a self-contained implementation contract for standard Triton kernels targeting
+NVIDIA Blackwell. It targets the Triton 3.7.1 language surface. It covers the
+Python/JIT boundary, the SPMD execution model, block tensors, types, pointer and descriptor memory
+access, control flow, reductions, atomics, matrix multiplication, autotuning, debugging, and the
+Blackwell-specific TMA, fifth-generation Tensor Core, block-scaled dot, and automatic warp-specialization paths.
+
+Use the standard frontend:
+
+```python
+import torch
+import triton
+import triton.language as tl
+from triton.tools.tensor_descriptor import TensorDescriptor
+```
+
+This is not a Gluon, CuTe DSL, CUDA C++, or PTX contract. Standard Triton deliberately hides
+shared-memory allocation, TMEM allocation, `tcgen05` descriptors, mbarriers, and instruction
+issue/wait groups. Express
+the computation with `tl.load`, tensor descriptors, and `tl.dot`; the compiler owns those lowerings.
+
+## 1. Kernel contract and coverage map
+
+Before writing a kernel, state:
+
+1. The logical shape, dtype, device, and element strides of every input and output.
+2. The public destination-passing `run(inputs..., outputs...)` signature.
+3. The program tile and grid mapping, including the meaning of every `tl.program_id` axis.
+4. Which dimensions can be partial and the mask, descriptor padding, or launch rule that protects them.
+5. Which values are runtime scalars and which are `tl.constexpr` specialization parameters.
+6. Accumulator dtype, reduction order, output conversion, and allowed numerical error.
+7. Candidate `num_warps`, `num_stages`, tile shapes, and any persistent scheduling policy.
+8. Whether each memory path uses ordinary pointer tensors or a tensor descriptor/TMA.
+9. Alignment, contiguity, divisibility, aliasing, and mutation assumptions.
+10. The exact Blackwell-only features on which the implementation depends.
+
+Do not change one field in isolation. A tile change also changes the grid, pointer shapes, masks,
+descriptor block shapes, dot legality, register pressure, shared-memory use, and useful stage count.
+
+| Capability | Standard Triton mechanism |
+|---|---|
+| GPU program entry | `@triton.jit` |
+| Compile-time parameters | annotation `: tl.constexpr` |
+| Grid identity | `tl.program_id`, `tl.num_programs` |
+| Block construction | `tl.arange`, `tl.full`, `tl.zeros` |
+| Global memory | pointer arithmetic plus `tl.load` / `tl.store` |
+| Blackwell TMA | host `TensorDescriptor` or `tl.make_tensor_descriptor` |
+| Tensor Core math | `tl.dot` |
+| Native block-scaled Tensor Core math | `tl.dot_scaled` |
+| Automatic warp specialization | `tl.range(..., warp_specialize=True)` |
+| Reductions and scans | `tl.sum`, `tl.max`, `tl.reduce`, `tl.cumsum`, and peers |
+| Synchronizing updates | `tl.atomic_*` |
+| Tuning | `triton.Config`, `@triton.autotune`, `@triton.heuristics` |
+| Diagnostics | `tl.static_assert`, `tl.device_assert`, `tl.device_print` |
+
+## 2. Host code, JIT code, and launch
+
+### 2.1 The two execution worlds
+
+Ordinary Python in `run` executes on the host. A function decorated with `@triton.jit` is parsed
+and compiled as device code. A JIT function may use Python primitives understood by Triton,
+`triton.language` builtins, its arguments, compile-time constants, and other JIT functions. It may
+not call arbitrary Python, NumPy, or PyTorch computation from device code.
+
+Use PyTorch in `run` only for tensor metadata, device/stream selection, and launching. The caller
+already supplies output storage; do not allocate, replace, or return a different output.
+
+```python
+@triton.jit
+def _scale_kernel(x, y, n_elements, scale: tl.constexpr, BLOCK: tl.constexpr):
+    offsets = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+    mask = offsets < n_elements
+    values = tl.load(x + offsets, mask=mask, other=0.0)
+    tl.store(y + offsets, values * scale, mask=mask)
+
+
+def run(x, scale, y):
+    torch.cuda.set_device(x.device)
+    n_elements = y.numel()
+    grid = (triton.cdiv(n_elements, 256),)
+    _scale_kernel[grid](x, y, n_elements, scale=scale, BLOCK=256)
+```
+
+Scalar `scale` should remain a runtime argument if it varies often. Mark it `tl.constexpr` only when
+specializing on its value is intentional. Every distinct constexpr value can create another binary.
+
+### 2.2 Launch syntax
+
+```python
+kernel[grid](*runtime_args, **meta_parameters)
+```
+
+`grid` is a tuple of one to three positive dimensions or a callable receiving the merged launch
+metadata dictionary:
+
+```python
+grid = lambda META: (triton.cdiv(M, META["BLOCK_M"]),
+                     triton.cdiv(N, META["BLOCK_N"]))
+kernel[grid](..., M, N, BLOCK_M=128, BLOCK_N=64, num_warps=4, num_stages=3)
+```
+
+`num_warps`, `num_stages`, `num_ctas`, and `maxnreg` are compiler launch options, not declared
+kernel parameters. Meta-parameters named in `triton.Config.kwargs` must not also be passed at launch.
+
+The first launch of a new specialization compiles it. Later equivalent launches use Triton's cache.
+Specialization includes target, argument types, constexpr values, and relevant compiler options.
+Changing a runtime shape does not force recompilation unless that shape is constexpr or otherwise
+specialized by the JIT policy.
+
+### 2.3 JIT helpers and specialization controls
+
+Device helpers must also use `@triton.jit`:
+
+```python
+@triton.jit
+def _relu(x):
+    return tl.maximum(x, 0.0)
+```
+
+Useful decorator arguments include `do_not_specialize`,
+`do_not_specialize_on_alignment`, `debug`, `noinline`, and `launch_metadata`. Use specialization
+controls only after measuring compile count and generated code; disabling specialization can remove
+facts needed for optimization.
+
+## 3. SPMD execution and block tensors
+
+### 3.1 Program instances, not CUDA threads
+
+A Triton launch creates a grid of program instances. Each program evaluates operations on scalar or
+N-dimensional block tensors. Triton maps block elements onto warps and emits vector, memory, and
+Tensor Core operations. `tl.program_id(axis)` identifies a program along grid axis 0, 1, or 2;
+`tl.num_programs(axis)` returns that grid extent.
+
+There is no source-level `threadIdx` for standard Triton. Do not translate a CUDA kernel line by
+line. Choose one useful tile per program and express all lanes of that tile as tensors.
+
+### 3.2 Creating blocks
+
+```python
+offs = tl.arange(0, BLOCK)                 # [BLOCK]
+rows = pid_m * BLOCK_M + tl.arange(0, BLOCK_M)
+cols = pid_n * BLOCK_N + tl.arange(0, BLOCK_N)
+matrix_offsets = rows[:, None] * stride_m + cols[None, :] * stride_n
+zeros = tl.zeros((BLOCK_M, BLOCK_N), tl.float32)
+filled = tl.full((BLOCK,), 1.0, tl.float32)
+```
+
+`tl.arange(start, end)` uses a half-open interval. `start` and `end` are compile-time powers of two,
+with `end > start`; normally use `tl.arange(0, BLOCK)` with power-of-two `BLOCK`. Block shapes are
+compile-time shapes and are subject to Triton's power-of-two and maximum-element restrictions.
+
+`x[:, None]` and `x[None, :]` insert singleton dimensions. General local-tensor slicing and dynamic
+indexing are not supported. Valid tensor indexing is built from full `:` dimensions and `None`.
+Use masks, `tl.where`, reshape/split, or a different tile construction instead of `acc[:, :k]`.
+
+### 3.3 Broadcasting
+
+Triton broadcasting follows NumPy: left-pad the shorter shape with ones, then each aligned dimension
+must match or one side must be 1. Broadcasting is conceptual and does not itself load or copy data.
+
+```python
+row = tl.arange(0, BLOCK_M)[:, None]       # [BM, 1]
+col = tl.arange(0, BLOCK_N)[None, :]       # [1, BN]
+coords = row * stride_m + col * stride_n   # [BM, BN]
+```
+
+Explicit helpers include `tl.broadcast`, `tl.broadcast_to`, and `tl.expand_dims`.
+
+### 3.4 Shape transformations
+
+The common operations are:
+
+- `tl.reshape(x, shape, can_reorder=False)`: same number of elements; preserves linear order unless
+  `can_reorder=True` explicitly grants reordering.
+- `tl.permute(x, dims)` or `tl.trans(x, dims)`: permute axes. `x.T` swaps the last two axes.
+- `tl.ravel(x, can_reorder=False)`: flatten.
+- `tl.join(a, b)`: add a final size-2 dimension; `tl.split` is its inverse.
+- `tl.cat(a, b, dim=...)`, `tl.interleave`, `tl.flip`, `tl.squeeze`, `tl.unsqueeze`.
+
+`tl.view` is deprecated in Triton 3.7; use `tl.reshape(..., can_reorder=True)` when reordering is
+actually legal. Shape transformations change the compiler's logical mapping, not global storage.
+
+## 4. Types, operators, and numerical semantics
+
+### 4.1 Dtypes
+
+Core public scalar dtypes include:
+
+- `tl.int1`, signed `tl.int8/int16/int32/int64`, and unsigned `tl.uint8/uint16/uint32/uint64`;
+- `tl.float16`, `tl.bfloat16`, `tl.float32`, `tl.float64`;
+- NVIDIA-oriented FP8 names exposed by Triton 3.7, including `tl.float8e4nv` and `tl.float8e5`.
+
+Pointer argument element types are inferred from host tensors. Use `x.to(dtype)` or
+`tl.cast(x, dtype, fp_downcast_rounding="rtne"|"rtz")` for numerical conversion. With
+`bitcast=True`, bits are reinterpreted rather than numerically converted; source and destination
+bit widths must be compatible.
+
+Float-to-integer conversion is defined only if the truncated value fits the target. NaN, infinity,
+and out-of-range values are undefined; explicitly handle NaN and clamp before casting.
+
+### 4.2 Promotion
+
+For tensor-tensor binary operations and the value arms of `tl.where`, kind order is
+boolean < integer < floating point, then wider types win. Equal-width `float16` and `bfloat16`, or
+different FP8 types, promote to `float16`; equal-width mixed signedness prefers unsigned.
+
+A scalar literal or constexpr of equal or lower kind does not widen a tensor. A higher-kind scalar
+uses the smallest standard type that can represent it, then participates in promotion. Make
+important precision choices explicit rather than relying on promotion in accumulators.
+
+### 4.3 Operators
+
+Arithmetic, comparisons, shifts, and bitwise operators are elementwise and broadcast. Use `&`, `|`,
+and `~` for tensor boolean masks; Python `and`, `or`, and `not` are scalar control-flow operators and
+must not replace elementwise mask operators.
+
+Integer tensor `//` truncates toward zero and `%` follows the corresponding C rule for mixed signs.
+Compile-time scalar-only division follows Python semantics. This difference matters in negative
+index calculations.
+
+`tl.where(cond, x, y)` evaluates both value expressions. It cannot make an invalid load safe:
+
+```python
+# Wrong: the load may execute for every lane.
+value = tl.where(mask, tl.load(ptr), 0.0)
+
+# Correct.
+value = tl.load(ptr, mask=mask, other=0.0)
+```
+
+## 5. Pointer memory operations
+
+### 5.1 Element pointers and element strides
+
+Pointer arithmetic is in elements of the pointer's pointee type. PyTorch strides are already in
+elements:
+
+```python
+ptrs = base + rows[:, None] * stride_row + cols[None, :] * stride_col
+```
+
+Never multiply a PyTorch stride by element size. Handle negative or zero strides only when the
+definition permits them and the address calculation is proven safe.
+
+### 5.2 Loads
+
+```python
+value = tl.load(pointer, mask=None, other=None,
+                boundary_check=(), padding_option="",
+                cache_modifier="", eviction_policy="", volatile=False)
+```
+
+For a scalar pointer, `mask` and `other` are scalars. For a tensor of pointers they broadcast to the
+pointer shape. A false mask lane performs no memory access and returns `other` converted to the
+pointee type. Always provide a neutral `other` when masked values feed arithmetic or reductions.
+
+NVIDIA load cache modifiers are `""`, `".ca"`, `".cg"`, and `".cv"`. Eviction policies include
+`"evict_first"` and `"evict_last"`. These are hints, not correctness mechanisms; benchmark them.
+
+### 5.3 Stores
+
+```python
+tl.store(pointer, value, mask=None, boundary_check=(),
+         cache_modifier="", eviction_policy="")
+```
+
+`value` and `mask` broadcast to the pointer shape, and the value converts to the pointee type. A
+false mask lane performs no store. NVIDIA store modifiers include `".wb"`, `".cg"`, `".cs"`, and
+`".wt"`. Two programs writing the same address without an atomic operation constitute a race even
+if they usually write the same value.
+
+### 5.4 Block pointers
+
+Triton 3.7 still provides `tl.make_block_ptr` and `tl.advance`, but `make_block_ptr` is deprecated in
+favor of tensor descriptors. For a block pointer, `tl.load`/`tl.store` do not accept `mask` or
+`other`; use `boundary_check=(...)` and load `padding_option="zero"` or `"nan"`.
+
+`tl.advance(ptr, offsets)` returns a new block pointer and has no side effect:
+
+```python
+block_ptr = tl.advance(block_ptr, (0, BLOCK_K))
+```
+
+Do not write a new Blackwell guide around a deprecated block-pointer pipeline unless compatibility
+with a pre-3.8 deployment requires it.
+
+## 6. Tensor descriptors and Blackwell TMA
+
+### 6.1 Host descriptor path
+
+On Blackwell, standard Triton tensor-descriptor loads and stores lower to TMA-backed operations. A host
+descriptor is created before launch:
+
+```python
+a_desc = TensorDescriptor.from_tensor(a, [BLOCK_M, BLOCK_K])
+b_desc = TensorDescriptor.from_tensor(b, [BLOCK_N, BLOCK_K])  # B stored [N, K]
+c_desc = TensorDescriptor.from_tensor(c, [BLOCK_M, BLOCK_N])
+kernel[grid](a_desc, b_desc, c_desc, M, N, K, ...)
+```
+
+Inside the kernel:
+
+```python
+a = a_desc.load([offset_m, offset_k])
+b = b_desc.load([offset_n, offset_k])
+c_desc.store([offset_m, offset_n], result)
+```
+
+Descriptor loads take offsets only, with no mask. Out-of-bounds loads use descriptor padding;
+stores ignore out-of-bounds elements. Offsets and block shapes must satisfy the descriptor/TMA
+alignment contract.
+
+### 6.2 Descriptor invariants
+
+For `TensorDescriptor` in Triton 3.7:
+
+- rank is 1 through 5 for a host descriptor; device-side `tl.make_tensor_descriptor` documents 2
+  through 5 dimensions;
+- base is 16-byte aligned;
+- the last stride is 1;
+- every leading stride is 16-byte aligned in bytes;
+- shapes are positive and descriptor block shapes are compile-time valid block shapes;
+- padding is `"zero"` or `"nan"`, with NaN padding only for floating-point tensors.
+
+The descriptor describes physical storage. If B is passed physically as `[N, K]`, load a
+`[BLOCK_N, BLOCK_K]` tile and use `b.T` for an `[K, N]` dot operand. Do not silently apply row-major
+strides to a transposed view.
+
+Autotuning often changes block shapes. Mutate host descriptor `block_shape` in a config `pre_hook`
+or construct one descriptor per configuration; a dummy block shape must not reach execution.
+
+### 6.3 Device-created descriptors
+
+```python
+@triton.jit
+def kernel(a_ptr, M, K, BLOCK_M: tl.constexpr, BLOCK_K: tl.constexpr):
+    desc = tl.make_tensor_descriptor(
+        a_ptr, shape=[M, K], strides=[K, 1],
+        block_shape=[BLOCK_M, BLOCK_K], padding_option="zero")
+    tile = desc.load([tl.program_id(0) * BLOCK_M, 0])
+```
+
+Device descriptor creation needs Triton's descriptor allocator configured on the host:
+
+```python
+def alloc_fn(size: int, alignment: int, stream):
+    return torch.empty(size, device="cuda", dtype=torch.int8)
+
+triton.set_allocator(alloc_fn)
+```
+
+In a destination-passing benchmark, this allocator is infrastructure storage for descriptors, not
+an output allocation. Prefer host descriptors when possible because they avoid repeated device-side
+descriptor creation. Use device descriptors when shape construction or a Blackwell-specific compiler
+path requires them.
+
+### 6.4 What Triton hides
+
+Descriptor loads are logically synchronous at the source level. Do not add manual mbarrier waits,
+proxy fences, or shared-memory arrays around them. `num_stages` and loop structure tell the compiler
+how much to pipeline. Inspect generated TTGIR/PTX/SASS if instruction-level proof is required; the
+presence of a descriptor in source is not by itself proof that every access used TMA.
+
+## 7. Control flow and compile-time programming
+
+### 7.1 Runtime and constexpr branches
+
+An argument annotated `: tl.constexpr` is available during compilation:
+
+```python
+@triton.jit
+def kernel(x, y, n, USE_BIAS: tl.constexpr, BLOCK: tl.constexpr):
+    offs = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+    value = tl.load(x + offs, mask=offs < n, other=0.0)
+    if USE_BIAS:                 # branch removed at compile time
+        value += 1.0
+    tl.store(y + offs, value, mask=offs < n)
+```
+
+Runtime scalar conditions may form device control flow. Tensor conditions represent lane values and
+usually belong in masks or `tl.where`. Define variables before a loop or conditional if they are
+used afterward, and assign them on every path; Triton does not use Python's dynamically defined
+variable semantics.
+
+### 7.2 Loops
+
+- Python `range` is suitable when the compiler can represent the bounds.
+- `tl.static_range` requires constexpr bounds and aggressively unrolls.
+- `tl.range` accepts compiler controls: `num_stages`, `loop_unroll_factor`,
+  `disallow_acc_multi_buffer`, `flatten`, `warp_specialize`, and `disable_licm`.
+
+`tl.range(..., num_stages=S)` attempts to pipeline most eligible loads in that loop. Kernel launch
+`num_stages=S` primarily controls the pipeline of loads feeding dot operations. They are distinct
+controls. Excess unrolling or staging can cause register spills or shared-memory overflow.
+
+For this Triton version, automatic `warp_specialize=True` is a Blackwell-only feature and currently
+works on simple matmul loops. It partitions memory, MMA, and vector work into asynchronous warp
+roles and increases the total number of warps. Treat it as a compiler transformation with a narrow
+legality envelope, not as a promise that arbitrary control flow will be partitioned.
+
+## 8. Math, reductions, scans, sorting, and randomness
+
+Elementwise math includes `tl.abs`, `tl.minimum`, `tl.maximum`, `tl.clamp`, `tl.exp`, `tl.exp2`,
+`tl.log`, `tl.log2`, `tl.sin`, `tl.cos`, `tl.sqrt`, `tl.rsqrt`, `tl.erf`, `tl.sigmoid`, `tl.fma`,
+`tl.floor`, and `tl.ceil`. Backend implementations may use approximations; write tolerance and NaN
+requirements explicitly.
+
+Reductions include `tl.sum`, `tl.max`, `tl.min`, `tl.argmax`, `tl.argmin`, `tl.xor_sum`, and
+`tl.reduce_or`. `axis=None` reduces all dimensions where supported. Use `keep_dims=True` when the
+result must broadcast back over the reduced axis. Integer and boolean sums are widened, and
+floating sums are accumulated in at least FP32 by default; specify `dtype=` when overflow or exact
+promotion matters.
+
+Custom `tl.reduce` and `tl.associative_scan` combiners must be JIT functions and must be associative
+for reassociation to be valid. Built-in scans are `tl.cumsum` and `tl.cumprod`. Other block-local
+operations include `tl.sort`, `tl.topk`, `tl.gather`, and `tl.histogram`; their legal shapes and cost
+are compiler dependent, so avoid using them as substitutes for a better tiled algorithm.
+
+Counter-based random helpers include `tl.randint`, `tl.rand`, and `tl.randn` plus 4-value variants.
+Give each logical output element a deterministic, non-overlapping counter when reproducibility is
+required.
+
+## 9. Atomics and synchronization
+
+Triton 3.7 exposes `tl.atomic_add`, `atomic_max`, `atomic_min`, `atomic_and`, `atomic_or`,
+`atomic_xor`, `atomic_xchg`, and `atomic_cas`. They return the value that existed before the update.
+
+Atomic memory semantics are `"relaxed"`, `"acquire"`, `"release"`, or `"acq_rel"`; scopes are
+`"cta"`, `"gpu"`, or `"sys"`. Defaults are acquire-release and GPU scope. Select the weakest scope
+and ordering that still proves correctness, but do not use a relaxed atomic as a publication barrier.
+
+There is no grid-wide barrier in an ordinary Triton launch. `tl.debug_barrier()` is a program/CTA
+debugging barrier, not a grid synchronization primitive. Split global phases into separate kernel
+launches unless an algorithm has a proven atomic protocol. Launches on the same CUDA stream are
+ordered.
+
+## 10. Matrix multiplication with `tl.dot`
+
+### 10.1 Semantic contract
+
+```python
+tl.dot(input, other, acc=None, input_precision=None,
+       allow_tf32=None, max_num_imprecise_acc=None,
+       out_dtype=tl.float32)
+```
+
+Inputs have equal rank at least 2, equal batch prefixes, and matching reduction dimensions. A common
+case is `[M, K] @ [K, N] -> [M, N]`; 3-D and higher inputs perform batched dot after compatible
+batch-shape handling. If supplied, `acc` has the exact output shape and is added to the product.
+
+Supported common inputs include INT8, FP8, FP16, BF16, and FP32. INT8 uses an INT32 accumulator;
+low-precision floating point should normally accumulate in FP32. Convert only after the complete
+reduction.
+
+For FP32 inputs on NVIDIA Tensor Cores, `input_precision` may be `"tf32"`, `"tf32x3"`, or
+`"ieee"`. The default is TF32 when supported. `allow_tf32` is deprecated. TF32 truncation can bias
+results; use explicit precision and, where applicable, descriptor `round_f32_to_tf32=True`.
+
+### 10.2 Canonical tiled GEMM
+
+```python
+@triton.jit
+def _gemm(a, b, c, M, N, K,
+          stride_am, stride_ak, stride_bk, stride_bn,
+          stride_cm, stride_cn,
+          BLOCK_M: tl.constexpr, BLOCK_N: tl.constexpr,
+          BLOCK_K: tl.constexpr):
+    pid_m = tl.program_id(0)
+    pid_n = tl.program_id(1)
+    offs_m = pid_m * BLOCK_M + tl.arange(0, BLOCK_M)
+    offs_n = pid_n * BLOCK_N + tl.arange(0, BLOCK_N)
+    offs_k = tl.arange(0, BLOCK_K)
+    acc = tl.zeros((BLOCK_M, BLOCK_N), tl.float32)
+
+    for k0 in range(0, tl.cdiv(K, BLOCK_K)):
+        k = k0 * BLOCK_K + offs_k
+        a_tile = tl.load(a + offs_m[:, None] * stride_am + k[None, :] * stride_ak,
+                         mask=(offs_m[:, None] < M) & (k[None, :] < K), other=0.0)
+        b_tile = tl.load(b + k[:, None] * stride_bk + offs_n[None, :] * stride_bn,
+                         mask=(k[:, None] < K) & (offs_n[None, :] < N), other=0.0)
+        acc = tl.dot(a_tile, b_tile, acc)
+
+    out_ptr = c + offs_m[:, None] * stride_cm + offs_n[None, :] * stride_cn
+    tl.store(out_ptr, acc, mask=(offs_m[:, None] < M) & (offs_n[None, :] < N))
+```
+
+This is a correctness skeleton, not a universal best kernel. Tune tile sizes, program order,
+descriptor use, stages, and warps. For repeated large GEMMs, grouped program ordering can improve L2
+reuse. For small tile domains, a persistent grid capped at the actual SM count can reduce scheduling
+overhead, but every loop tile still needs exact bounds and unique ownership.
+
+### 10.3 Blackwell Tensor Core and Tensor Memory lowering
+
+On Blackwell, eligible `tl.dot` operations may lower through fifth-generation Tensor Core
+`tcgen05.mma` machinery. Accumulators can reside in Blackwell Tensor Memory (TMEM), but standard
+Triton does not expose TMEM allocation, addresses, copy shapes, or the `tcgen05` commit/wait protocol.
+Shapes, dtypes, layouts, alignment, `num_warps`, `num_stages`, loop structure, and compiler version
+determine the lowering. Do not claim `tcgen05` or TMEM use from source text alone; inspect generated
+artifacts or profiler metrics.
+
+Four and eight warps are useful non-specialized starting points for substantial dot tiles. Automatic
+warp specialization adds producer/consumer roles beyond that logical starting point, so its resource
+usage must be measured independently. `maxnreg` can sometimes balance role-specific register demand,
+but an arbitrary cap can force spills.
+
+Blackwell supports a broader set of FP8 operand layouts than Hopper. Still prefer an explicit,
+coalesced physical layout, often store B as `[N, K]`, descriptor-load `[BLOCK_N, BLOCK_K]`, and pass
+`b.T` to `tl.dot`. This mapping also aligns naturally with the block-scaled RHS convention below.
+
+### 10.4 Blackwell automatic warp specialization
+
+The source-level switch is an attribute on the loop, not a launch option:
+
+```python
+for k0 in tl.range(0, k_tiles, num_stages=NUM_STAGES,
+                   warp_specialize=WARP_SPECIALIZE):
+    a = a_desc.load([offs_m, k0 * BLOCK_K])
+    b = b_desc.load([offs_n, k0 * BLOCK_K])
+    acc = tl.dot(a, b.T, acc)
+```
+
+`WARP_SPECIALIZE` should be constexpr and normally participates in the autotune key or configuration
+set. The supported Triton 3.7 path is a simple descriptor-load/dot loop. Complicated loop-carried
+state, arbitrary branches, unsupported operations, or values shared in incompatible prologue and
+epilogue positions can prevent or invalidate the transformation. Always keep a
+`warp_specialize=False` configuration as a correctness and performance baseline.
+
+Warp specialization can increase shared memory and register pressure even when it overlaps TMA,
+MMA, and epilogue work. Tune tile shape, stage count, `maxnreg`, and epilogue subtiling together.
+
+## 11. Blackwell block-scaled matrix multiplication
+
+### 11.1 `tl.dot_scaled` contract
+
+```python
+tl.dot_scaled(lhs, lhs_scale, lhs_format,
+              rhs, rhs_scale, rhs_format,
+              acc=None, fast_math=False,
+              lhs_k_pack=True, rhs_k_pack=True,
+              out_dtype=tl.float32)
+```
+
+This computes a 2-D matrix product whose inputs use microscaling formats. Triton 3.7 accepts format
+strings `"e2m1"`, `"e4m3"`, `"e5m2"`, `"bf16"`, and `"fp16"`. FP4 E2M1 data is packed two values
+per `uint8`, with the first logical element in the low nibble. FP8 may be held in `uint8` or the
+corresponding FP8 dtype. In this version `out_dtype` is FP32.
+
+For OCP MX scales represented as E8M0 `uint8`, each scale normally covers 32 K elements. If logical
+`lhs` is `[M, K]`, `lhs_scale` is `[M, K // 32]`. If logical `rhs` is `[K, N]`, `rhs_scale` is
+`[N, K // 32]`; do not transpose the RHS scale tensor to `[K // 32, N]`. `lhs_k_pack=False` means
+packed FP4 storage is along M instead of K; `rhs_k_pack=False` means it is along N instead of K.
+
+Blackwell provides native hardware acceleration for supported block-scaled combinations. Triton may
+emulate this operation on architectures without native support, so source-level `tl.dot_scaled` is
+not by itself proof of native instruction use.
+
+### 11.2 Descriptor-loaded block-scaled loop
+
+```python
+acc = tl.zeros((BLOCK_M, BLOCK_N), tl.float32)
+for k0 in tl.range(0, tl.cdiv(K, BLOCK_K), num_stages=NUM_STAGES):
+    a = a_desc.load([offs_m, k0 * (BLOCK_K // A_ELEMS_PER_BYTE)])
+    b = b_desc.load([offs_n, k0 * (BLOCK_K // B_ELEMS_PER_BYTE)])
+    a_scale = a_scale_desc.load([...])
+    b_scale = b_scale_desc.load([...])
+    # Reshape/permute the preshuffled scale tiles into logical 2-D scale blocks.
+    a_scale = a_scale.reshape(...).trans(...).reshape(BLOCK_M, BLOCK_K // 32)
+    b_scale = b_scale.reshape(...).trans(...).reshape(BLOCK_N, BLOCK_K // 32)
+    acc = tl.dot_scaled(a, a_scale, A_FORMAT,
+                        b.T, b_scale, B_FORMAT, acc)
+```
+
+`BLOCK_K` above counts logical low-precision elements, while descriptor K offsets count storage
+elements. Keep the conversion by `*_ELEMS_PER_BYTE` explicit. Scale preshuffling is part of the
+physical data contract: do not apply the logical 2-D scale shape directly to a packed 5-D descriptor
+without the matching reshape/transpose inverse.
+
+Blackwell FP4 Tensor Core layouts have additional operand-orientation constraints. For symmetric
+FP4, a physically `[N, K/2]` packed RHS loaded as `[BLOCK_N, BLOCK_K/2]` and passed as `b.T` is the
+safe standard recipe. Mixed FP8/FP4 has broader hardware choices, but the descriptor layout and
+`rhs_k_pack` flag must still describe the same packing.
+
+## 12. Autotuning and performance controls
+
+```python
+@triton.autotune(
+    configs=[
+        triton.Config({"BLOCK": 128}, num_warps=4, num_stages=2),
+        triton.Config({"BLOCK": 256}, num_warps=8, num_stages=3),
+    ],
+    key=["n_elements"],
+)
+@triton.jit
+def kernel(..., n_elements, BLOCK: tl.constexpr):
+    ...
+```
+
+The `key` controls when configurations are rebenchmarked. An overly specific key increases tuning
+cost; an overly broad key reuses a poor choice. `reset_to_zero` or `restore_value` is mandatory when
+trial configurations mutate state non-idempotently. A config `pre_hook` can update descriptor block
+shapes. `prune_configs_by` can remove resource-invalid candidates before compilation.
+
+`@triton.heuristics(values={...})` derives meta-parameters without benchmarking. Do not define the
+same symbol in a `Config`, heuristic, and launch call.
+
+Tune at least:
+
+- tile shape and program ordering;
+- `num_warps` (usually start with 4 and 8 for non-specialized Tensor Core kernels);
+- `num_stages` (often 2 through 5, bounded by shared memory and registers);
+- pointer versus descriptor/TMA paths;
+- automatic warp specialization, `maxnreg`, and epilogue subtiling;
+- standard `tl.dot` versus native-eligible `tl.dot_scaled` where the data format permits it;
+- accumulator footprint, epilogue shape, and persistent versus full grid.
+
+Performance hints `tl.multiple_of`, `tl.max_contiguous`, `tl.max_constancy`, and `tl.assume` assert
+facts to the compiler. They do not check or repair data. A false assertion can miscompile the kernel.
+
+## 13. Blackwell resource and scheduling facts
+
+For an NVIDIA B200 target, use these planning values as a starting point and query the actual
+device when possible:
+
+| Resource | Planning value |
+|---|---:|
+| SMs | 148 |
+| Maximum threads per CTA | 1024 |
+| Maximum registers per thread | 255 32-bit registers |
+| Register allocation ceiling per CTA | 65,536 32-bit registers |
+| Shared memory per SM | configurable up to 228 KiB, with 1 KiB reserved from a CTA's addressable maximum |
+| Tensor Memory | 512 columns by 128 rows of 32-bit cells per SM, managed by the compiler |
+| L2 | 126 MiB |
+| HBM3e | 180 GiB, approximately 8 TB/s peak |
+| Cluster size | portable up to 8 CTAs; B200 nonportable configurations can reach 16 |
+
+Treat these as limits, not targets. Triton-reported registers, spills, shared memory, and achieved
+occupancy are the evidence for a specific kernel. `num_ctas > 1` requests clustered compilation
+where supported; it does not provide source-level cluster indexing, DSMEM, or barriers. Use it only
+for a compiler path known to exploit it and benchmark against `num_ctas=1`.
+
+Blackwell-specific optimization sequence:
+
+1. Establish correct masked pointer code with FP32 accumulation.
+2. Tune tiles, warps, stages, and L2 program ordering.
+3. Test host tensor descriptors/TMA when shape and stride constraints fit.
+4. Test `warp_specialize=True` only on its supported simple-loop shape and retain the baseline.
+5. Use `tl.dot_scaled` only when packing, scale layout, and numerical semantics match the problem.
+6. Confirm the intended `tcgen05`, TMEM, block-scaled MMA, and TMA instructions with generated-code
+   or profiler evidence.
+7. Check spills, shared memory, and occupancy before adding stages or larger accumulator tiles.
+
+## 14. Debugging and validation
+
+Use `tl.static_assert` for compile-time invariants and `tl.static_print` for compile-time values.
+`tl.device_assert` is active when Triton debug mode is enabled; `tl.device_print` prints runtime
+values but is expensive. `TRITON_INTERPRET=1` can expose indexing and logic errors, but interpreter
+floating behavior, unsupported dtypes, and race behavior are not proof of GPU correctness.
+
+`tl.inline_asm_elementwise(asm, constraints, args, dtype, is_pure, pack)` is an escape hatch for
+scalar-per-element assembly. Constraints and `pack` must match the register contract. Inline asm is
+not the standard way to manage TMA, TMEM, or `tcgen05` collectives; use it only with architecture-specific
+proof and fallback/version boundaries.
+
+Validation order:
+
+1. Parse/import and compile each intended specialization.
+2. Test zero, one, exact-tile, partial-tile, and multi-tile dimensions.
+3. Test all supported dtypes, strides, and alias patterns.
+4. Compare with the reference using the required numerical tolerance.
+5. Run memory and race checking where supported.
+6. Benchmark warmed kernels and report compile/autotune time separately.
+7. Inspect registers, local-memory spills, shared memory, occupancy, and generated instructions.
+
+## 15. Common failure modes
+
+### 15.1 Compilation failures
+
+- `tl.arange` endpoints or block dimensions are not valid compile-time powers of two.
+- A runtime value is used where a shape, axis, loop control, or dtype must be constexpr.
+- A local tensor is dynamically sliced or indexed.
+- A constexpr is supplied both by `triton.Config` and the launch.
+- `tl.dot` ranks, batch prefixes, reduction dimensions, dtypes, or accumulator shape disagree.
+- Descriptor rank, alignment, last stride, leading-stride alignment, or block shape is invalid.
+- Register or shared-memory use exceeds the target limit.
+
+### 15.2 Incorrect results
+
+- A false mask lane participates because `other` was omitted or was not the reduction identity.
+- `tl.where` was incorrectly expected to guard a load.
+- Strides were treated as bytes rather than elements.
+- B was logically transposed without matching its physical strides or descriptor.
+- The K tail was read without zero padding before a dot.
+- The accumulator was downcast inside the K loop.
+- Two program instances store the same output without a valid reduction protocol.
+- A compiler hint asserted alignment or divisibility that the actual pointer did not satisfy.
+- Autotune trials mutated an output or counter and it was not reset.
+
+### 15.3 Performance failures
+
+- The program tile is too small to amortize launch and address computation.
+- A large accumulator causes spills or collapses occupancy.
+- `num_stages` exceeds the useful memory-latency window or shared-memory budget.
+- Program order destroys L2 reuse.
+- A descriptor path pays setup cost without enough regular data movement to recover it.
+- Excessive masking, scalar control flow, sorting, atomics, or device printing serializes work.
+- Benchmarking includes first-compile or autotune cost in kernel latency.
+
+When fixing a failure, preserve the full contract: logical coordinates, physical strides, masks or
+padding, specialization boundary, and destination ownership must remain mutually consistent.
+
+
+
+
+# Optimization Pattern: Streaming Attention Forward in Standard Triton on Blackwell
+
+Map one Triton program to one query tile for one batch item and query head. Keep that query tile and
+its online-softmax state live while streaming over key/value tiles. This gives a standard-Triton
+implementation of the FlashAttention forward algorithm without promising manual TMEM placement,
+producer/consumer warp roles, or explicit MMA/softmax overlap.
+
+## Program and storage contract
+
+For dense Q, K, and V stored as `[batch, heads, sequence, head_dim]`, a typical grid is:
+
+```python
+grid = (
+    triton.cdiv(query_length, BLOCK_M),
+    batch_size,
+    query_heads,
+)
+```
+
+Inside the kernel, `tl.program_id(0)` chooses the query tile, axis 1 chooses the batch, and axis 2
+chooses the query head. For grouped-query attention, map the query head to its shared KV head with
+integer division and keep the query-head remainder only when the algorithm needs it.
+
+Use device-created tensor descriptors when the physical last dimension is contiguous and all
+descriptor alignment rules hold:
+
+```python
+q_desc = tl.make_tensor_descriptor(
+    q_base,
+    shape=[query_length, head_dim],
+    strides=[stride_qm, 1],
+    block_shape=[BLOCK_M, HEAD_DIM_ROUNDED],
+    padding_option="zero",
+)
+k_desc = tl.make_tensor_descriptor(
+    k_base,
+    shape=[kv_length, head_dim],
+    strides=[stride_kn, 1],
+    block_shape=[BLOCK_N, HEAD_DIM_ROUNDED],
+    padding_option="zero",
+)
+v_desc = tl.make_tensor_descriptor(
+    v_base,
+    shape=[kv_length, value_dim],
+    strides=[stride_vn, 1],
+    block_shape=[BLOCK_N, VALUE_DIM_ROUNDED],
+    padding_option="zero",
+)
+```
+
+Load Q once before the KV loop. Reuse the descriptor objects across loop iterations and change only
+their offsets. Keep a masked pointer-tensor path when descriptor stride or alignment requirements do
+not match the public input contract.
+
+## Online-softmax loop
+
+Use FP32 for the running row maximum, normalization sum, and output accumulator. Converting scores
+to base-2 lets the loop use Triton's native `tl.math.exp2` path:
+
+```python
+RCP_LN2: tl.constexpr = 1.4426950408889634
+m_i = tl.full((BLOCK_M,), -float("inf"), tl.float32)
+l_i = tl.zeros((BLOCK_M,), tl.float32)
+acc = tl.zeros((BLOCK_M, VALUE_DIM_ROUNDED), tl.float32)
+
+for kv_tile in range(0, tl.cdiv(kv_length, BLOCK_N)):
+    offset_n = (kv_tile * BLOCK_N).to(tl.int32)
+    k = k_desc.load([offset_n, 0])
+    v = v_desc.load([offset_n, 0])
+
+    scores = tl.dot(q, k.T) * softmax_scale
+    # Apply causal, window, and sequence-tail masks before either reduction.
+    scores = tl.where(valid_score, scores * RCP_LN2, -float("inf"))
+
+    m_ij = tl.maximum(m_i, tl.max(scores, axis=1))
+    safe_m_ij = tl.where(m_ij == -float("inf"), 0.0, m_ij)
+    alpha = tl.math.exp2(m_i - safe_m_ij)
+    p = tl.math.exp2(scores - safe_m_ij[:, None])
+
+    l_i = l_i * alpha + tl.sum(p, axis=1)
+    acc = acc * alpha[:, None]
+    acc = tl.dot(p.to(q.dtype), v.to(q.dtype), acc)
+    m_i = m_ij
+```
+
+The `valid_score` mask must protect both query and KV tails and must include the causal or window
+condition. A descriptor's zero padding is not a score mask: padded K values can produce a finite dot
+product and must still become `-inf` before row max and exponential.
+
+Finalize fully masked rows explicitly, normalize once, and keep the LSE convention consistent with
+backward:
+
+```python
+safe_l_i = tl.where(l_i == 0.0, 1.0, l_i)
+output = acc / safe_l_i[:, None]
+lse_log2 = tl.where(l_i == 0.0, -float("inf"), m_i + tl.math.log2(safe_l_i))
+```
+
+If the public LSE contract uses natural logarithms, convert the final value and convert it back to
+the same base in backward. Do not mix natural-log LSE with base-2 exponentials.
+
+## Compiler controls and tuning
+
+- Tune `BLOCK_M`, `BLOCK_N`, `num_warps`, and `num_stages` together. Head-dimension rounding changes
+  descriptor shapes, dot legality, padding masks, and register pressure.
+- Test descriptor and pointer paths independently. TMA setup is not automatically profitable for
+  small sequence domains.
+- Use `tl.range(..., num_stages=...)` only after the basic loop compiles and passes. Loop staging is
+  distinct from the kernel launch's `num_stages` option.
+- Do not put `warp_specialize=True` on this full online-softmax loop. Triton 3.7.1 limits automatic
+  warp specialization to simple matmul loops; attention carries reductions, exponentials, masks,
+  and several loop-carried tensors.
+- Source-level descriptors and `tl.dot` do not prove a particular TMA, TMEM, or `tcgen05` lowering.
+  Inspect generated artifacts when that distinction matters.
+
+## Validation checklist
+
+- Compare causal and noncausal modes, full and partial query/KV tiles, and fully masked rows.
+- Test GQA/MQA head mapping and any broadcast batch mapping explicitly.
+- Check both output and LSE using the declared log base and tolerance.
+- Cover sequence lengths smaller than one block and lengths not divisible by either block size.
+- Measure pointer and descriptor variants across the complete workload shape set.
+
+

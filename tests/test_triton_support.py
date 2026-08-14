@@ -8,19 +8,17 @@ from types import SimpleNamespace
 
 import pytest
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MINI_ROOT = REPO_ROOT / "packages" / "mini-ptx-agent"
 MULTITURN_DIR = MINI_ROOT / "fib_runtime" / "multiturn"
 sys.path.insert(0, str(MULTITURN_DIR))
 sys.path.insert(0, str(MINI_ROOT))
 
-import common  # noqa: E402
-import run_parallel_v2  # noqa: E402
-import run_v2  # noqa: E402
-from create_triton_test import render  # noqa: E402
-from mini_ptx_agent.quickstart import build_result  # noqa: E402
-
+import common
+import run_parallel_v2
+import run_v2
+from create_triton_test import render
+from mini_ptx_agent.quickstart import build_result
 
 VALID_TRITON = """
 import torch
@@ -41,6 +39,42 @@ def run(x, y):
         x, y, n_elements, BLOCK=256
     )
 """
+
+THREE_PROMPT_RESULT_TAGS = {
+    "hopper-no-hint",
+    "hopper-00",
+    "hopper-05",
+    "hopper-07",
+    "hopper-07-mha-patched",
+    "hopper-08",
+    "hopper-08-mha-patched",
+    "hopper-012",
+    "hopper-012-mha-patched",
+    "hopper-013",
+    "hopper-013-mha-patched",
+    "hopper-no-hint-mha-patched",
+    "b200-bf16",
+    "b200-bf16-00",
+    "b200-bf16-04",
+    "b200-bf16-010",
+    "b200-bf16-011",
+    "b200-bf16-012",
+    "b200-bf16-013",
+    "triton-hopper",
+    "triton-hopper-01",
+    "triton-hopper-03",
+    "triton-hopper-07",
+    "triton-hopper-08",
+    "triton-hopper-012",
+    "triton-hopper-013",
+    "triton-blackwell",
+    "triton-blackwell-01",
+    "triton-blackwell-03",
+    "triton-blackwell-010",
+    "triton-blackwell-011",
+    "triton-blackwell-012",
+    "triton-blackwell-013",
+}
 
 
 @pytest.mark.parametrize(
@@ -193,6 +227,115 @@ def test_hub_exposes_architecture_specific_triton_roots():
     assert hub["triton-blackwell"] == [
         "structural_doc/document/triton_knowledge_sm100_plus.md"
     ]
+
+
+def test_hub_exposes_three_prompt_triton_variants():
+    hub = json.loads((MULTITURN_DIR / "prompt_configs" / "hub.json").read_text())
+    expected = {
+        "triton-hopper-01": [
+            "triton-hopper",
+            "structural_doc/patterns/l2_swizzle_triton.md",
+        ],
+        "triton-hopper-03": [
+            "triton-hopper",
+            "structural_doc/patterns/persistent_kernel_triton.md",
+        ],
+        "triton-hopper-07": [
+            "triton-hopper",
+            "structural_doc/patterns/fa3_fwd_v0.md",
+        ],
+        "triton-hopper-08": [
+            "triton-hopper",
+            "structural_doc/patterns/fa3_fwd_v1.md",
+        ],
+        "triton-hopper-012": [
+            "triton-hopper",
+            "structural_doc/patterns/fa3_bwd_2ker.md",
+        ],
+        "triton-hopper-013": [
+            "triton-hopper",
+            "structural_doc/patterns/fa3_bwd_2ker_fwd_v0.md",
+        ],
+        "triton-blackwell-01": [
+            "triton-blackwell",
+            "structural_doc/patterns/l2_swizzle_triton.md",
+        ],
+        "triton-blackwell-03": [
+            "triton-blackwell",
+            "structural_doc/patterns/persistent_kernel_blackwell_triton.md",
+        ],
+        "triton-blackwell-010": [
+            "triton-blackwell-011",
+            "structural_doc/patterns/attention_forward_nongemm_blackwell_triton.md",
+        ],
+        "triton-blackwell-011": [
+            "triton-blackwell",
+            "structural_doc/patterns/attention_forward_blackwell_triton.md",
+        ],
+        "triton-blackwell-012": [
+            "triton-blackwell-013",
+            "structural_doc/patterns/attention_backward_split_blackwell_triton.md",
+        ],
+        "triton-blackwell-013": [
+            "triton-blackwell",
+            "structural_doc/patterns/attention_backward_1cta_blackwell_triton.md",
+        ],
+    }
+
+    expected_tags = {"triton-hopper", "triton-blackwell", *expected}
+    assert {tag for tag in hub if tag.startswith("triton-")} == expected_tags
+    assert {tag: hub[tag] for tag in expected} == expected
+    for entries in expected.values():
+        for entry in entries:
+            if "/" in entry:
+                assert (MULTITURN_DIR.parent / entry).is_file()
+
+
+def test_prompt_inventory_matches_non_ablation_three_prompt_results():
+    prompt_dir = MULTITURN_DIR / "prompt_configs"
+    hub = json.loads((prompt_dir / "hub.json").read_text())
+
+    assert set(hub) == THREE_PROMPT_RESULT_TAGS
+    assert {path.stem for path in prompt_dir.glob("*.md")} == THREE_PROMPT_RESULT_TAGS
+
+    reachable_sources = set()
+
+    def visit(tag, stack=()):
+        assert tag not in stack, f"prompt-tag cycle: {' -> '.join((*stack, tag))}"
+        for entry in hub[tag]:
+            if "/" in entry:
+                path = MULTITURN_DIR.parent / entry
+                assert path.is_file(), path
+                reachable_sources.add(path)
+            else:
+                assert entry in hub
+                visit(entry, (*stack, tag))
+
+    for tag in hub:
+        visit(tag)
+
+    structural_root = MULTITURN_DIR.parent / "structural_doc"
+    prompt_sources = {
+        path
+        for directory in ("document", "headers", "headers_wo_doc", "notes", "patterns")
+        for path in (structural_root / directory).glob("*")
+        if path.is_file()
+    }
+    assert prompt_sources == reachable_sources
+
+
+def test_checked_in_prompt_configs_only_use_retained_tags():
+    hub = json.loads((MULTITURN_DIR / "prompt_configs" / "hub.json").read_text())
+    configs = [
+        *sorted((REPO_ROOT / "configs" / "fixit").glob("*.json")),
+        REPO_ROOT / "configs" / "quickstart.json",
+        REPO_ROOT / "configs" / "quickstart-triton.json",
+    ]
+
+    for config in configs:
+        payload = json.loads(config.read_text())
+        tags = {item["prompt_tag"] for item in payload}
+        assert tags <= set(hub), config
 
 
 def test_quickstart_report_finds_python_candidates(tmp_path):

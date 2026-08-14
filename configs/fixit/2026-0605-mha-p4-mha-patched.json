@@ -16,17 +16,5 @@
         "num_turns": 8,
         "target_speedup": 1.2,
         "prompt_tag": "hopper-08-mha-patched"
-    },
-    {
-        "num_trajectories": 4,
-        "num_turns": 8,
-        "target_speedup": 1.2,
-        "prompt_tag": "hopper-09-mha-patched"
-    },
-    {
-        "num_trajectories": 4,
-        "num_turns": 8,
-        "target_speedup": 1.2,
-        "prompt_tag": "hopper-014-mha-patched"
     }
 ]

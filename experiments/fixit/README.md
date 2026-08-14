@@ -26,7 +26,8 @@ historical filename `fixit-v5-gemini-kernel-pairs.csv`.
 The source Qwen runs intentionally use the unpatched prompt: their purpose is
 to mine failures for repair. Final checkpoint evaluation has only the
 expert-guided/MHA-patched path used by the paper. There is no second unpatched
-evaluation lane.
+evaluation lane. Each GEMM, MHA-forward, and MHA-backward plan uses exactly
+three prompt tags with four replicas per tag.
 
 From the repository root:
 
