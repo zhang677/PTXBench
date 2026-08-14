@@ -38,8 +38,11 @@ class PythonBuilder(Builder):
         return True
 
     def can_build(self, solution: Solution) -> bool:
-        """Check if this builder can handle the given solution."""
-        return solution.spec.language == SupportedLanguages.PYTHON
+        """Check if this builder can handle Python-backed solution languages."""
+        return solution.spec.language in {
+            SupportedLanguages.PYTHON,
+            SupportedLanguages.TRITON,
+        }
 
     def _get_cleaner(self, package: str, build_path: Path) -> Callable[[], None]:
         """Create a cleaner function that removes build artifacts.

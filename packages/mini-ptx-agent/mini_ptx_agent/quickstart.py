@@ -18,10 +18,20 @@ import requests
 from .paths import PTXBenchPaths
 
 DEFINITION = "gemm_n7168_k5120"
-TEST_RELATIVE_PATH = (
-    "2026-0413-1611/"
-    "gemm_n7168_k5120_94920358-01a8-4c5b-9209-3103fd490e94.py"
-)
+TEST_RELATIVE_PATHS = {
+    "cuda": (
+        "2026-0413-1611/"
+        "gemm_n7168_k5120_94920358-01a8-4c5b-9209-3103fd490e94.py"
+    ),
+    "triton": (
+        "2026-0413-1611/"
+        "gemm_n7168_k5120_94920358-01a8-4c5b-9209-3103fd490e94_triton.py"
+    ),
+}
+CONFIG_NAMES = {
+    "cuda": "quickstart.json",
+    "triton": "quickstart-triton.json",
+}
 LOCAL_MODEL_NAMES = {
     "Qwen3.5-35B-A3B",
     "Qwen3.5-9B",
@@ -35,6 +45,7 @@ CLOUD_MODEL_KEYS = {
     "gemini-3-flash-preview": ("GEMINI_API_KEY", "GOOGLE_API_KEY"),
     "gemini-3.1-pro-preview": ("GEMINI_API_KEY", "GOOGLE_API_KEY"),
     "gemini-3.1-pro-no-reasoning": ("GEMINI_API_KEY", "GOOGLE_API_KEY"),
+    "gemini-3.1-flash-lite": ("GEMINI_API_KEY", "GOOGLE_API_KEY"),
     "Qwen3.5-397B-A17B": ("TOGETHER_API_KEY",),
     "Qwen3.6-plus": ("OPENROUTER_API_KEY",),
     "GLM-5.1": ("OPENROUTER_API_KEY",),
@@ -166,11 +177,14 @@ def preflight(
     model_host: str | None,
     service_url: str,
     eval_image: str,
+    language: str = "cuda",
 ) -> list[Check]:
     """Check every dependency needed before spending a model request."""
+    if language not in TEST_RELATIVE_PATHS:
+        raise ValueError(f"Unsupported kernel language: {language}")
     runner = paths.multiturn_root / "run_parallel_v2.py"
-    test_path = paths.multiturn_root / TEST_RELATIVE_PATH
-    config = paths.config_root / "quickstart.json"
+    test_path = paths.multiturn_root / TEST_RELATIVE_PATHS[language]
+    config = paths.config_root / CONFIG_NAMES[language]
     checks = [
         Check("multiturn runner", runner.is_file(), str(runner)),
         Check("GEMM test", test_path.is_file(), str(test_path)),
@@ -274,16 +288,27 @@ def build_result(output_root: Path) -> dict[str, Any]:
 
     experiments: list[dict[str, Any]] = []
     for exp_name in sorted(exp_names):
-        candidate = output_root / exp_name / "kernel.cu"
+        candidates = [
+            path
+            for path in (
+                output_root / exp_name / "kernel.cu",
+                output_root / exp_name / "kernel.py",
+            )
+            if path.is_file()
+        ]
+        candidate = candidates[0] if candidates else None
         trajectory = output_root / "trajectories" / f"{exp_name}.json"
-        correct_kernels = sorted((output_root / "success" / exp_name).glob("kernel_v*.cu"))
+        success_dir = output_root / "success" / exp_name
+        correct_kernels = sorted(
+            [*success_dir.glob("kernel_v*.cu"), *success_dir.glob("kernel_v*.py")]
+        )
         summary_item = result_by_name.get(exp_name, {})
         experiments.append(
             {
                 "exp_name": exp_name,
                 "definition": summary_item.get("definition") or definition_by_name.get(exp_name),
                 "launcher_status": summary_item.get("status"),
-                "candidate_kernel": _relative(candidate, output_root) if candidate.is_file() else None,
+                "candidate_kernel": _relative(candidate, output_root) if candidate else None,
                 "trajectory": _relative(trajectory, output_root) if trajectory.is_file() else None,
                 "correct_kernels": [_relative(path, output_root) for path in correct_kernels],
                 "exit_status": _exit_status(trajectory) if trajectory.is_file() else None,
@@ -351,25 +376,30 @@ def run(
     service_url: str,
     eval_image: str,
     output_root: Path,
+    language: str = "cuda",
 ) -> int:
     """Run one three-turn GEMM trajectory and always leave a truthful report."""
+    if language not in TEST_RELATIVE_PATHS:
+        raise ValueError(f"Unsupported kernel language: {language}")
     output_root = output_root.expanduser().resolve()
     output_root.parent.mkdir(parents=True, exist_ok=True)
     command = [
         sys.executable,
         str(paths.multiturn_root / "run_parallel_v2.py"),
         "--config",
-        str(paths.config_root / "quickstart.json"),
+        str(paths.config_root / CONFIG_NAMES[language]),
         "--definition",
         DEFINITION,
         "--test-path",
-        str(paths.multiturn_root / TEST_RELATIVE_PATH),
+        str(paths.multiturn_root / TEST_RELATIVE_PATHS[language]),
         "--model",
         model,
         "--service-url",
         service_url,
         "--gpu-arch",
         "hopper",
+        "--language",
+        language,
         "--image",
         eval_image,
         "--without-local-gpu",

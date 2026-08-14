@@ -93,6 +93,10 @@ def quickstart(
         str | None,
         typer.Option("--model", envvar="MODEL_NAME", help="Model name understood by PTXBench."),
     ] = None,
+    language: Annotated[
+        str,
+        typer.Option("--language", help="Kernel language: cuda or triton."),
+    ] = "cuda",
     model_host: Annotated[
         str | None,
         typer.Option(
@@ -123,6 +127,9 @@ def quickstart(
     ] = None,
 ) -> None:
     """Check or run PTXBench's smallest real kernel-agent example."""
+    if language not in {"cuda", "triton"}:
+        typer.echo("--language must be either 'cuda' or 'triton'.", err=True)
+        raise typer.Exit(2)
     selected_modes = int(check) + int(run) + int(report is not None)
     if selected_modes > 1:
         typer.echo("Choose only one of --check, --run, or --report.", err=True)
@@ -142,6 +149,7 @@ def quickstart(
         model_host=model_host,
         service_url=service_url,
         eval_image=eval_image,
+        language=language,
     )
     failed = False
     for item in checks:
@@ -155,14 +163,17 @@ def quickstart(
 
     if output_root is None:
         timestamp = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
-        output_root = paths.eval_runs_root / f"quickstart-{timestamp}-gemm"
-    typer.echo(f"Starting one three-turn Hopper GEMM trajectory in {output_root}")
+        output_root = paths.eval_runs_root / f"quickstart-{timestamp}-{language}-gemm"
+    typer.echo(
+        f"Starting one three-turn Hopper {language.upper()} GEMM trajectory in {output_root}"
+    )
     returncode = run_quickstart(
         paths,
         model=model or "",
         service_url=service_url,
         eval_image=eval_image,
         output_root=output_root,
+        language=language,
     )
     if returncode:
         raise typer.Exit(returncode)

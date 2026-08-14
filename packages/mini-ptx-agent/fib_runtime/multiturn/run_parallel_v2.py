@@ -188,6 +188,12 @@ def parse_args():
         help="Model name (passthrough to run_v2.py)",
     )
     parser.add_argument(
+        "--language",
+        choices=("cuda", "triton"),
+        default="cuda",
+        help="Kernel language (default: cuda). Triton is an opt-in Python kernel path.",
+    )
+    parser.add_argument(
         "--service-url", type=str, default="http://localhost:10000",
         help="Profiling service URL (passthrough to run_v2.py)",
     )
@@ -394,6 +400,8 @@ def run_single_experiment(
             cmd.append("--without-local-gpu")
         else:
             cmd.extend(["--gpus", f'"device={gpu_id}"'])
+        if args.language != "cuda":
+            cmd.extend(["--language", args.language])
         if args.verbose:
             cmd.append("-v")
 
@@ -503,9 +511,10 @@ def run_single_experiment(
                 f.write(f"=== COMMAND ===\n{' '.join(cmd)}\n\n")
                 f.write(f"=== ERROR ===\n{e}\n")
 
-        correct_kernels = sorted(success_dir.glob("kernel_v*.cu"))
+        kernel_suffix = ".py" if args.language == "triton" else ".cu"
+        correct_kernels = sorted(success_dir.glob(f"kernel_v*{kernel_suffix}"))
         result["runner_completed"] = result["status"] == "success"
-        result["generated_candidate"] = (workspace / "kernel.cu").is_file()
+        result["generated_candidate"] = (workspace / f"kernel{kernel_suffix}").is_file()
         result["correct_kernel_count"] = len(correct_kernels)
         result["target_met"] = trajectory_submitted_successfully(trajectory)
         return result
@@ -956,6 +965,8 @@ def main():
         print(f"GPUs: {gpu_ids}  |  Max parallel: {max_parallel}  |  Max profiles: {max_profiles_label}")
     definitions = sorted({str(item["definition"]) for _, item in experiments})
     print(f"Model: {args.model}  |  Definitions: {definitions}  |  GPU arch: {args.gpu_arch}")
+    if args.language != "cuda":
+        print(f"Kernel language: {args.language}")
     print(f"Service URL: {args.service_url}")
     if multi_root_mode:
         print(f"Outputs: {sorted(str(root) for root in roots_for_selected)}")

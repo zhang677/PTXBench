@@ -56,6 +56,23 @@ def test_python_builder_minimum():
     assert torch.allclose(out, A)
 
 
+def test_python_builder_accepts_triton_solution():
+    solution = Solution(
+        name="triton_sol",
+        definition="mm",
+        author="me",
+        spec=BuildSpec(
+            language=SupportedLanguages.TRITON,
+            target_hardware=["cuda"],
+            entry_point="kernel.py::run",
+            destination_passing_style=True,
+        ),
+        sources=[SourceFile(path="kernel.py", content="def run(A, B, C):\n    return None")],
+    )
+
+    assert PythonBuilder().can_build(solution)
+
+
 def test_python_builder_add():
     definition = Definition(
         name="add",

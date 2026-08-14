@@ -27,7 +27,12 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import SCRIPT_DIR, SYSTEM_INSTRUCTIONS, run_main_v2
+from common import (
+    SCRIPT_DIR,
+    SYSTEM_INSTRUCTIONS,
+    TRITON_SYSTEM_INSTRUCTIONS,
+    run_main_v2,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -63,5 +68,49 @@ Here is an example of how to use TVM-FFI. You should use TVM-FFI to wrap you ker
     return "{% raw %}" + SYSTEM_INSTRUCTIONS + base_prompt + "{% endraw %}"
 
 
+def build_triton_system_prompt(prompt_tag: str, gpu_arch: str) -> str:
+    """Build the Triton prompt without CUDA C++ or TVM-FFI material."""
+    base_prompt_path = SCRIPT_DIR / "prompt_configs" / f"{prompt_tag}.md"
+    assert base_prompt_path.exists(), (
+        f"Base prompt file {base_prompt_path} does not exist. "
+        "Did you run build_doc_v2.py to generate it?"
+    )
+    base_prompt = base_prompt_path.read_text()
+
+    triton_example_path = (
+        SCRIPT_DIR.parent / "mini_swe_agent_docker/envs/triton_example.py"
+    )
+    base_prompt += f"""
+Here is an example of the required Triton integration pattern. Follow its
+destination-passing wrapper, metadata-only host code, current-device selection,
+and explicit launch structure.
+```python
+{triton_example_path.read_text()}
+```
+
+"""
+
+    if gpu_arch == "hopper":
+        target_prompt = (
+            "\n\nYou are targeting NVIDIA Hopper SM90/SM90a GPUs with Triton. "
+            "Use the provided Triton structural documentation for this architecture.\n\n"
+        )
+    elif gpu_arch == "blackwell":
+        target_prompt = (
+            "\n\nYou are targeting NVIDIA Blackwell SM100/SM100a GPUs with Triton. "
+            "Use the provided Triton structural documentation for this architecture.\n\n"
+        )
+    else:
+        raise ValueError(f"Unsupported GPU architecture: {gpu_arch}")
+
+    return (
+        "{% raw %}"
+        + TRITON_SYSTEM_INSTRUCTIONS
+        + base_prompt
+        + target_prompt
+        + "{% endraw %}"
+    )
+
+
 if __name__ == "__main__":
-    run_main_v2(build_system_prompt)
+    run_main_v2(build_system_prompt, build_triton_system_prompt)

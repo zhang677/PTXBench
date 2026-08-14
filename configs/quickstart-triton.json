@@ -1,0 +1,8 @@
+[
+  {
+    "num_trajectories": 1,
+    "num_turns": 3,
+    "target_speedup": 1.0,
+    "prompt_tag": "triton-hopper"
+  }
+]

@@ -5,7 +5,7 @@ kernel agents. It contains:
 
 - **mini-ptx-agent**: the reusable agent, prompt, trajectory inspection, and
   benchmark implementation.
-- **FIBServe**: the GPU profiling service derived from FlashInfer Bench.
+- **FIBServe**: a GPU profiling service derived from [FlashInfer-Bench](https://bench.flashinfer.ai/).
 
 ## System overview
 

@@ -1,0 +1,14 @@
+Your task is to implement a Triton kernel with a destination-passing `run` function that implements the given PyTorch reference.
+
+The reference function defines semantics only. The submitted `run` receives all definition inputs followed by all preallocated definition outputs, each in definition order. Write results into those output tensors without allocating or replacing them.
+
+Task:
+{task_content}
+
+Your response should end with the complete `kernel.py` implementation wrapped in a single Python code block.
+
+Output:
+...
+```python
+<Your implementation here>
+```

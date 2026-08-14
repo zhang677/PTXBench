@@ -29,7 +29,9 @@ TREE_ROOTS = (
 SOURCE_FILES = (
     "packages/mini-ptx-agent/benchmark/export_turn_correctness_arch.py",
     "packages/mini-ptx-agent/fib_runtime/mini_swe_agent_docker/envs/example.cu",
+    "packages/mini-ptx-agent/fib_runtime/mini_swe_agent_docker/envs/triton_example.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0413-1611/gemm_n7168_k5120_94920358-01a8-4c5b-9209-3103fd490e94.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0413-1611/gemm_n7168_k5120_94920358-01a8-4c5b-9209-3103fd490e94_triton.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0426-1410/mha_with_lse_d128_bc38b351-d595-451b-9153-8e225702e53b.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0426-1410/mha_with_lse_d128_causal_6d2f67a7-225a-4af5-87d3-cbb99b496325.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/2026-0426-1410/mha_with_lse_d64_7d2575a0-bcc2-42a0-812f-6a7e9a57d97f.py",
@@ -42,6 +44,7 @@ SOURCE_FILES = (
     "packages/mini-ptx-agent/fib_runtime/multiturn/analyze_kernel_per_turn.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/analyze_pattern.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/build_doc_v2.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/create_triton_test.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/collect_kernels/collect_correct_kernels.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/collect_notes/note_feedback.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/common.py",
@@ -49,7 +52,11 @@ SOURCE_FILES = (
     "packages/mini-ptx-agent/fib_runtime/multiturn/resume_utils.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/run_parallel_v2.py",
     "packages/mini-ptx-agent/fib_runtime/multiturn/run_v2.py",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/template_compile_measure_triton.txt",
     "packages/mini-ptx-agent/fib_runtime/multiturn/user_template.txt",
+    "packages/mini-ptx-agent/fib_runtime/multiturn/user_template_triton.txt",
+    "packages/mini-ptx-agent/fib_runtime/structural_doc/document/triton_knowledge_sm90_plus.md",
+    "packages/mini-ptx-agent/fib_runtime/structural_doc/document/triton_knowledge_sm100_plus.md",
 )
 ROOT_FILES = (
     ".dockerignore",

@@ -320,5 +320,11 @@
     "hopper-notes-2026-0624-0939-kernel-fix-notes-smoke8": [
         "hopper-notes-based",
         "structural_doc/notes/2026-0624-0939-kernel-fix-notes-smoke8.prompt.md"
+    ],
+    "triton-hopper": [
+        "structural_doc/document/triton_knowledge_sm90_plus.md"
+    ],
+    "triton-blackwell": [
+        "structural_doc/document/triton_knowledge_sm100_plus.md"
     ]
 }

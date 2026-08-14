@@ -6,6 +6,7 @@ run_main() for the agent loop.
 """
 
 import argparse
+import ast
 import fcntl
 import json
 import logging
@@ -80,6 +81,28 @@ You will receive evaluation feedback showing compilation errors, correctness res
 
 """
 
+TRITON_SYSTEM_INSTRUCTIONS = """\
+You are an expert Triton kernel developer. Your task is to write an optimized NVIDIA GPU kernel using Triton.
+
+## Response Format
+
+Each response must provide the complete `kernel.py` implementation inside a single ```python code block.
+You will receive evaluation feedback showing import or compilation errors, correctness results, or performance measurements. Use this feedback to iteratively improve your kernel.
+
+## Requirements
+
+- Use Triton (`triton` and `triton.language`) for the GPU computation and define a destination-passing `run(...)` entry point.
+- The reference function describes the required semantics only; do not copy its signature or output-allocation behavior. The public `run(...)` entry point receives every input tensor in definition order, followed by every preallocated output tensor in definition order. Write each result into the supplied output tensor; allocating or replacing outputs is not allowed.
+- Use one or more real `@triton.jit` kernels and launch them from `run(...)` on the current CUDA stream.
+- Do not use CuTeDSL, CUDA extensions, inline CUDA C++, cuBLAS, cuDNN, or PyTorch compute operations as a fallback.
+- PyTorch may be used for tensor metadata and CUDA runtime/device operations. Do not call `torch.empty`, `torch.zeros`, or related allocation functions except inside a function installed with `triton.set_allocator` solely for device-created tensor-descriptor storage.
+- Keep runtime-varying sizes and scalar values as ordinary kernel arguments unless specialization is intentional. Use `tl.constexpr` for tile shapes, feature flags, dtypes, axes, and other compile-time decisions.
+- Provide a single self-contained Python file. The available kernel dependencies are `torch` and `triton`.
+
+## Reference Material
+
+"""
+
 OBSERVATION_TEMPLATE = """\
 {% if output.exception_info -%}
 <exception>{{output.exception_info}}</exception>
@@ -114,6 +137,153 @@ GPU_ARCH_NVCC = {
     "hopper": "arch=compute_90a,code=sm_90a",
     "blackwell": "arch=compute_100a,code=sm_100a",
 }
+
+GPU_ARCH_TRITON = {
+    "hopper": "hopper",
+    "blackwell": "blackwell",
+}
+
+PYTHON_KERNEL_LANGUAGES = frozenset({"triton"})
+
+_TRITON_TORCH_COMPUTE_METHODS = frozenset({
+    "addbmm",
+    "addmm",
+    "baddbmm",
+    "bmm",
+    "conv1d",
+    "conv2d",
+    "conv3d",
+    "einsum",
+    "linear",
+    "matmul",
+    "mm",
+    "scaled_dot_product_attention",
+    "softmax",
+})
+
+
+def _ast_qualified_name(node: ast.AST) -> str | None:
+    if isinstance(node, ast.Name):
+        return node.id
+    if isinstance(node, ast.Attribute):
+        parent = _ast_qualified_name(node.value)
+        if parent:
+            return f"{parent}.{node.attr}"
+    return None
+
+
+def validate_triton_source(source: str) -> str | None:
+    """Return a rejection message for an unsupported Triton submission."""
+    try:
+        tree = ast.parse(source)
+    except SyntaxError as exc:
+        return f"Triton source is not valid Python: {exc}"
+
+    aliases: dict[str, str] = {}
+    has_triton_import = False
+    has_triton_jit = False
+    parents: dict[ast.AST, ast.AST] = {}
+    for parent in ast.walk(tree):
+        for child in ast.iter_child_nodes(parent):
+            parents[child] = parent
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for imported in node.names:
+                module = imported.name
+                if module == "cutlass" or module.startswith("cutlass."):
+                    return "CuTeDSL/CUTLASS imports are not allowed in Triton kernels"
+                if module == "torch" and imported.asname not in (None, "torch"):
+                    return "Import torch without an alias so torch usage can be validated"
+                bound_name = imported.asname or module.split(".", 1)[0]
+                aliases[bound_name] = module if imported.asname else bound_name
+                if module == "triton" or module.startswith("triton."):
+                    has_triton_import = True
+        elif isinstance(node, ast.ImportFrom):
+            module = node.module or ""
+            if module == "cutlass" or module.startswith("cutlass."):
+                return "CuTeDSL/CUTLASS imports are not allowed in Triton kernels"
+            if module == "torch" or module.startswith("torch."):
+                return "`from torch ... import ...` is not allowed in Triton kernels"
+            for imported in node.names:
+                bound_name = imported.asname or imported.name
+                aliases[bound_name] = f"{module}.{imported.name}" if module else imported.name
+                if module == "triton" or module.startswith("triton."):
+                    has_triton_import = True
+
+    def resolve_name(name: str | None) -> str | None:
+        if not name:
+            return None
+        head, dot, tail = name.partition(".")
+        resolved_head = aliases.get(head, head)
+        return resolved_head + (dot + tail if dot else "")
+
+    descriptor_allocator_functions: set[str] = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        if resolve_name(_ast_qualified_name(node.func)) != "triton.set_allocator":
+            continue
+        allocator_node = node.args[0] if node.args else None
+        if isinstance(allocator_node, ast.Name):
+            descriptor_allocator_functions.add(allocator_node.id)
+
+    run_functions = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == "run"
+    ]
+    if not run_functions:
+        return "Triton source must define a `run(...)` entry point"
+    if not has_triton_import:
+        return "Triton source must import `triton`"
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store) and node.id in {"torch", "triton"}:
+            return f"Rebinding the `{node.id}` name is not allowed in Triton kernels"
+        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.MatMult):
+            return "The matrix multiplication operator `@` is not allowed in Triton kernels"
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            for decorator in node.decorator_list:
+                decorator_target = decorator.func if isinstance(decorator, ast.Call) else decorator
+                if resolve_name(_ast_qualified_name(decorator_target)) == "triton.jit":
+                    has_triton_jit = True
+        if not isinstance(node, ast.Call):
+            continue
+
+        call_name = resolve_name(_ast_qualified_name(node.func))
+        if call_name in {"__import__", "importlib.import_module"}:
+            return "Dynamic imports are not allowed in Triton kernels"
+        if call_name == "getattr" and node.args:
+            first_arg = resolve_name(_ast_qualified_name(node.args[0]))
+            if first_arg == "torch" or (first_arg and first_arg.startswith("torch.")):
+                return "Dynamic torch attribute access is not allowed in Triton kernels"
+
+        if call_name == "torch" or (call_name and call_name.startswith("torch.")):
+            allowed_torch_call = call_name.startswith("torch.cuda.")
+            if call_name == "torch.empty":
+                parent = parents.get(node)
+                while parent is not None and not isinstance(
+                    parent, (ast.FunctionDef, ast.AsyncFunctionDef)
+                ):
+                    parent = parents.get(parent)
+                allowed_torch_call = (
+                    isinstance(parent, (ast.FunctionDef, ast.AsyncFunctionDef))
+                    and parent.name in descriptor_allocator_functions
+                )
+            if not allowed_torch_call:
+                return (
+                    f"PyTorch call `{call_name}(...)` is not allowed in Triton kernels; "
+                    "use Triton for GPU computation"
+                )
+
+        method_name = node.func.attr if isinstance(node.func, ast.Attribute) else None
+        if method_name in _TRITON_TORCH_COMPUTE_METHODS:
+            return f"Tensor/PyTorch compute method `.{method_name}(...)` is not allowed in Triton kernels"
+
+    if not has_triton_jit:
+        return "Triton source must define at least one real `@triton.jit` kernel"
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -472,6 +642,7 @@ class KernelDockerEnvironment(DockerEnvironment):
         success_dir: str | None = None,
         target_speedup: float = 1.0,
         definition: str | None = None,
+        language: str = "cuda",
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -479,6 +650,7 @@ class KernelDockerEnvironment(DockerEnvironment):
         self._success_version: int = 0
         self._target_speedup: float = target_speedup
         self._definition = definition
+        self._language = language
         self._last_traces: list[dict] | None = None
         self._best_speedup: float = 0.0
         # Tracks assistant turns in the trajectory. It must advance even when a
@@ -503,7 +675,7 @@ class KernelDockerEnvironment(DockerEnvironment):
         self._turn += 1
 
     def evaluate_kernel(self, kernel_source: str) -> dict:
-        """Write kernel.cu, run test.py (compile + profile), return result dict.
+        """Write the language-specific candidate, run test.py, and return feedback.
 
         Returns dict compatible with observation_template: {output, returncode, exception_info}.
         Also sets result["extra"] with traces and metadata for the agent.
@@ -511,36 +683,47 @@ class KernelDockerEnvironment(DockerEnvironment):
 
         self._turn += 1
 
-        # --- Step 0: Reject banned libraries (cuBLAS, cuDNN) ---
-        kernel_source_without_comments = strip_comments(kernel_source)
-        if _CUBLAS_PATTERN.search(kernel_source_without_comments):
-            return {
-                "output": _LIBRARY_BANNED_MSG.format(library="cuBLAS"),
-                "returncode": 1,
-                "exception_info": "",
-                "extra": {"event": "cublas_banned"},
-            }
-        if _CUDNN_PATTERN.search(kernel_source_without_comments):
-            return {
-                "output": _LIBRARY_BANNED_MSG.format(library="cuDNN"),
-                "returncode": 1,
-                "exception_info": "",
-                "extra": {"event": "cudnn_banned"},
-            }
+        # --- Step 0: Reject language-specific fallbacks ---
+        if self._language == "triton":
+            validation_error = validate_triton_source(kernel_source)
+            if validation_error:
+                return {
+                    "output": f"ERROR: {validation_error}",
+                    "returncode": 1,
+                    "exception_info": "",
+                    "extra": {"event": "triton_validation_failed"},
+                }
+        else:
+            kernel_source_without_comments = strip_comments(kernel_source)
+            if _CUBLAS_PATTERN.search(kernel_source_without_comments):
+                return {
+                    "output": _LIBRARY_BANNED_MSG.format(library="cuBLAS"),
+                    "returncode": 1,
+                    "exception_info": "",
+                    "extra": {"event": "cublas_banned"},
+                }
+            if _CUDNN_PATTERN.search(kernel_source_without_comments):
+                return {
+                    "output": _LIBRARY_BANNED_MSG.format(library="cuDNN"),
+                    "returncode": 1,
+                    "exception_info": "",
+                    "extra": {"event": "cudnn_banned"},
+                }
 
-        # --- Step 1: Write kernel.cu via host filesystem (volume-mounted) ---
+        # --- Step 1: Write candidate via host filesystem (volume-mounted) ---
+        kernel_filename = "kernel.py" if self._language in PYTHON_KERNEL_LANGUAGES else "kernel.cu"
         ws = self._get_host_workspace()
         if ws:
-            (ws / "kernel.cu").write_text(kernel_source)
+            (ws / kernel_filename).write_text(kernel_source)
         else:
             # Fallback: write via docker exec
             escaped = kernel_source.replace("\\", "\\\\").replace("'", "'\\''")
             write_result = super().execute(
-                {"command": f"printf '%s' '{escaped}' > kernel.cu"}, timeout=10
+                {"command": f"printf '%s' '{escaped}' > {kernel_filename}"}, timeout=10
             )
             if write_result["returncode"] != 0:
                 return {
-                    "output": f"Failed to write kernel.cu:\n{write_result['output']}",
+                    "output": f"Failed to write {kernel_filename}:\n{write_result['output']}",
                     "returncode": 1,
                     "exception_info": "",
                     "extra": {"event": "write_failed"},
@@ -676,7 +859,8 @@ class KernelDockerEnvironment(DockerEnvironment):
         try:
             self._success_dir.mkdir(parents=True, exist_ok=True)
             v = self._success_version
-            (self._success_dir / f"kernel_v{v}.cu").write_text(kernel_source)
+            suffix = ".py" if self._language in PYTHON_KERNEL_LANGUAGES else ".cu"
+            (self._success_dir / f"kernel_v{v}{suffix}").write_text(kernel_source)
 
             record_path = self._success_dir / "record.json"
             records = json.loads(record_path.read_text()) if record_path.exists() else []
@@ -698,17 +882,24 @@ class KernelDockerEnvironment(DockerEnvironment):
 # ---------------------------------------------------------------------------
 
 class KernelAgent(DefaultAgent):
-    """Agent where the LLM outputs kernel code in ```cpp blocks each turn.
+    """Agent where the LLM outputs a complete language-specific kernel each turn.
 
     Overrides step() to extract kernel code from the LLM response and
     evaluate it via KernelDockerEnvironment, rather than parsing bash commands.
     """
 
-    def __init__(self, *args, llm_context_policy: str = "full", **kwargs):
+    def __init__(
+        self,
+        *args,
+        llm_context_policy: str = "full",
+        language: str = "cuda",
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         if llm_context_policy not in LLM_CONTEXT_POLICIES:
             raise ValueError(f"Unsupported LLM context policy: {llm_context_policy}")
         self.llm_context_policy = llm_context_policy
+        self.language = language
 
     def _messages_for_llm(self) -> list[dict]:
         if self.llm_context_policy == "full":
@@ -779,17 +970,29 @@ class KernelAgent(DefaultAgent):
         message = self.query()
         content = message.get("content", "") or ""
 
-        # Extract kernel code from ```cpp block
-        kernel_code = extract_code_block(content, languages=["cpp"], keep_separators=False)
+        # Extract the language-specific complete kernel block.
+        code_block_language = "python" if self.language in PYTHON_KERNEL_LANGUAGES else "cpp"
+        kernel_code = extract_code_block(
+            content,
+            languages=[code_block_language],
+            keep_separators=False,
+        )
 
         if not kernel_code:
             if hasattr(self.env, "mark_skipped_turn"):
                 self.env.mark_skipped_turn()
-            output = {
-                "output": (
+            if self.language in PYTHON_KERNEL_LANGUAGES:
+                no_code_message = (
+                    "Could not extract a ```python code block from your response. "
+                    "Please provide your complete Triton kernel.py in a single ```python code block."
+                )
+            else:
+                no_code_message = (
                     "Could not extract a ```cpp code block from your response. "
                     "Please provide your complete CUDA kernel in a single ```cpp code block."
-                ),
+                )
+            output = {
+                "output": no_code_message,
                 "returncode": 1,
                 "exception_info": "",
                 "extra": {"event": "no_code"},
@@ -911,6 +1114,9 @@ MODEL_REGISTRY = {
         "input_cost_per_token": 2.0 / 1e6,
         "output_cost_per_token": 12.0 / 1e6,
     },
+    "gemini/gemini-3.1-flash-lite": {
+        "max_tokens": 65536,
+    },
     "together_ai/Qwen/Qwen3.5-397B-A17B": {
         "input_cost_per_token": 0.6 / 1e6,
         "output_cost_per_token": 3.6 / 1e6,
@@ -1018,6 +1224,10 @@ def make_model(model_name: str) -> KernelModel:
         "gemini-3.1-pro-preview": ("gemini/gemini-3.1-pro-preview", {
             "api_key": os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY", ""),
             "max_tokens": MODEL_REGISTRY["gemini/gemini-3.1-pro-preview"]["max_tokens"],
+        }),
+        "gemini-3.1-flash-lite": ("gemini/gemini-3.1-flash-lite", {
+            "api_key": os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY", ""),
+            "max_tokens": MODEL_REGISTRY["gemini/gemini-3.1-flash-lite"]["max_tokens"],
         }),
         # Gemini 3.1 Pro cannot fully disable thinking (API rejects thinkingBudget=0 with
         # "This model only works in thinking mode"). The minimum is thinkingLevel="low" +
@@ -1141,6 +1351,12 @@ def parse_args():
                              "For inkling, set TINKER_API_KEY. For Qwen3.5-35B-A3B-tinker, set TINKER_API_KEY plus either "
                              "TINKER_MODEL_PATH (a tinker:// URI) or TINKER_CHECKPOINTS_JSONL "
                              "(+ optional TINKER_CHECKPOINT_NAME, default 'final').")
+    parser.add_argument(
+        "--language",
+        choices=("cuda", "triton"),
+        default="cuda",
+        help="Kernel language (default: cuda). Triton is an opt-in Python kernel path.",
+    )
     parser.add_argument("--test-path", required=True, help="Path to the test.py for this definition")
     parser.add_argument("--log-path", required=True, help="Trajectory output path (.json)")
     parser.add_argument("--output-dir", default=None, help="Working directory (default: auto tmpdir)")
@@ -1189,7 +1405,10 @@ def run_main(build_system_prompt_fn: Callable[[str], str]) -> None:
     _run_main_impl(args, build_system_prompt_fn(args.gpu_arch))
 
 
-def run_main_v2(build_system_prompt_fn: Callable[[str, str], str]) -> None:
+def run_main_v2(
+    build_system_prompt_fn: Callable[[str, str], str],
+    build_triton_system_prompt_fn: Callable[[str, str], str] | None = None,
+) -> None:
     """Like run_main, but build_system_prompt_fn takes (prompt_tag, gpu_arch).
 
     Requires --prompt-tag on the command line.
@@ -1197,7 +1416,13 @@ def run_main_v2(build_system_prompt_fn: Callable[[str, str], str]) -> None:
     args = parse_args()
     if not args.prompt_tag:
         raise ValueError("run_main_v2 requires --prompt-tag")
-    _run_main_impl(args, build_system_prompt_fn(args.prompt_tag, args.gpu_arch))
+    if args.language == "triton":
+        if build_triton_system_prompt_fn is None:
+            raise ValueError("run_main_v2 has no Triton system prompt builder")
+        system_prompt = build_triton_system_prompt_fn(args.prompt_tag, args.gpu_arch)
+    else:
+        system_prompt = build_system_prompt_fn(args.prompt_tag, args.gpu_arch)
+    _run_main_impl(args, system_prompt)
 
 
 def _run_main_impl(args, system_prompt: str) -> None:
@@ -1217,7 +1442,11 @@ def _run_main_impl(args, system_prompt: str) -> None:
     shutil.copy2(test_src, os.path.join(tmpdir, "test.py"))
 
     # --- Prompts ---
-    user_template_path = args.user_template or str(SCRIPT_DIR / "user_template.txt")
+    default_user_template = {
+        "cuda": "user_template.txt",
+        "triton": "user_template_triton.txt",
+    }[args.language]
+    user_template_path = args.user_template or str(SCRIPT_DIR / default_user_template)
     task_prompt = assemble_prompt(user_template_path, args.definition, args.service_url)
 
     # --- Docker environment ---
@@ -1235,22 +1464,27 @@ def _run_main_impl(args, system_prompt: str) -> None:
             "--network=host",
             "-v", f"{tmpdir}:/workspace",
         ]
+    environment_variables = {
+        "PAGER": "cat",
+        "PIP_PROGRESS_BAR": "off",
+        "TQDM_DISABLE": "1",
+        "PROFILE_BASE_URL": os.environ.get("PROFILE_BASE_URL", args.service_url),
+        "NVCC_GENCODE": nvcc_gencode,
+    }
+    if args.language == "triton":
+        environment_variables["TRITON_GPU_ARCH"] = GPU_ARCH_TRITON[args.gpu_arch]
+
     env = KernelDockerEnvironment(
         success_dir=args.success_dir,
         target_speedup=args.target_speedup,
         definition=args.definition,
+        language=args.language,
         image=args.image,
         cwd="/workspace",
         timeout=args.turn_timeout,
         container_timeout=args.container_timeout,
         run_args=run_args,
-        env={
-            "PAGER": "cat",
-            "PIP_PROGRESS_BAR": "off",
-            "TQDM_DISABLE": "1",
-            "PROFILE_BASE_URL": os.environ.get("PROFILE_BASE_URL", args.service_url),
-            "NVCC_GENCODE": nvcc_gencode,
-        },
+        env=environment_variables,
     )
 
     # --- Model ---
@@ -1267,11 +1501,14 @@ def _run_main_impl(args, system_prompt: str) -> None:
         cost_limit=0.0,
         output_path=trajectory_path,
         llm_context_policy=args.llm_context_policy,
+        language=args.language,
     )
 
     print(f"Definition: {args.definition}")
     print(f"Model: {args.model}")
     print(f"GPU arch: {args.gpu_arch} ({nvcc_gencode})")
+    if args.language != "cuda":
+        print(f"Kernel language: {args.language}")
     print(f"Docker image: {args.image}")
     print(f"GPUs: {args.gpus}")
     print(f"Max turns: {args.max_turns}")
