@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AccRL Plot Board</title>
+    <title>PTXBench Plot Board</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -11,7 +11,7 @@
       <aside class="sidebar" aria-label="Plot groups">
         <div class="brand-row">
           <div>
-            <h1>AccRL Plot Board</h1>
+            <h1>PTXBench Plot Board</h1>
             <p id="datasetSummary">Loading plots</p>
           </div>
           <button id="refreshButton" class="icon-button" type="button" title="Reload CSVs" aria-label="Reload CSVs">
@@ -41,7 +41,7 @@
           <div class="metric-toggles" aria-label="Metrics">
             <label><input type="checkbox" name="metric" value="correctness_rate_by_release_date" checked /> Correctness</label>
             <label><input type="checkbox" name="metric" value="best_speedup_by_release_date" checked /> Speedup</label>
-            <label><input type="checkbox" name="metric" value="arch_instruction_correctness_by_release_date" checked /> Arch tagged</label>
+            <label><input type="checkbox" name="metric" value="arch_instruction_correctness_by_release_date" checked /> Verified SASS</label>
             <label><input type="checkbox" name="metric" value="reasoning_tokens_vs_performance" checked /> Perf-reasoning</label>
           </div>
 

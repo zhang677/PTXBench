@@ -9,8 +9,7 @@ import os
 import sys
 from pathlib import Path
 
-ARCH_TAGS = {
-    "ampere": "A",
+ARCH_SASS_TAGS = {
     "hopper": "H",
     "blackwell": "B",
 }
@@ -25,7 +24,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Collect kernels whose per-turn CSV rows are Correct, have the expected "
-            "architecture tag, and exceed --min-speedup."
+            "dynamically verified SASS tag, and exceed --min-speedup."
         )
     )
     parser.add_argument(
@@ -49,15 +48,15 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def expected_arch_tag(arch: str) -> str:
+def expected_arch_sass_tag(arch: str) -> str:
     key = arch.strip().lower()
-    if key not in ARCH_TAGS:
-        supported = ", ".join(sorted(ARCH_TAGS))
+    if key not in ARCH_SASS_TAGS:
+        supported = ", ".join(sorted(ARCH_SASS_TAGS))
         raise ValueError(f"unsupported arch {arch!r}; supported values: {supported}")
-    return ARCH_TAGS[key]
+    return ARCH_SASS_TAGS[key]
 
 
-def arch_tag_matches(actual: str, expected: str) -> bool:
+def arch_sass_tag_matches(actual: str, expected: str) -> bool:
     tags = {tag.strip() for tag in actual.split(",") if tag.strip()}
     return expected in tags
 
@@ -92,7 +91,7 @@ def collect_rows(selected_runs_csv: Path, min_speedup: float) -> list[dict[str, 
             continue
 
         exp_dir = expand_path(run_row["exp_dir"])
-        expected_tag = expected_arch_tag(run_row["arch"])
+        expected_tag = expected_arch_sass_tag(run_row["arch"])
         turn_csv = exp_dir / "figures" / "turn_correctness_arch.csv"
         if not turn_csv.is_file():
             print(f"warning: missing {turn_csv}; skipping", file=sys.stderr)
@@ -103,6 +102,8 @@ def collect_rows(selected_runs_csv: Path, min_speedup: float) -> list[dict[str, 
         for turn_row in read_csv_rows(turn_csv):
             if turn_row.get("correctness") != "Correct":
                 continue
+            if turn_row.get("sass_verification_status") != "dynamic_present":
+                continue
 
             try:
                 speedup = float(turn_row.get("speedup", ""))
@@ -111,7 +112,9 @@ def collect_rows(selected_runs_csv: Path, min_speedup: float) -> list[dict[str, 
 
             if speedup <= min_speedup:
                 continue
-            if not arch_tag_matches(turn_row.get("arch_tag", ""), expected_tag):
+            if not arch_sass_tag_matches(
+                turn_row.get("arch_sass_tag", ""), expected_tag
+            ):
                 continue
 
             trajectory_id = turn_row["trajectory_id"]

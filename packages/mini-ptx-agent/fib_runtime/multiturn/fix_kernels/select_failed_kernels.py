@@ -176,6 +176,7 @@ def ensure_turn_csv(
             str(EXPORT_TURN_CORRECTNESS),
             "--experiments-csv",
             str(temp_csv),
+            "--skip-sass-verification",
         ]
         if force:
             cmd.append("--force")
@@ -285,7 +286,7 @@ def selected_rows_for_run(
                 "test_path": metadata.get("test_path", ""),
                 "trajectory_id": trajectory_id,
                 "turn": turn,
-                "arch_tag": turn_row.get("arch_tag", ""),
+                "arch_sass_tag": turn_row.get("arch_sass_tag", ""),
                 "turn_csv": str(turn_csv),
                 "error_kernel_path": str(kernel_path),
                 "error_log_path": str(log_path),
@@ -305,7 +306,7 @@ def write_output(path: Path, rows: list[dict[str, str]]) -> None:
         "test_path",
         "trajectory_id",
         "turn",
-        "arch_tag",
+        "arch_sass_tag",
         "turn_csv",
         "error_kernel_path",
         "error_log_path",

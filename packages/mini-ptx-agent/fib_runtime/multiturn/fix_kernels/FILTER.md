@@ -40,7 +40,8 @@ Common current workflow flags:
 
 ```text
 --correct-kernel-mode all
---arch-tag H
+--arch-sass-tag H
+--base-url http://localhost:10000
 --min-speedup <threshold>
 ```
 
@@ -49,7 +50,8 @@ Filters at this stage:
 - only `success/exp_*` directories are scanned.
 - a matching `plan.json` entry must exist for the success `exp_id`.
 - the plan entry must provide a wrong/error kernel path.
-- if `--arch-tag H` is used, the turn/run arch tags must include `H`.
+- if `--arch-sass-tag H` is used, the selected turn's dynamically verified
+  `arch_sass_tag` must include `H`.
 - if `--min-speedup` is used, a correct kernel version is kept only when its minimum recorded `evaluation.performance.speedup_factor` is at least the threshold.
 - `--correct-kernel-mode` controls whether one or multiple success kernels are kept:
   - `best`: best recorded speedup, falling back to latest.
@@ -124,7 +126,7 @@ For the usual Qwen3.6-27B fix-it SFT construction path, rows survive only if the
 2. fenced and extractable into per-turn kernel/log artifacts;
 3. successfully repaired by the fix-it collection model;
 4. optionally above the configured speedup threshold;
-5. optionally matching the required arch tag, typically `H`;
+5. optionally matching the required dynamic SASS tag, typically `H`;
 6. covered by accepted teacher reasoning of configured length;
 7. reconstructable into the wrong-kernel/log-to-reasoned-correct-kernel chat format;
 8. free of forbidden reasoning wrapper tokens in output messages;

@@ -26,12 +26,13 @@ const metrics = [
   },
   {
     id: "arch_instruction_correctness_by_release_date",
-    label: "Correctness with architecture instructions",
+    label: "Correctness with verified SASS",
     csvPath: "./data/arch_instruction_correctness_by_release_date.csv",
     chartType: "turnSeries",
     valueKey: "correct_with_arch_rate",
-    yLabel: "Correct + arch rate",
+    yLabel: "Correct + SASS rate",
     percentY: true,
+    requiredEvidence: "dynamic_sass",
   },
   {
     id: "reasoning_tokens_vs_performance",
@@ -392,7 +393,7 @@ function parseReleaseRefs(kind, rows) {
         kind,
         arch: row.arch?.trim().toLowerCase(),
         date: parseDate(row.date),
-        label: `${row.arch} PTX`,
+        label: `${row.arch} architecture`,
         color: "#8a3ffc",
         dash: "2 4",
       }))
@@ -499,7 +500,12 @@ function selectedGroups() {
 
 function metricRowsForGroup(metric, group, selectedModels) {
   const rows = state.metricRows.get(metric.id) || [];
-  return rows.filter((row) => rowGroupId(row) === group.id && (!selectedModels || selectedModels.has(row.model)));
+  return rows.filter(
+    (row) =>
+      rowGroupId(row) === group.id &&
+      (!selectedModels || selectedModels.has(row.model)) &&
+      (!metric.requiredEvidence || row.tag_evidence === metric.requiredEvidence)
+  );
 }
 
 function workloadReferenceLines(group) {

@@ -7,6 +7,7 @@ source "$SCRIPT_DIR/paths.sh"
 OUTPUT_ROOT="${OUTPUT_ROOT:-$PTXBENCH_FIXIT_REPAIR_ROOT}"
 PAIRS_CSV="${PAIRS_CSV:-$PTXBENCH_FIXIT_PROJECT/fixit-v5-gemini-kernel-pairs.csv}"
 COLLECTOR="$PTXBENCH_MULTITURN_ROOT/fix_kernels/collect_success_kernel_pairs.py"
+: "${SASS_PROFILE_URL:?Set SASS_PROFILE_URL to the FIBServe profiling endpoint}"
 
 test -d "$OUTPUT_ROOT" || {
   echo "Missing Gemini repair output root: $OUTPUT_ROOT" >&2
@@ -19,7 +20,8 @@ python "$COLLECTOR" \
   --output-csv "$PAIRS_CSV" \
   --correct-kernel-mode all \
   --min-speedup 0.0 \
-  --arch-tag H \
+  --arch-sass-tag H \
+  --base-url "$SASS_PROFILE_URL" \
   --force-turn-csv
 
 echo "Fixit kernel pairs: $PAIRS_CSV"

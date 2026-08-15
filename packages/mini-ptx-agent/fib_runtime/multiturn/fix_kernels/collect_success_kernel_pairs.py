@@ -3,8 +3,8 @@
 
 For each success/<exp_id>/kernel_v*.cu artifact, the wrong kernel path is read
 from the matching entry in plan.json. The per-run turn_correctness_arch.csv is
-generated with AccRL's benchmark exporter when missing, then used for optional
-arch-tag filtering.
+generated with the benchmark exporter when missing, then used for optional
+dynamically verified SASS-tag filtering.
 """
 
 from __future__ import annotations
@@ -48,10 +48,14 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--output-csv", type=Path, required=True)
     parser.add_argument(
-        "--arch-tag",
+        "--arch-sass-tag",
         action="append",
-        dest="arch_tags",
-        help="Required arch tag in turn_correctness_arch.csv, e.g. H or B. May be repeated.",
+        dest="arch_sass_tags",
+        help="Required arch_sass_tag in turn_correctness_arch.csv, e.g. H or B. May be repeated.",
+    )
+    parser.add_argument(
+        "--base-url",
+        help="FIBServe profiling URL used when a SASS-tagged turn CSV must be generated.",
     )
     parser.add_argument(
         "--correct-kernel-mode",
@@ -113,10 +117,30 @@ def temp_experiments_csv(row: dict[str, str]) -> Path:
     return path
 
 
-def ensure_turn_csv(row: dict[str, str], *, force: bool) -> Path:
+def ensure_turn_csv(
+    row: dict[str, str],
+    *,
+    force: bool,
+    require_sass_tags: bool,
+    base_url: str | None,
+) -> Path:
     exp_dir = Path(row["exp_dir"]).expanduser()
     turn_csv = exp_dir / TURN_CSV_REL
     if turn_csv.is_file() and not force:
+        fieldnames, rows = read_csv_rows(turn_csv)
+        if require_sass_tags:
+            required_fields = {"arch_sass_tag", "sass_verification_status"}
+            missing = required_fields.difference(fieldnames)
+            unverified_correct = any(
+                item.get("correctness") == "Correct"
+                and item.get("sass_verification_status", "") in {"", "not_requested"}
+                for item in rows
+            )
+            if missing or unverified_correct:
+                raise ValueError(
+                    f"{turn_csv} does not contain complete dynamic SASS evidence; "
+                    "rerun with --force-turn-csv and --base-url"
+                )
         return turn_csv
 
     if not row.get("arch", "").strip():
@@ -130,6 +154,12 @@ def ensure_turn_csv(row: dict[str, str], *, force: bool) -> Path:
             "--experiments-csv",
             str(experiments_csv),
         ]
+        if require_sass_tags:
+            if not base_url:
+                raise ValueError("--base-url is required to generate arch_sass_tag evidence")
+            cmd.extend(["--base-url", base_url])
+        else:
+            cmd.append("--skip-sass-verification")
         if force:
             cmd.append("--force")
         run_command(cmd)
@@ -198,6 +228,8 @@ def enrich_row_from_plan(row: dict[str, str], plan_entries: dict[str, dict]) -> 
     first_entry = next(iter(plan_entries.values()), {})
     if not enriched.get("definition", "").strip() and first_entry.get("definition"):
         enriched["definition"] = str(first_entry["definition"])
+    if not enriched.get("workload", "").strip() and first_entry.get("workload"):
+        enriched["workload"] = str(first_entry["workload"])
     if not enriched.get("arch", "").strip():
         inferred_arch = infer_arch_from_plan_entry(first_entry)
         if inferred_arch:
@@ -205,7 +237,7 @@ def enrich_row_from_plan(row: dict[str, str], plan_entries: dict[str, dict]) -> 
     return enriched
 
 
-def split_arch_tags(value: str) -> set[str]:
+def split_arch_sass_tags(value: str) -> set[str]:
     return {
         tag.strip()
         for tag in value.split(",")
@@ -213,23 +245,23 @@ def split_arch_tags(value: str) -> set[str]:
     }
 
 
-def load_arch_tags(turn_csv: Path) -> tuple[dict[str, set[str]], dict[tuple[str, int], set[str]]]:
-    tags_by_trajectory: dict[str, set[str]] = {}
+def load_arch_sass_tags(turn_csv: Path) -> dict[tuple[str, int], set[str]]:
     tags_by_turn: dict[tuple[str, int], set[str]] = {}
     with turn_csv.open(newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
+            if row.get("sass_verification_status") != "dynamic_present":
+                continue
             trajectory_id = row.get("trajectory_id", "").strip()
             if not trajectory_id:
                 continue
-            tags = split_arch_tags(row.get("arch_tag", ""))
-            tags_by_trajectory.setdefault(trajectory_id, set()).update(tags)
+            tags = split_arch_sass_tags(row.get("arch_sass_tag", ""))
             try:
                 turn = int(row.get("turn", ""))
             except ValueError:
                 continue
             tags_by_turn[(trajectory_id, turn)] = tags
-    return tags_by_trajectory, tags_by_turn
+    return tags_by_turn
 
 
 def kernel_version(path: Path) -> int:
@@ -393,12 +425,12 @@ def select_correct_kernels(success_dir: Path, mode: str, min_speedup: float | No
 def collect_pairs_for_run(
     row: dict[str, str],
     plan_entries: dict[str, dict],
-    required_arch_tags: set[str],
+    required_arch_sass_tags: set[str],
     correct_kernel_mode: str,
     min_speedup: float | None,
 ) -> tuple[list[dict[str, str]], list[str]]:
     run_dir = Path(row["exp_dir"]).expanduser()
-    arch_tags_by_trajectory, arch_tags_by_turn = load_arch_tags(run_dir / TURN_CSV_REL)
+    sass_tags_by_turn = load_arch_sass_tags(run_dir / TURN_CSV_REL)
     rows: list[dict[str, str]] = []
     warnings: list[str] = []
 
@@ -413,7 +445,6 @@ def collect_pairs_for_run(
         if not correct_kernels:
             continue
 
-        fallback_tags = arch_tags_by_trajectory.get(exp_id, set())
         turn_by_version = turn_by_version_from_record(success_dir)
         turn_by_version.update(turn_by_version_from_trajectory(run_dir, exp_id, success_dir))
 
@@ -430,13 +461,11 @@ def collect_pairs_for_run(
             correct_version = kernel_version(correct_path)
             correct_turn = turn_by_version.get(correct_version)
             tags = (
-                arch_tags_by_turn.get((exp_id, correct_turn), set())
+                sass_tags_by_turn.get((exp_id, correct_turn), set())
                 if correct_turn is not None
                 else set()
             )
-            if not tags:
-                tags = fallback_tags
-            if required_arch_tags and not required_arch_tags.issubset(tags):
+            if required_arch_sass_tags and not required_arch_sass_tags.issubset(tags):
                 continue
             rows.append(
                 {
@@ -446,7 +475,7 @@ def collect_pairs_for_run(
                     "test_path": plan_entry.get("test_path", row.get("test_path", "")),
                     "trajectory_id": exp_id,
                     "prompt_tag": plan_entry.get("prompt_tag", ""),
-                    "arch_tag": ", ".join(sorted(tags)),
+                    "arch_sass_tag": ", ".join(sorted(tags)),
                     "wrong_kernel_path": wrong_path,
                     "wrong_log_path": plan_entry.get("error_log_path", ""),
                     "wrong_trajectory_path": infer_wrong_trajectory_path(wrong_path),
@@ -468,7 +497,7 @@ def write_output(path: Path, rows: list[dict[str, str]]) -> None:
         "test_path",
         "trajectory_id",
         "prompt_tag",
-        "arch_tag",
+        "arch_sass_tag",
         "wrong_kernel_path",
         "wrong_log_path",
         "wrong_trajectory_path",
@@ -487,7 +516,9 @@ def write_output(path: Path, rows: list[dict[str, str]]) -> None:
 
 def main() -> None:
     args = parse_args()
-    required_arch_tags = {tag.strip() for tag in args.arch_tags or [] if tag.strip()}
+    required_arch_sass_tags = {
+        tag.strip() for tag in args.arch_sass_tags or [] if tag.strip()
+    }
     run_rows = load_run_rows(args)
 
     selected: list[dict[str, str]] = []
@@ -499,11 +530,16 @@ def main() -> None:
             continue
         plan_entries = load_plan_entries(exp_dir)
         row = enrich_row_from_plan(row, plan_entries)
-        ensure_turn_csv(row, force=args.force_turn_csv)
+        ensure_turn_csv(
+            row,
+            force=args.force_turn_csv,
+            require_sass_tags=bool(required_arch_sass_tags),
+            base_url=args.base_url,
+        )
         rows, run_warnings = collect_pairs_for_run(
             row=row,
             plan_entries=plan_entries,
-            required_arch_tags=required_arch_tags,
+            required_arch_sass_tags=required_arch_sass_tags,
             correct_kernel_mode=args.correct_kernel_mode,
             min_speedup=args.min_speedup,
         )
@@ -512,7 +548,10 @@ def main() -> None:
 
     write_output(args.output_csv, selected)
     print(f"runs={len(run_rows)}")
-    print(f"arch_tags={','.join(sorted(required_arch_tags)) if required_arch_tags else 'any'}")
+    print(
+        "arch_sass_tags="
+        f"{','.join(sorted(required_arch_sass_tags)) if required_arch_sass_tags else 'any'}"
+    )
     print(f"correct_kernel_mode={args.correct_kernel_mode}")
     print(f"min_speedup={args.min_speedup if args.min_speedup is not None else 'none'}")
     print(f"pairs={len(selected)}")
