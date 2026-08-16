@@ -25,6 +25,7 @@ OUTPUT_FIELDS = [
     "workload",
     "workload_name",
     "definition",
+    "exp_dir",
     "date",
     "turn_limit",
     "n_trajectories",
@@ -79,7 +80,12 @@ def aggregate_experiment(
         raise ValueError(f"no release date for model {model!r}")
 
     exp_dir = expand_path(experiment["exp_dir"])
-    turn_csv = exp_dir / "figures" / "turn_correctness_arch.csv"
+    sass_turn_csv = exp_dir / "figures" / "turn_correctness_sass_arch.csv"
+    turn_csv = (
+        sass_turn_csv
+        if sass_turn_csv.exists()
+        else exp_dir / "figures" / "turn_correctness_arch.csv"
+    )
     fieldnames, rows = read_csv(turn_csv)
     required = {
         "trajectory_id",
@@ -127,6 +133,7 @@ def aggregate_experiment(
                 "workload": experiment["workload"],
                 "workload_name": experiment.get("workload_name", "").strip() or experiment["definition"],
                 "definition": experiment["definition"],
+                "exp_dir": str(exp_dir),
                 "date": date,
                 "turn_limit": turn_limit,
                 "n_trajectories": n_trajectories,

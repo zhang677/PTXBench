@@ -1,0 +1,106 @@
+model,arch,definition,workload,exp_dir
+Claude Opus 4.8,blackwell,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/opus48-b200-gemm
+Claude Opus 4.8,blackwell,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/opus48-b200-mha-bwd-d128
+Claude Opus 4.8,blackwell,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/opus48-b200-mha-bwd-d128-causal
+Claude Opus 4.8,blackwell,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/opus48-b200-mha-d128
+Claude Opus 4.8,blackwell,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/opus48-b200-mha-d128-causal
+GLM-5.2,blackwell,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/glm52-b200-gemm
+GLM-5.2,blackwell,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/glm52-b200-mha-bwd-d128
+GLM-5.2,blackwell,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/glm52-b200-mha-bwd-d128-causal
+GLM-5.2,blackwell,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/glm52-b200-mha-d128
+GLM-5.2,blackwell,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/glm52-b200-mha-d128-causal
+Gemini 3.1 Pro,blackwell,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-b200-gemm
+Gemini 3.1 Pro,blackwell,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-b200-mha-bwd-d128
+Gemini 3.1 Pro,blackwell,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-b200-mha-bwd-d128-causal
+Gemini 3.1 Pro,blackwell,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-b200-mha-d128
+Gemini 3.1 Pro,blackwell,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-b200-mha-d128-causal
+Qwen3.6-27B,blackwell,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/qwen36-b200-gemm
+Qwen3.6-27B,blackwell,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-b200-mha-bwd-d128
+Qwen3.6-27B,blackwell,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/qwen36-b200-mha-bwd-d128-causal
+Qwen3.6-27B,blackwell,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-b200-mha-d128
+Qwen3.6-27B,blackwell,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/qwen36-b200-mha-d128-causal
+Claude Opus 4.8,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/opus48-gemm
+Claude Opus 4.8,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/opus48-mha-bwd-d128
+Claude Opus 4.8,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/opus48-mha-bwd-d128-causal
+Claude Opus 4.8,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/opus48-mha-d128
+Claude Opus 4.8,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/opus48-mha-d128-causal
+GLM-5.2,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/glm52-gemm
+GLM-5.2,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/glm52-mha-bwd-d128
+GLM-5.2,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/glm52-mha-bwd-d128-causal
+GLM-5.2,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/glm52-mha-d128
+GLM-5.2,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/glm52-mha-d128-causal
+Gemini 3.1 Pro,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-gemm
+Gemini 3.1 Pro,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2240
+Gemini 3.1 Pro,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-mha-bwd-d128
+Gemini 3.1 Pro,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-prompt-ablation-mha-bwd-d128
+Gemini 3.1 Pro,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/2026-0609-2340
+Gemini 3.1 Pro,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-mha-bwd-d128-causal
+Gemini 3.1 Pro,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-mha-d128
+Gemini 3.1 Pro,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/gemini-31-pro-mha-d128-causal
+Qwen3.6-27B,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-nopatched-gemm
+Qwen3.6-27B,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128
+Qwen3.6-27B,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-nopatched-mha-bwd-d128
+Qwen3.6-27B,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-bwd-d128-causal
+Qwen3.6-27B,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-nopatched-mha-bwd-d128-causal
+Qwen3.6-27B,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128
+Qwen3.6-27B,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-nopatched-mha-d128
+Qwen3.6-27B,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-mha-d128-causal
+Qwen3.6-27B,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-nopatched-mha-d128-causal
+Qwen3.6-27B + retrieved repair notes,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-retrieved-notes-3prompt-mha-bwd-d128
+Qwen3.6-27B + retrieved repair notes,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-retrieved-notes-3prompt-mha-bwd-d128-causal
+Qwen3.6-27B + retrieved repair notes,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-retrieved-notes-3prompt-mha-d128
+Qwen3.6-27B + retrieved repair notes,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-retrieved-notes-3prompt-mha-d128-causal
+Qwen3.6-27B + retrieved repair notes and fixed kernel,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-3prompt-mha-bwd-d128
+Qwen3.6-27B + retrieved repair notes and fixed kernel,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-3prompt-mha-bwd-d128-causal
+Qwen3.6-27B + retrieved repair notes and fixed kernel,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-3prompt-mha-d128
+Qwen3.6-27B + retrieved repair notes and fixed kernel,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/qwen36-27b-note-feedback2-3prompt-mha-d128-causal
+Qwen3.6-27B-s0,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-1022-gemm
+Qwen3.6-27B-s0,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-1022-mha-bwd-d128
+Qwen3.6-27B-s0,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-1022-mha-bwd-d128-causal
+Qwen3.6-27B-s0,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-1022-mha-d128
+Qwen3.6-27B-s0,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-1022-mha-d128-causal
+Qwen3.6-27B-s1,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gemm
+Qwen3.6-27B-s1,hopper,gqa_paged_decode_h24_kv8_d128_ps1,12e644fb-9783-46be-9763-f69561dfc700,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gqa_paged_decode_h24_kv8_d128_ps1
+Qwen3.6-27B-s1,hopper,gqa_paged_prefill_causal_h24_kv8_d128_ps1,2bcc7cdd-53db-4da4-844f-07ff4f3439b6,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gqa_paged_prefill_causal_h24_kv8_d128_ps1
+Qwen3.6-27B-s1,hopper,gqa_ragged_prefill_causal_h32_kv4_d128,007ddabb-3c8c-48a1-a693-c0618d32243c,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-gqa_ragged_prefill_causal_h32_kv4_d128
+Qwen3.6-27B-s1,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128
+Qwen3.6-27B-s1,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-nopatched-mha-bwd-d128
+Qwen3.6-27B-s1,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d128-causal
+Qwen3.6-27B-s1,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-nopatched-mha-bwd-d128-causal
+Qwen3.6-27B-s1,hopper,mha_bwd_d64,d3bcb902-6a13-5ada-9251-fa841b10cd0b,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g8-mha-bwd-d64
+Qwen3.6-27B-s1,hopper,mha_bwd_d64_causal,5799ea50-77aa-56cb-9f62-a4c1f5473770,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g8-mha-bwd-d64-causal
+Qwen3.6-27B-s1,hopper,mha_bwd_d96,082481a9-4a67-5c62-8093-560bb80e4c24,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d96
+Qwen3.6-27B-s1,hopper,mha_bwd_d96_causal,3a45eb5c-3362-5705-bd42-80324d26a471,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-bwd-d96-causal
+Qwen3.6-27B-s1,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128
+Qwen3.6-27B-s1,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-nopatched-mha-d128
+Qwen3.6-27B-s1,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d128-causal
+Qwen3.6-27B-s1,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-nopatched-mha-d128-causal
+Qwen3.6-27B-s1,hopper,mha_with_lse_d64,7d2575a0-bcc2-42a0-812f-6a7e9a57d97f,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g8-mha-d64
+Qwen3.6-27B-s1,hopper,mha_with_lse_d64_causal,b69f7675-568f-40f2-9a4b-8bbe374b4a59,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-w48-g8-mha-d64-causal
+Qwen3.6-27B-s1,hopper,mha_with_lse_d96,e86112ff-2cd0-4e97-8efb-9ce6356ecb2b,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d96
+Qwen3.6-27B-s1,hopper,mha_with_lse_d96_causal,982c9922-961f-452f-ab9e-574fdcd4e28c,/home/ubuntu/AccRL-exps/eval_runs/2026-0624-0939-mha-d96-causal
+Qwen3.6-27B-s2,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/2026-0629-2229-gemm
+Qwen3.6-27B-s2,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0629-2229-mha-bwd-d128
+Qwen3.6-27B-s2,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/2026-0629-2229-mha-bwd-d128-causal
+Qwen3.6-27B-s2,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/2026-0629-2229-mha-d128
+Qwen3.6-27B-s2,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/2026-0629-2229-mha-d128-causal
+Qwen3.6-27B-s3,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/2026-0626-0012-gemm
+Qwen3.6-27B-s3,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0626-0012-mha-bwd-d128
+Qwen3.6-27B-s3,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/2026-0626-0012-mha-bwd-d128-causal
+Qwen3.6-27B-s3,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/2026-0626-0012-mha-d128
+Qwen3.6-27B-s3,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/2026-0626-0012-mha-d128-causal
+Qwen3.6-27B-s4,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/2026-0712-0058-gemm
+Qwen3.6-27B-s4,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0712-0058-mha-bwd-d128
+Qwen3.6-27B-s4,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/2026-0712-0058-mha-bwd-d128-causal
+Qwen3.6-27B-s4,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/2026-0712-0058-mha-d128
+Qwen3.6-27B-s4,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/2026-0712-0058-mha-d128-causal
+Qwen3.6-27B-s5,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/2026-0716-1808-full-gemm
+Qwen3.6-27B-s5,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0716-1808-full-mha-bwd-d128
+Qwen3.6-27B-s5,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/2026-0716-1808-full-mha-bwd-d128-causal
+Qwen3.6-27B-s5,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/2026-0716-1808-full-mha-d128
+Qwen3.6-27B-s5,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/2026-0716-1808-full-mha-d128-causal
+Qwen3.6-27B-s6,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/home/ubuntu/AccRL-exps/eval_runs/2026-0721-1837-fixit-v6-full-patched-gemm
+Qwen3.6-27B-s6,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,/home/ubuntu/AccRL-exps/eval_runs/2026-0721-1837-fixit-v6-full-patched-mha-bwd-d128
+Qwen3.6-27B-s6,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,/home/ubuntu/AccRL-exps/eval_runs/2026-0721-1837-fixit-v6-full-patched-mha-bwd-d128-causal
+Qwen3.6-27B-s6,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,/home/ubuntu/AccRL-exps/eval_runs/2026-0721-1837-fixit-v6-full-patched-mha-d128
+Qwen3.6-27B-s6,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,/home/ubuntu/AccRL-exps/eval_runs/2026-0721-1837-fixit-v6-full-patched-mha-d128-causal

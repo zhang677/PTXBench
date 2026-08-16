@@ -113,7 +113,7 @@ const TURN_MARKERS = new Map([
 ]);
 
 const DEFAULT_DATE_MIN = Date.UTC(2022, 6, 1);
-const DEFAULT_DATE_MAX = Date.UTC(2026, 6, 1);
+const DEFAULT_DATE_MAX = Date.UTC(2026, 7, 1);
 let chartIdCounter = 0;
 
 function parseCsv(text) {
