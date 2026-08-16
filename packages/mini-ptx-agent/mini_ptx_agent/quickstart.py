@@ -20,11 +20,11 @@ from .paths import PTXBenchPaths
 DEFINITION = "gemm_n7168_k5120"
 TEST_RELATIVE_PATHS = {
     "cuda": (
-        "2026-0413-1611/"
+        "gemm-problems/"
         "gemm_n7168_k5120_94920358-01a8-4c5b-9209-3103fd490e94.py"
     ),
     "triton": (
-        "2026-0413-1611/"
+        "gemm-problems/"
         "gemm_n7168_k5120_94920358-01a8-4c5b-9209-3103fd490e94_triton.py"
     ),
 }

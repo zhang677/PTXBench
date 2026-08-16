@@ -15,9 +15,9 @@ mkdir -p "$PERF_DIR"
 
 docker exec "$CONTAINER" bash -lc 'curl -fsS --max-time 10 http://localhost:10000/health >/dev/null'
 
-docker cp "$MULTITURN_DIR/2026-0426-1410/scripts/verify_via_service.py" "$CONTAINER:/tmp/verify_mha_with_lse.py"
-docker cp "$MULTITURN_DIR/2026-0427-1308/scripts/verify_via_service.py" "$CONTAINER:/tmp/verify_mha_bwd.py"
-docker cp "$MULTITURN_DIR/2026-0516-0609/scripts/verify_via_service.py" "$CONTAINER:/tmp/verify_fp8_mha_with_lse.py"
+docker cp "$MULTITURN_DIR/mha-with-lse-problems/scripts/verify_via_service.py" "$CONTAINER:/tmp/verify_mha_with_lse.py"
+docker cp "$MULTITURN_DIR/mha-bwd-problems/scripts/verify_via_service.py" "$CONTAINER:/tmp/verify_mha_bwd.py"
+docker cp "$MULTITURN_DIR/fp8-mha-with-lse-problems/scripts/verify_via_service.py" "$CONTAINER:/tmp/verify_fp8_mha_with_lse.py"
 
 run_suite() {
     local script="$1"

@@ -14,6 +14,7 @@ MINI_ROOT = ROOT / "packages" / "mini-ptx-agent"
 CONSTRUCT_ROOT = MINI_ROOT / "fib_runtime" / "multiturn" / "construct_eval_scripts"
 FIXIT_ROOT = ROOT / "experiments" / "fixit"
 KERNELGEN_ROOT = ROOT / "experiments" / "kernelgen"
+MULTITURN_ROOT = MINI_ROOT / "fib_runtime" / "multiturn"
 
 
 def test_active_fixit_sources_have_no_legacy_absolute_roots() -> None:
@@ -53,6 +54,97 @@ def test_active_fixit_sources_have_no_legacy_absolute_roots() -> None:
         text = path.read_text()
         for root in legacy_roots:
             assert root not in text, f"{path.relative_to(ROOT)} still contains {root}"
+
+
+def test_multiturn_regeneration_is_self_contained_and_current() -> None:
+    prepare_script = (MULTITURN_ROOT / "prepare_scripts.sh").read_text()
+    assert "/home/ubuntu/AccRL" not in prepare_script
+
+    template = (MULTITURN_ROOT / "template_compile_measure_cuda.txt").read_text()
+    gemm_rows = list(
+        csv.DictReader(
+            (MULTITURN_ROOT / "gemm-problems" / "gemm_problems.csv").open(
+                newline=""
+            )
+        )
+    )
+    largest_gemms: dict[str, dict[str, str]] = {}
+    for row in gemm_rows:
+        definition = row["definition_name"]
+        previous = largest_gemms.get(definition)
+        if previous is None or int(row["M"]) > int(previous["M"]):
+            largest_gemms[definition] = row
+
+    suites = [
+        (
+            list(largest_gemms.values()),
+            MULTITURN_ROOT / "gemm-problems",
+        ),
+        (
+            list(
+                csv.DictReader(
+                    (MULTITURN_ROOT / "mha-with-lse-problems" / "mha_problems.csv").open(
+                        newline=""
+                    )
+                )
+            ),
+            MULTITURN_ROOT / "mha-with-lse-problems",
+        ),
+        (
+            list(
+                csv.DictReader(
+                    (
+                        MULTITURN_ROOT
+                        / "mha-bwd-problems"
+                        / "mha_bwd_problems.csv"
+                    ).open(newline="")
+                )
+            ),
+            MULTITURN_ROOT / "mha-bwd-problems",
+        ),
+        (
+            list(
+                csv.DictReader(
+                    (MULTITURN_ROOT / "fp8-mha-with-lse-problems" / "problems.csv").open(
+                        newline=""
+                    )
+                )
+            ),
+            MULTITURN_ROOT / "fp8-mha-with-lse-problems",
+        ),
+        (
+            list(
+                csv.DictReader(
+                    (MULTITURN_ROOT / "single_op_eval" / "problems.csv").open(
+                        newline=""
+                    )
+                )
+            ),
+            MULTITURN_ROOT / "single_op_eval",
+        ),
+    ]
+
+    generator_paths = [
+        MULTITURN_ROOT / "gemm-problems" / "create_test.py",
+        MULTITURN_ROOT / "mha-with-lse-problems" / "create_test.py",
+        MULTITURN_ROOT / "mha-bwd-problems" / "create_test.py",
+        MULTITURN_ROOT / "fp8-mha-with-lse-problems" / "scripts" / "create_test.py",
+        MULTITURN_ROOT / "single_op_eval" / "create_test.py",
+    ]
+    for generator_path in generator_paths:
+        generator = generator_path.read_text()
+        assert "/home/ubuntu/AccRL" not in generator
+        assert "perf.csv" not in generator
+
+    for rows, suite_dir in suites:
+        for row in rows:
+            definition = row.get("definition_name", row.get("definition"))
+            workload_uuid = row["workload_uuid"]
+            generated_path = suite_dir / f"{definition}_{workload_uuid}.py"
+            expected = template.replace("<definition_name>", definition).replace(
+                "<workload_uuid>", workload_uuid
+            )
+            assert generated_path.read_text() == expected
 
 
 def test_fixit_static_preflight() -> None:
@@ -338,7 +430,7 @@ def test_multiturn_child_driver_is_checked_by_both_recipes() -> None:
 
 def test_sft_collector_has_no_hidden_kernel_extractor(tmp_path: Path) -> None:
     sys.path.insert(0, str(MINI_ROOT))
-    from fib_runtime.multiturn.collect_kernels.collect_correct_kernels import (
+    from fib_runtime.multiturn.task_to_correct_kernels.collect_correct_kernels import (
         ensure_kernels_dir,
     )
 

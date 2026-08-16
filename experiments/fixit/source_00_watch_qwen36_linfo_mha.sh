@@ -45,14 +45,14 @@ DEFINITIONS=(
 )
 
 TEST_PATHS=(
-  "$PTXBENCH_MULTITURN_ROOT/2026-0426-1410/mha_with_lse_d64_7d2575a0-bcc2-42a0-812f-6a7e9a57d97f.py"
-  "$PTXBENCH_MULTITURN_ROOT/2026-0426-1410/mha_with_lse_d64_causal_b69f7675-568f-40f2-9a4b-8bbe374b4a59.py"
-  "$PTXBENCH_MULTITURN_ROOT/2026-0426-1410/mha_with_lse_d128_bc38b351-d595-451b-9153-8e225702e53b.py"
-  "$PTXBENCH_MULTITURN_ROOT/2026-0426-1410/mha_with_lse_d128_causal_6d2f67a7-225a-4af5-87d3-cbb99b496325.py"
-  "$PTXBENCH_MULTITURN_ROOT/2026-0427-1308/mha_bwd_d64_d3bcb902-6a13-5ada-9251-fa841b10cd0b.py"
-  "$PTXBENCH_MULTITURN_ROOT/2026-0427-1308/mha_bwd_d64_causal_5799ea50-77aa-56cb-9f62-a4c1f5473770.py"
-  "$PTXBENCH_MULTITURN_ROOT/2026-0427-1308/mha_bwd_d128_38c3b07c-f006-5f5e-9860-ba214c805a6b.py"
-  "$PTXBENCH_MULTITURN_ROOT/2026-0427-1308/mha_bwd_d128_causal_c119b3f0-c051-5e96-9c2a-2268d992fe1a.py"
+  "$PTXBENCH_MULTITURN_ROOT/mha-with-lse-problems/mha_with_lse_d64_7d2575a0-bcc2-42a0-812f-6a7e9a57d97f.py"
+  "$PTXBENCH_MULTITURN_ROOT/mha-with-lse-problems/mha_with_lse_d64_causal_b69f7675-568f-40f2-9a4b-8bbe374b4a59.py"
+  "$PTXBENCH_MULTITURN_ROOT/mha-with-lse-problems/mha_with_lse_d128_bc38b351-d595-451b-9153-8e225702e53b.py"
+  "$PTXBENCH_MULTITURN_ROOT/mha-with-lse-problems/mha_with_lse_d128_causal_6d2f67a7-225a-4af5-87d3-cbb99b496325.py"
+  "$PTXBENCH_MULTITURN_ROOT/mha-bwd-problems/mha_bwd_d64_d3bcb902-6a13-5ada-9251-fa841b10cd0b.py"
+  "$PTXBENCH_MULTITURN_ROOT/mha-bwd-problems/mha_bwd_d64_causal_5799ea50-77aa-56cb-9f62-a4c1f5473770.py"
+  "$PTXBENCH_MULTITURN_ROOT/mha-bwd-problems/mha_bwd_d128_38c3b07c-f006-5f5e-9860-ba214c805a6b.py"
+  "$PTXBENCH_MULTITURN_ROOT/mha-bwd-problems/mha_bwd_d128_causal_c119b3f0-c051-5e96-9c2a-2268d992fe1a.py"
 )
 
 CONFIGS=(

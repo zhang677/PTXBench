@@ -1,7 +1,7 @@
 # PTXBench
 
-PTXBench is an open-source workspace for building and evaluating PTX/CUDA
-kernel agents. It contains:
+PTXBench is an open-source workspace for building and evaluating PTX/CUDA and
+Triton kernel agents. It contains:
 
 - **mini-ptx-agent**: the reusable agent, prompt, trajectory inspection, and
   benchmark implementation.
@@ -51,15 +51,30 @@ export OPENAI_API_KEY=...
 uv run ptxbench quickstart --run
 ```
 
+### Triton quickstart
+
+The same quickstart can generate and evaluate Triton kernels through the
+standard evaluator and FIBServe setup; no Triton-specific Docker image is
+required. Pass `--language triton` to select the checked-in Hopper Triton
+prompt and configuration:
+
+```bash
+uv run ptxbench quickstart --language triton --check
+uv run ptxbench quickstart --language triton --run
+```
+
+CUDA remains the default when `--language` is omitted.
+
 Every run leaves the full `trajectories/exp_000.json`, evaluator logs, and a
 concise `quickstart-result.json` under
-`data/eval_runs/quickstart-...-gemm/`. When the model emits a CUDA candidate,
-it is saved as `exp_000/kernel.cu`; a correctness-passing kernel is
-additionally saved as `success/exp_000/kernel_vN.cu`. The report deliberately
-distinguishes “the runner completed” from “the kernel was correct” and “the
-1.0x target was achieved.” mini-ptx-agent writes trajectories in a JSON format
-compatible with mini-swe-agent and its trajectory tooling. Reprint any run
-with:
+`data/eval_runs/quickstart-...-gemm/`. CUDA candidates are saved as
+`exp_000/kernel.cu`, while Triton candidates are saved as
+`exp_000/kernel.py`; correctness-passing versions are additionally saved under
+`success/exp_000/` as `kernel_vN.cu` or `kernel_vN.py`, respectively. The
+report deliberately distinguishes “the runner completed” from “the kernel was
+correct” and “the 1.0x target was achieved.” mini-ptx-agent writes trajectories
+in a JSON format compatible with mini-swe-agent and its trajectory tooling.
+Reprint any run with:
 
 ```bash
 uv run ptxbench quickstart --report data/eval_runs/quickstart-...-gemm

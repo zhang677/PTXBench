@@ -5,10 +5,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 MULTITURN_DIR = SCRIPT_DIR.parent
 TEMPLATE_PATH = MULTITURN_DIR / "template_compile_measure_cuda.txt"
-CSV_PATH = Path(
-    "/home/ubuntu/AccRL-exps/tasks/clean_data/artifacts/"
-    "hopper_profile_one_large_per_definition.csv"
-)
+CSV_PATH = SCRIPT_DIR / "problems.csv"
 
 
 def load_rows() -> list[dict[str, str]]:

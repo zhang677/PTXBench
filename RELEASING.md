@@ -11,21 +11,10 @@ mounts, or either experiment data bundle.
 
 ## Source release
 
-Build the runnable source distribution with:
+Publish source from a reviewed, clean Git checkout. Before tagging a release,
+validate both experiment entrypoints:
 
 ```bash
-python scripts/build_public_release.py \
-  --output dist/ptxbench-source.tar.gz
-```
-
-The archive contains the Fixit and KernelGen launchers, their required
-mini-ptx-agent implementations, FIBServe, package metadata, containers, tests,
-and public entrypoints.
-
-Every archive contains `RELEASE-MANIFEST.sha256`. Verify it after extraction:
-
-```bash
-sha256sum -c RELEASE-MANIFEST.sha256
 scripts/reproduce_fixit.sh --check
 scripts/reproduce_kernelgen.sh --check
 ```

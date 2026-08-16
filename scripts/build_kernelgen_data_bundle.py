@@ -24,7 +24,7 @@ COLLECTOR = (
     / "mini-ptx-agent"
     / "fib_runtime"
     / "multiturn"
-    / "collect_kernels"
+    / "task_to_correct_kernels"
     / "collect_correct_kernels.py"
 )
 ENRICHER = (

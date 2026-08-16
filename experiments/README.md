@@ -12,10 +12,7 @@ launchers and runnable instructions.
 Large trajectories, kernels, reasoning JSONL, parquet, and checkpoints are
 published data artifacts rather than source files.
 
-For a narrow public source bundle, run
-`python scripts/build_public_release.py`. The archive includes FIBServe,
-mini-ptx-agent's runnable pipeline sources, and both experiment directories.
-Use `python scripts/build_fixit_data_bundle.py` separately to export the
-large, relocatable historical Fixit source-data archive.
+Use `python scripts/build_fixit_data_bundle.py` to export the large,
+relocatable historical Fixit source-data archive separately from Git source.
 Use `python scripts/build_kernelgen_data_bundle.py` for the corresponding
 12-run/521-row KernelGen source closure.

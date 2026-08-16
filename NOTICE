@@ -6,3 +6,13 @@ https://github.com/flashinfer-ai/flashinfer-bench
 
 The original FlashInfer Bench license, NOTICE, and third-party license files
 are retained under packages/fibserve.
+
+Some prompt and reference materials incorporate excerpts or derived
+descriptions from NVIDIA PTX ISA documentation. That NVIDIA material remains
+the property of NVIDIA Corporation and its affiliates, is not licensed under
+PTXBench's Apache-2.0 license, and is subject to the reproduction restrictions
+and other terms in NVIDIA's PTX ISA documentation notice:
+https://docs.nvidia.com/cuda/parallel-thread-execution/#notices
+
+References to NVIDIA products or documentation do not imply NVIDIA sponsorship
+or endorsement of PTXBench.

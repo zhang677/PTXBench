@@ -27,6 +27,6 @@ trajectory if only one turn remains. After cleaning, ask for approval and then
 restart from the resumed turn.
 
 Update test.py
-1. Add INFRA_TIMEOUT to /home/ubuntu/AccRL/fib_runtime/multiturn/template_compile_measure_cuda.txtand run `create_test.py` in /home/ubuntu/AccRL/fib_runtime/multiturn/2026-0413-1611, /home/ubuntu/AccRL/fib_runtime/multiturn/2026-0426-1410, and /home/ubuntu/AccRL/fib_runtime/multiturn/2026-0427-1308
+1. Add INFRA_TIMEOUT to /home/ubuntu/AccRL/fib_runtime/multiturn/template_compile_measure_cuda.txtand run `create_test.py` in /home/ubuntu/AccRL/fib_runtime/multiturn/gemm-problems, /home/ubuntu/AccRL/fib_runtime/multiturn/mha-with-lse-problems, and /home/ubuntu/AccRL/fib_runtime/multiturn/mha-bwd-problems
 
 Other processes are also using run_v2.py and common.py; so please try those seperately. Maybe update those files after this workflow is proved.

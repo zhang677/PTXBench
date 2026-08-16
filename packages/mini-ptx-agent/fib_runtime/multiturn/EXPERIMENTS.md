@@ -114,7 +114,7 @@ flashinfer-bench service measures. Test path changes to `compile_measure_*`.
 
 ## Stage 4 — New GEMM problem `gemm_n7168_k5120` + custom test harness
 
-Problem swap. Test path now lives under `multiturn/2026-0413-1611/` (per-problem
+Problem swap. Test path now lives under `multiturn/gemm-problems/` (per-problem
 directory containing the test, NCU template, and verification script). All runs in this
 stage use `gemini-3.1-pro-preview`, `--max-turns 20`, `--without-local-gpu`, and the
 custom `gemm_n7168_k5120_94920358-...py` test.
@@ -198,7 +198,7 @@ Definition `helion_mha_h48_d128` (Helion variant) is used briefly, then replaced
 
 Reference update: cuDNN-based reference now also returns `log-sum-exp` (post
 `1ae100a Update reference to cudnn for lse output`, `c6f9fbc Add mha with lse`). Custom
-test harness in `multiturn/2026-0426-1410/`.
+test harness in `multiturn/mha-with-lse-problems/`.
 
 | eval_run | Config | Notes |
 |---|---|---|
@@ -209,7 +209,7 @@ test harness in `multiturn/2026-0426-1410/`.
 
 ## Stage 9 — Attention backward (`mha_bwd_h48_d128`)
 
-Backward-pass stage. New problem dir `multiturn/2026-0427-1308/` with bwd test, NCU
+Backward-pass stage. New problem dir `multiturn/mha-bwd-problems/` with bwd test, NCU
 template, scripts/, and reference solutions/. Driven by commits
 `039d9b7 Add bwd` → `48f507a Prepare S=2048 bwd` → `824d010 Add flops calculation`.
 

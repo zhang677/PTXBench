@@ -14,7 +14,7 @@ set -euo pipefail
 
 HERE="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 PTXBENCH_ROOT="${PTXBENCH_ROOT:-$(cd -- "$HERE/../../.." && pwd)}"
-VERIFY="${VERIFY:-$PTXBENCH_ROOT/packages/mini-ptx-agent/fib_runtime/multiturn/2026-0426-1410/scripts/verify_via_service.py}"
+VERIFY="${VERIFY:-$PTXBENCH_ROOT/packages/mini-ptx-agent/fib_runtime/multiturn/mha-with-lse-problems/scripts/verify_via_service.py}"
 PERF_CSV="${PERF_CSV:-/tmp/ptxbench-verify-perf.csv}"
 PYTHON="${PYTHON:-$PTXBENCH_ROOT/.venv/bin/python}"
 HEALTH_RETRIES="${HEALTH_RETRIES:-60}"

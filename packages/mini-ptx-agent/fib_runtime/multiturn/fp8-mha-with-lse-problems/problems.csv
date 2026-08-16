@@ -1,0 +1,9 @@
+definition_name,workload_uuid
+fp8_mha_with_lse_d64,7834dd42-df9c-4cd4-a5a9-e1f3f8ad5fa1
+fp8_mha_with_lse_d96,a5d40e36-19f7-4610-ae0b-277c1e6a107c
+fp8_mha_with_lse_d128,8f46ada6-1617-49dc-b425-c6165e67e466
+fp8_mha_with_lse_d256,4b431b40-99ba-4dc9-bcec-2627a07ffc2c
+fp8_mha_with_lse_d64_causal,cca5e657-82d4-489c-a029-a580376070f4
+fp8_mha_with_lse_d96_causal,abc15470-685f-4ad5-b0a2-81f2530afa98
+fp8_mha_with_lse_d128_causal,504c5595-5bf7-4234-98a4-ee6254af8c8f
+fp8_mha_with_lse_d256_causal,7cee2ef9-ae19-4124-960e-9136c99de9d8

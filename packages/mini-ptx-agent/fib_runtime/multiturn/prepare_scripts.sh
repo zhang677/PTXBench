@@ -2,13 +2,14 @@
 set -euo pipefail
 
 PYTHON_BIN="${PYTHON:-python}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 scripts=(
-  "/home/ubuntu/AccRL/fib_runtime/multiturn/2026-0413-1611/create_test.py"
-  "/home/ubuntu/AccRL/fib_runtime/multiturn/2026-0426-1410/create_test.py"
-  "/home/ubuntu/AccRL/fib_runtime/multiturn/2026-0427-1308/create_test.py"
-  "/home/ubuntu/AccRL/fib_runtime/multiturn/2026-0516-0609/scripts/create_test.py"
-  "/home/ubuntu/AccRL/fib_runtime/multiturn/single_op_eval/create_test.py"
+  "$SCRIPT_DIR/gemm-problems/create_test.py"
+  "$SCRIPT_DIR/mha-with-lse-problems/create_test.py"
+  "$SCRIPT_DIR/mha-bwd-problems/create_test.py"
+  "$SCRIPT_DIR/fp8-mha-with-lse-problems/scripts/create_test.py"
+  "$SCRIPT_DIR/single_op_eval/create_test.py"
 )
 
 for script in "${scripts[@]}"; do

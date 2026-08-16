@@ -42,7 +42,7 @@ check_source() {
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/resume_utils.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_parallel_v2.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/run_v2.py"
-    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/collect_kernels/collect_correct_kernels.py"
+    "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/task_to_correct_kernels/collect_correct_kernels.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/collect_notes/note_feedback.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/construct_eval_scripts/fixit_downstream_process.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/task_to_correct_kernels/enrich_correct_kernels_for_reasoning.py"
