@@ -9,7 +9,7 @@ files and writes one canonical CSV:
 Correct CUDA turns are verified in two steps. First, the candidate is compiled
 for the experiment architecture and its embedded cubin is inspected with
 ``cuobjdump --dump-sass``. Candidates with a selected architecture-specific
-SASS family are then profiled through FIBServe. ``arch_sass_tag`` is set only
+SASS family are then profiled through FIBServe. ``sass_arch_tag`` is set only
 when Nsight Compute reports positive predicate-true execution for a matching
 instruction. No intermediate correctness CSV or CSV merge is required.
 """
@@ -43,7 +43,7 @@ DEFAULT_OUTPUT_NAME = "turn_correctness_arch.csv"
 DEFAULT_STATIC_CACHE_DIR_NAME = "sass_cubin_cache_v1"
 DEFAULT_PROFILE_CACHE_DIR_NAME = "sass_profile_cache_v2"
 STATIC_CACHE_SCHEMA_VERSION = 1
-PROFILE_CACHE_SCHEMA_VERSION = 1
+PROFILE_CACHE_SCHEMA_VERSION = 4
 TERMINAL_TASK_STATUSES = {"completed", "failed"}
 TMA_TRANSFER_OPCODES = frozenset({"UTMALDG", "UTMASTG", "UTMAREDG"})
 BLACKWELL_TCGEN_PREFIXES = ("UTC", "LDTM", "STTM")
@@ -71,13 +71,12 @@ ARCHITECTURES = {
 
 BASE_FIELDS = ["trajectory_id", "turn", "correctness", "speedup"]
 SASS_FIELDS = [
-    "arch_sass_tag",
-    "sass_verification_status",
     "cubin_sass_arch_tag",
     "cubin_gmma_instruction_count",
     "cubin_tma_instruction_count",
     "cubin_tcgen_instruction_count",
     "cubin_container_sha256",
+    "sass_arch_tag",
     "sass_gmma_count",
     "sass_tma_count",
     "sass_tcgen_count",
@@ -85,6 +84,7 @@ SASS_FIELDS = [
     "sass_tma_thread_inst_executed_true",
     "sass_tcgen_thread_inst_executed_true",
     "sass_profile_task_id",
+    "sass_verification_status",
 ]
 
 # NCU's source page ends each instruction row with the requested warp-level
@@ -136,16 +136,16 @@ class StaticSassEvidence:
 
 @dataclass(frozen=True)
 class DynamicSassEvidence:
-    arch_sass_tag: str
+    sass_arch_tag: str
     gmma_count: int
     tma_count: int
-    tcgen_count: int
     gmma_pred_on_thread_count: int
     tma_pred_on_thread_count: int
-    tcgen_pred_on_thread_count: int
     matched_lines: tuple[str, ...]
     profile_line_count: int
     task_id: str = ""
+    tcgen_count: int = 0
+    tcgen_pred_on_thread_count: int = 0
 
 
 def nested_get(value: object, path: tuple[str, ...]) -> object | None:
@@ -354,16 +354,16 @@ def parse_dynamic_sass(
 
     has_target = (gmma_count > 0 or tma_count > 0) if architecture == "hopper" else tcgen_count > 0
     return DynamicSassEvidence(
-        arch_sass_tag=config.tag if has_target else "",
+        sass_arch_tag=config.tag if has_target else "",
         gmma_count=gmma_count,
         tma_count=tma_count,
-        tcgen_count=tcgen_count,
         gmma_pred_on_thread_count=gmma_pred_on_thread_count,
         tma_pred_on_thread_count=tma_pred_on_thread_count,
-        tcgen_pred_on_thread_count=tcgen_pred_on_thread_count,
         matched_lines=tuple(matched_lines),
         profile_line_count=len(lines),
         task_id=task_id,
+        tcgen_count=tcgen_count,
+        tcgen_pred_on_thread_count=tcgen_pred_on_thread_count,
     )
 
 
@@ -630,16 +630,16 @@ def load_cached_dynamic_evidence(path: Path) -> DynamicSassEvidence:
         raise ValueError(f"unsupported profile cache schema in {path}")
     evidence = data["evidence"]
     return DynamicSassEvidence(
-        arch_sass_tag=evidence["arch_sass_tag"],
+        sass_arch_tag=evidence["sass_arch_tag"],
         gmma_count=int(evidence["gmma_count"]),
         tma_count=int(evidence["tma_count"]),
-        tcgen_count=int(evidence["tcgen_count"]),
         gmma_pred_on_thread_count=int(evidence["gmma_pred_on_thread_count"]),
         tma_pred_on_thread_count=int(evidence["tma_pred_on_thread_count"]),
-        tcgen_pred_on_thread_count=int(evidence["tcgen_pred_on_thread_count"]),
         matched_lines=tuple(evidence["matched_lines"]),
         profile_line_count=int(evidence["profile_line_count"]),
         task_id=evidence.get("task_id", ""),
+        tcgen_count=int(evidence.get("tcgen_count", 0)),
+        tcgen_pred_on_thread_count=int(evidence.get("tcgen_pred_on_thread_count", 0)),
     )
 
 
@@ -887,7 +887,7 @@ def export_run(
         dynamic = dynamic_evidence[profile_key]
         row.update(
             {
-                "arch_sass_tag": dynamic.arch_sass_tag,
+                "sass_arch_tag": dynamic.sass_arch_tag,
                 "sass_gmma_count": dynamic.gmma_count,
                 "sass_tma_count": dynamic.tma_count,
                 "sass_tcgen_count": dynamic.tcgen_count,
@@ -896,7 +896,7 @@ def export_run(
                 "sass_tcgen_thread_inst_executed_true": dynamic.tcgen_pred_on_thread_count,
                 "sass_profile_task_id": dynamic.task_id,
                 "sass_verification_status": (
-                    "dynamic_present" if dynamic.arch_sass_tag == config.tag else "dynamic_not_executed"
+                    "dynamic_present" if dynamic.sass_arch_tag == config.tag else "dynamic_not_executed"
                 ),
             }
         )
@@ -1027,7 +1027,7 @@ def main() -> None:
         if output_path.exists() and not args.force:
             with output_path.open(newline="") as handle:
                 fieldnames = set(csv.DictReader(handle).fieldnames or [])
-            required_output_fields = {"arch_sass_tag", "sass_verification_status"}
+            required_output_fields = {"sass_arch_tag", "sass_verification_status"}
             if not required_output_fields.issubset(fieldnames):
                 raise ValueError(f"{output_path} does not use the native SASS schema; rerun with --force")
             print(f"{run_dir}: skipped existing figures/{args.out_name}")

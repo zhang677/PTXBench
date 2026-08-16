@@ -113,7 +113,7 @@ def collect_rows(selected_runs_csv: Path, min_speedup: float) -> list[dict[str, 
             if speedup <= min_speedup:
                 continue
             if not arch_sass_tag_matches(
-                turn_row.get("arch_sass_tag", ""), expected_tag
+                turn_row.get("sass_arch_tag", ""), expected_tag
             ):
                 continue
 

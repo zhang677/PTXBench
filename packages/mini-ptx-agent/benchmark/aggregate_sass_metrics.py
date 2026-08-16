@@ -85,7 +85,7 @@ def aggregate_experiment(
         "trajectory_id",
         "turn",
         "correctness",
-        "arch_sass_tag",
+        "sass_arch_tag",
         "sass_verification_status",
     }
     missing = required.difference(fieldnames)
@@ -113,7 +113,7 @@ def aggregate_experiment(
             )
             if any(
                 row.get("sass_verification_status", "") == "dynamic_present"
-                and required_tag in split_tags(row.get("arch_sass_tag", ""))
+                and required_tag in split_tags(row.get("sass_arch_tag", ""))
                 for row in correct_rows
             ):
                 correct_with_arch += 1

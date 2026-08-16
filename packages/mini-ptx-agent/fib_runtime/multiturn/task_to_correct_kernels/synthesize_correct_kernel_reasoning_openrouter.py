@@ -380,7 +380,7 @@ def build_prompt_and_metadata(
         "workload": row.get("workload", ""),
         "model": row.get("model", ""),
         "arch": row.get("arch", ""),
-        "arch_sass_tag": row.get("arch_sass_tag", ""),
+        "sass_arch_tag": row.get("sass_arch_tag", ""),
         "prompt_tag": row.get("prompt_tag", ""),
         "speedup": float(row["speedup"]) if row.get("speedup") else None,
         "correct_kernel_path": row.get("correct_kernel_path", ""),

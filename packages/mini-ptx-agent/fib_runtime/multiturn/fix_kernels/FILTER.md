@@ -51,7 +51,7 @@ Filters at this stage:
 - a matching `plan.json` entry must exist for the success `exp_id`.
 - the plan entry must provide a wrong/error kernel path.
 - if `--arch-sass-tag H` is used, the selected turn's dynamically verified
-  `arch_sass_tag` must include `H`.
+  `sass_arch_tag` must include `H`.
 - if `--min-speedup` is used, a correct kernel version is kept only when its minimum recorded `evaluation.performance.speedup_factor` is at least the threshold.
 - `--correct-kernel-mode` controls whether one or multiple success kernels are kept:
   - `best`: best recorded speedup, falling back to latest.

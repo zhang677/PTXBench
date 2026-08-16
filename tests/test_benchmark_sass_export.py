@@ -48,7 +48,7 @@ def make_static_evidence(tag: str) -> exporter.StaticSassEvidence:
 
 def make_dynamic_evidence(tag: str = "H") -> exporter.DynamicSassEvidence:
     return exporter.DynamicSassEvidence(
-        arch_sass_tag=tag,
+        sass_arch_tag=tag,
         gmma_count=7 if tag == "H" else 0,
         tma_count=3 if tag == "H" else 0,
         tcgen_count=5 if tag == "B" else 0,
@@ -133,12 +133,12 @@ def test_dynamic_tag_requires_positive_predicate_true_execution() -> None:
         "0x100 HGMMA.X R0, R0 10 0\n0x110 UTMALDG.2D [UR8], [UR4] 2 2\n",
         architecture="hopper",
     )
-    assert evidence.arch_sass_tag == "H"
+    assert evidence.sass_arch_tag == "H"
     assert evidence.gmma_count == 0
     assert evidence.tma_count == 2
 
 
-def test_export_writes_native_arch_sass_tag_and_skips_static_misses(tmp_path: Path) -> None:
+def test_export_writes_native_sass_arch_tag_and_skips_static_misses(tmp_path: Path) -> None:
     run_dir = make_run(tmp_path)
     inspected = []
     profiled = []
@@ -155,15 +155,15 @@ def test_export_writes_native_arch_sass_tag_and_skips_static_misses(tmp_path: Pa
     rows = read_output(run_dir)
 
     assert len(rows) == 3
-    assert "arch_sass_tag" in rows[0]
+    assert "sass_arch_tag" in rows[0]
     assert "arch_tag" not in rows[0]
     assert len(inspected) == 2
     assert len(profiled) == 1
     assert rows[0]["sass_verification_status"] == ""
     assert rows[1]["sass_verification_status"] == "cubin_sass_absent"
-    assert rows[1]["arch_sass_tag"] == ""
+    assert rows[1]["sass_arch_tag"] == ""
     assert rows[2]["sass_verification_status"] == "dynamic_present"
-    assert rows[2]["arch_sass_tag"] == "H"
+    assert rows[2]["sass_arch_tag"] == "H"
     assert rows[2]["sass_gmma_count"] == "7"
     assert rows[2]["sass_profile_task_id"] == "task-1"
 
@@ -184,7 +184,60 @@ def test_export_reuses_static_and_dynamic_caches(tmp_path: Path) -> None:
         inspect_one=lambda _candidate: (_ for _ in ()).throw(AssertionError("rebuilt cubin")),
         profile_one=lambda _candidate: (_ for _ in ()).throw(AssertionError("reprofiled kernel")),
     )
-    assert read_output(run_dir)[2]["arch_sass_tag"] == "H"
+    assert read_output(run_dir)[2]["sass_arch_tag"] == "H"
+
+
+def test_profile_cache_matches_accrl_v4_schema(tmp_path: Path) -> None:
+    assert exporter.SASS_FIELDS == [
+        "cubin_sass_arch_tag",
+        "cubin_gmma_instruction_count",
+        "cubin_tma_instruction_count",
+        "cubin_tcgen_instruction_count",
+        "cubin_container_sha256",
+        "sass_arch_tag",
+        "sass_gmma_count",
+        "sass_tma_count",
+        "sass_tcgen_count",
+        "sass_gmma_thread_inst_executed_true",
+        "sass_tma_thread_inst_executed_true",
+        "sass_tcgen_thread_inst_executed_true",
+        "sass_profile_task_id",
+        "sass_verification_status",
+    ]
+    cache_path = tmp_path / "profile.json"
+    cache_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 4,
+                "architecture": "hopper",
+                "definition": "definition",
+                "workload": "workload",
+                "source_sha256": "source-hash",
+                "first_seen_at": {"trajectory_id": "exp_000", "turn": 0},
+                "evidence": {
+                    "sass_arch_tag": "H",
+                    "gmma_count": 7,
+                    "tma_count": 3,
+                    "gmma_pred_on_thread_count": 224,
+                    "tma_pred_on_thread_count": 3,
+                    "matched_lines": ["0x10 HGMMA.X 7 224"],
+                    "profile_line_count": 20,
+                    "task_id": "task-accrl",
+                    "tcgen_count": 0,
+                    "tcgen_pred_on_thread_count": 0,
+                },
+            }
+        )
+    )
+
+    evidence = exporter.load_cached_dynamic_evidence(cache_path)
+    assert exporter.PROFILE_CACHE_SCHEMA_VERSION == 4
+    assert evidence.sass_arch_tag == "H"
+    assert evidence.task_id == "task-accrl"
+    assert (
+        exporter.profile_source_hash("source", "definition", "workload", "hopper")
+        == "bebfc04539ff3ec7910c3064433027aa16dd03cfaf59588d20804374e5c9f76c"
+    )
 
 
 def test_correctness_only_mode_is_explicit(tmp_path: Path) -> None:
@@ -197,7 +250,7 @@ def test_correctness_only_mode_is_explicit(tmp_path: Path) -> None:
     )
     rows = read_output(run_dir)
     assert [row["sass_verification_status"] for row in rows] == ["", "not_requested", "not_requested"]
-    assert all(not row["arch_sass_tag"] for row in rows)
+    assert all(not row["sass_arch_tag"] for row in rows)
 
 
 def test_cli_refuses_to_silently_reuse_non_native_output(tmp_path: Path) -> None:
@@ -244,7 +297,7 @@ def test_aggregator_uses_only_native_dynamic_sass_tags(tmp_path: Path) -> None:
         "trajectory_id",
         "turn",
         "correctness",
-        "arch_sass_tag",
+        "sass_arch_tag",
         "sass_verification_status",
     ]
     write_csv(
@@ -255,21 +308,21 @@ def test_aggregator_uses_only_native_dynamic_sass_tags(tmp_path: Path) -> None:
                 "trajectory_id": "exp_000",
                 "turn": 0,
                 "correctness": "Correct",
-                "arch_sass_tag": "H",
+                "sass_arch_tag": "H",
                 "sass_verification_status": "dynamic_present",
             },
             {
                 "trajectory_id": "exp_001",
                 "turn": 0,
                 "correctness": "Compilation error",
-                "arch_sass_tag": "",
+                "sass_arch_tag": "",
                 "sass_verification_status": "",
             },
             {
                 "trajectory_id": "exp_001",
                 "turn": 1,
                 "correctness": "Correct",
-                "arch_sass_tag": "H",
+                "sass_arch_tag": "H",
                 "sass_verification_status": "profile_error",
             },
         ],
@@ -327,7 +380,7 @@ def test_pair_collector_uses_only_turn_local_dynamic_tags(tmp_path: Path) -> Non
             "trajectory_id",
             "turn",
             "correctness",
-            "arch_sass_tag",
+            "sass_arch_tag",
             "sass_verification_status",
         ],
         [
@@ -335,14 +388,14 @@ def test_pair_collector_uses_only_turn_local_dynamic_tags(tmp_path: Path) -> Non
                 "trajectory_id": "exp_000",
                 "turn": 0,
                 "correctness": "Correct",
-                "arch_sass_tag": "H",
+                "sass_arch_tag": "H",
                 "sass_verification_status": "dynamic_present",
             },
             {
                 "trajectory_id": "exp_000",
                 "turn": 1,
                 "correctness": "Correct",
-                "arch_sass_tag": "H",
+                "sass_arch_tag": "H",
                 "sass_verification_status": "profile_error",
             },
         ],
@@ -359,7 +412,7 @@ def test_pair_collector_rejects_correctness_only_export(tmp_path: Path) -> None:
             "trajectory_id",
             "turn",
             "correctness",
-            "arch_sass_tag",
+            "sass_arch_tag",
             "sass_verification_status",
         ],
         [
@@ -367,7 +420,7 @@ def test_pair_collector_rejects_correctness_only_export(tmp_path: Path) -> None:
                 "trajectory_id": "exp_000",
                 "turn": 0,
                 "correctness": "Correct",
-                "arch_sass_tag": "",
+                "sass_arch_tag": "",
                 "sass_verification_status": "not_requested",
             }
         ],

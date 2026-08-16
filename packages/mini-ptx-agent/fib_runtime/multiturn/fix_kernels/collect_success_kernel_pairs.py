@@ -51,7 +51,7 @@ def parse_args() -> argparse.Namespace:
         "--arch-sass-tag",
         action="append",
         dest="arch_sass_tags",
-        help="Required arch_sass_tag in turn_correctness_arch.csv, e.g. H or B. May be repeated.",
+        help="Required sass_arch_tag in turn_correctness_arch.csv, e.g. H or B. May be repeated.",
     )
     parser.add_argument(
         "--base-url",
@@ -129,7 +129,7 @@ def ensure_turn_csv(
     if turn_csv.is_file() and not force:
         fieldnames, rows = read_csv_rows(turn_csv)
         if require_sass_tags:
-            required_fields = {"arch_sass_tag", "sass_verification_status"}
+            required_fields = {"sass_arch_tag", "sass_verification_status"}
             missing = required_fields.difference(fieldnames)
             unverified_correct = any(
                 item.get("correctness") == "Correct"
@@ -156,7 +156,7 @@ def ensure_turn_csv(
         ]
         if require_sass_tags:
             if not base_url:
-                raise ValueError("--base-url is required to generate arch_sass_tag evidence")
+                raise ValueError("--base-url is required to generate sass_arch_tag evidence")
             cmd.extend(["--base-url", base_url])
         else:
             cmd.append("--skip-sass-verification")
@@ -255,7 +255,7 @@ def load_arch_sass_tags(turn_csv: Path) -> dict[tuple[str, int], set[str]]:
             trajectory_id = row.get("trajectory_id", "").strip()
             if not trajectory_id:
                 continue
-            tags = split_arch_sass_tags(row.get("arch_sass_tag", ""))
+            tags = split_arch_sass_tags(row.get("sass_arch_tag", ""))
             try:
                 turn = int(row.get("turn", ""))
             except ValueError:
@@ -475,7 +475,7 @@ def collect_pairs_for_run(
                     "test_path": plan_entry.get("test_path", row.get("test_path", "")),
                     "trajectory_id": exp_id,
                     "prompt_tag": plan_entry.get("prompt_tag", ""),
-                    "arch_sass_tag": ", ".join(sorted(tags)),
+                    "sass_arch_tag": ", ".join(sorted(tags)),
                     "wrong_kernel_path": wrong_path,
                     "wrong_log_path": plan_entry.get("error_log_path", ""),
                     "wrong_trajectory_path": infer_wrong_trajectory_path(wrong_path),
@@ -497,7 +497,7 @@ def write_output(path: Path, rows: list[dict[str, str]]) -> None:
         "test_path",
         "trajectory_id",
         "prompt_tag",
-        "arch_sass_tag",
+        "sass_arch_tag",
         "wrong_kernel_path",
         "wrong_log_path",
         "wrong_trajectory_path",

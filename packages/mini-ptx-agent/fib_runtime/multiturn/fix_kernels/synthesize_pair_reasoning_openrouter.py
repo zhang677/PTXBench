@@ -437,7 +437,7 @@ def build_metadata(
         "workload": row.get("workload", ""),
         "trajectory_id": row.get("trajectory_id", ""),
         "prompt_tag": row.get("prompt_tag", ""),
-        "arch_sass_tag": row.get("arch_sass_tag", ""),
+        "sass_arch_tag": row.get("sass_arch_tag", ""),
         "correct_kernel_path": row.get("correct_kernel_path", ""),
         "correct_kernel_version": row.get("correct_kernel_version", ""),
         "plan_path": row.get("plan_path", ""),

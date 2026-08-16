@@ -330,7 +330,7 @@ def build_prompt(row: dict[str, str]) -> tuple[str, str, dict[str, Any]]:
         "definition": row.get("definition", ""),
         "prompt_tag": row.get("prompt_tag", ""),
         "arch": row.get("arch", ""),
-        "arch_sass_tag": row.get("arch_sass_tag", ""),
+        "sass_arch_tag": row.get("sass_arch_tag", ""),
         "wrong_kernel_path": error_kernel_path,
         "wrong_log_path": error_log_path,
         "wrong_trajectory_path": row.get("wrong_trajectory_path", ""),

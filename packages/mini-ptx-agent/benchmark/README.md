@@ -1,7 +1,7 @@
 # Benchmark exports and plot viewer
 
 `export_turn_correctness_arch.py` creates the canonical per-turn CSV for each
-evaluation run. Correct CUDA turns receive `arch_sass_tag` only after two checks:
+evaluation run. Correct CUDA turns receive `sass_arch_tag` only after two checks:
 
 1. `nvcc` builds the candidate for the requested architecture and `cuobjdump`
    finds a selected instruction family in the embedded cubin.
@@ -10,7 +10,7 @@ evaluation run. Correct CUDA turns receive `arch_sass_tag` only after two checks
 
 Hopper (`H`) recognizes GMMA and TMA transfer instructions. Blackwell (`B`)
 recognizes TCGEN/TMEM instruction families. A static match by itself never sets
-`arch_sass_tag`.
+`sass_arch_tag`.
 
 ## Export per-turn results
 
