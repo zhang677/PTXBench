@@ -61,7 +61,7 @@ STATUS_COLORS = {
 
 
 def classify_turn(content: str) -> str:
-    """Mirror benchmark/export_turn_correctness_arch.py label semantics."""
+    """Mirror the repository-root benchmark/export_turn_correctness_arch.py labels."""
     if "PASSED" in content:
         return "Correct"
     if "INCORRECT_NUMERICAL" in content or "Result is incorrect" in content:

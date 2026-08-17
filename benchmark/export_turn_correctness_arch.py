@@ -35,8 +35,9 @@ from pathlib import Path
 
 import requests
 
-PACKAGE_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(PACKAGE_ROOT))
+PTXBENCH_ROOT = Path(__file__).resolve().parents[1]
+MINI_PTX_AGENT_ROOT = PTXBENCH_ROOT / "packages" / "mini-ptx-agent"
+sys.path.insert(0, str(MINI_PTX_AGENT_ROOT))
 from accrl.utils.code_utils import extract_code_block
 
 DEFAULT_OUTPUT_NAME = "turn_correctness_arch.csv"

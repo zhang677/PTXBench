@@ -20,7 +20,7 @@ MULTITURN_ROOT = MINI_ROOT / "fib_runtime" / "multiturn"
 def test_active_fixit_sources_have_no_legacy_absolute_roots() -> None:
     paths = [
         *FIXIT_ROOT.glob("*.sh"),
-        MINI_ROOT / "benchmark" / "export_turn_correctness_arch.py",
+        ROOT / "benchmark" / "export_turn_correctness_arch.py",
         MINI_ROOT / "fib_runtime" / "multiturn" / "analyze_kernel_per_turn.py",
         CONSTRUCT_ROOT / "build_rebalanced_fixit_error_collection.py",
         CONSTRUCT_ROOT / "filter_fixit_error_kernels_by_prompt_tag.py",

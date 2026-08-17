@@ -43,7 +43,7 @@ check_source() {
     "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_download_weights.py"
     "$MINI_PTX_AGENT_ROOT/accrl/distill/sft/tinker_sft_train.py"
     "$MINI_PTX_AGENT_ROOT/accrl/utils/code_utils.py"
-    "$MINI_PTX_AGENT_ROOT/benchmark/export_turn_correctness_arch.py"
+    "$PTXBENCH_ROOT/benchmark/export_turn_correctness_arch.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/analyze_kernel_per_turn.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/analyze_pattern.py"
     "$MINI_PTX_AGENT_ROOT/fib_runtime/multiturn/build_doc_v2.py"

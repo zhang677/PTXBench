@@ -1,7 +1,8 @@
 # Benchmark exports and plot viewer
 
-`export_turn_correctness_arch.py` creates the canonical per-turn CSV for each
-evaluation run. Correct CUDA turns receive `sass_arch_tag` only after two checks:
+The repository-root `benchmark/export_turn_correctness_arch.py` creates the
+canonical per-turn CSV for each evaluation run. Correct CUDA turns receive
+`sass_arch_tag` only after two checks:
 
 1. `nvcc` builds the candidate for the requested architecture and `cuobjdump`
    finds a selected instruction family in the embedded cubin.
@@ -24,7 +25,7 @@ example-model,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,/path
 Then run:
 
 ```bash
-python export_turn_correctness_arch.py \
+python benchmark/export_turn_correctness_arch.py \
   --experiments-csv experiments.csv \
   --base-url http://localhost:10000 \
   --num-compile-parallel 4 \
@@ -50,24 +51,25 @@ and speedup, `--skip-sass-verification` writes blank tags with status
 After native per-turn exports exist, create the viewer's verified-SASS series:
 
 ```bash
-python aggregate_sass_metrics.py --experiments-csv experiments.csv
+python benchmark/aggregate_sass_metrics.py --experiments-csv experiments.csv
 ```
 
 The aggregator rejects per-turn CSVs that lack the native SASS columns. It
 marks every output row with `tag_evidence=dynamic_sass`, and the viewer filters
 the architecture metric on that marker so only dynamically verified rows are
 presented as SASS evidence. Model release dates come from
-`plot_viewer_v1/data/model_release_dates.csv`; a manifest-level `date` column
-overrides them.
+`benchmark/plot_viewer_v1/data/model_release_dates.csv`; a manifest-level
+`date` column overrides them.
 
 ## Open the viewer
 
-From this directory, run:
+From the repository root, run:
 
 ```bash
-python -m http.server 8765 --bind 0.0.0.0 --directory .
+python -m http.server 8765 --bind 0.0.0.0 --directory benchmark
 ```
 
 Then open <http://localhost:8765/plot_viewer_v1/>.
 
-The viewer and its checked-in data are self-contained under `plot_viewer_v1/`.
+The viewer and its checked-in data are self-contained under
+`benchmark/plot_viewer_v1/`.

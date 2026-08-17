@@ -20,11 +20,12 @@ from pathlib import Path
 
 
 MINI_PTX_AGENT_ROOT = Path(__file__).resolve().parents[3]
+PTXBENCH_ROOT = MINI_PTX_AGENT_ROOT.parents[1]
 sys.path.insert(0, str(MINI_PTX_AGENT_ROOT))
 from accrl.utils.code_utils import extract_code_block  # noqa: E402
 
 EXPORT_TURN_CORRECTNESS = (
-    MINI_PTX_AGENT_ROOT / "benchmark" / "export_turn_correctness_arch.py"
+    PTXBENCH_ROOT / "benchmark" / "export_turn_correctness_arch.py"
 )
 TURN_CSV_REL = Path("figures") / "turn_correctness_arch.csv"
 EXP_ID_RE = re.compile(r"^exp_(\d+)$")

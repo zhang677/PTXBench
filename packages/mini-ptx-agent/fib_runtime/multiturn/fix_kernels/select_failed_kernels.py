@@ -5,7 +5,7 @@ The source of truth for turn labels is:
 
     <exp_dir>/figures/turn_correctness_arch.csv
 
-If that CSV is missing, this script generates it with
+If that CSV is missing, this script generates it with the repository-root
 benchmark/export_turn_correctness_arch.py. If <exp_dir>/kernels does not exist,
 it extracts per-turn kernels and logs with analyze_kernel_per_turn.py.
 """
@@ -24,9 +24,10 @@ from pathlib import Path
 
 
 MINI_PTX_AGENT_ROOT = Path(__file__).resolve().parents[3]
+PTXBENCH_ROOT = MINI_PTX_AGENT_ROOT.parents[1]
 MULTITURN_ROOT = Path(__file__).resolve().parents[1]
 EXPORT_TURN_CORRECTNESS = (
-    MINI_PTX_AGENT_ROOT / "benchmark" / "export_turn_correctness_arch.py"
+    PTXBENCH_ROOT / "benchmark" / "export_turn_correctness_arch.py"
 )
 ANALYZE_KERNEL_PER_TURN = MULTITURN_ROOT / "analyze_kernel_per_turn.py"
 TURN_CSV_REL = Path("figures") / "turn_correctness_arch.csv"

@@ -28,7 +28,7 @@ Rows are skipped when:
 - the extracted per-turn kernel is missing at `kernels/<trajectory_id>/kernel_t<turn>.cu`.
 - the extracted per-turn log is missing at `kernels/<trajectory_id>/log_t<turn>.txt`.
 
-If `figures/turn_correctness_arch.csv` is missing, the script generates it with `benchmark/export_turn_correctness_arch.py`. If `kernels/` is missing, it generates per-turn kernels/logs with `mini_swe_agent_docker/plots/analyze_kernel_per_turn.py`.
+If `figures/turn_correctness_arch.csv` is missing, the script generates it with the repository-root `benchmark/export_turn_correctness_arch.py`. If `kernels/` is missing, it generates per-turn kernels/logs with `mini_swe_agent_docker/plots/analyze_kernel_per_turn.py`.
 
 ## 2. Collect Successful Fixes
 

@@ -4,13 +4,9 @@ import json
 import sys
 from pathlib import Path
 
-SCRIPT_PATH = (
-    Path(__file__).resolve().parents[1]
-    / "packages"
-    / "mini-ptx-agent"
-    / "benchmark"
-    / "export_turn_correctness_arch.py"
-)
+ROOT = Path(__file__).resolve().parents[1]
+MINI_ROOT = ROOT / "packages" / "mini-ptx-agent"
+SCRIPT_PATH = ROOT / "benchmark" / "export_turn_correctness_arch.py"
 SPEC = importlib.util.spec_from_file_location("benchmark_sass_exporter", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None
 exporter = importlib.util.module_from_spec(SPEC)
@@ -25,7 +21,7 @@ sys.modules[AGGREGATOR_SPEC.name] = aggregator
 AGGREGATOR_SPEC.loader.exec_module(aggregator)
 
 COLLECTOR_PATH = (
-    SCRIPT_PATH.parents[1] / "fib_runtime" / "multiturn" / "fix_kernels" / "collect_success_kernel_pairs.py"
+    MINI_ROOT / "fib_runtime" / "multiturn" / "fix_kernels" / "collect_success_kernel_pairs.py"
 )
 COLLECTOR_SPEC = importlib.util.spec_from_file_location("benchmark_sass_pair_collector", COLLECTOR_PATH)
 assert COLLECTOR_SPEC is not None and COLLECTOR_SPEC.loader is not None
