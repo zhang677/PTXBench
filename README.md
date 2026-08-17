@@ -220,6 +220,20 @@ Other example datasets include non-4096 sequence-length attention workload recor
 - **tinker-cookbook**: an optional, locked dependency for reproducing the
   Tinker SFT training and checkpoint-export workflow.
 
+## Citation
+
+If you use PTXBench in your work, please cite the accompanying [technical write-up](assets/writeup.pdf):
+
+```bibtex
+@misc{ptxbench2026,
+  title = {{PTXBench}: Benchmark and Adapt {LLMs} for {GPU} Kernel Optimization with Architecture-specific {PTX}},
+  author = {Genghan Zhang and Yixin Dong and Chengze Fan and Zhichen Zeng and Yueming Yuan and Shaowei Zhu and Kunle Olukotun},
+  year = {2026},
+  publisher = {GitHub},
+  howpublished = {\url{https://github.com/zhang677/PTXBench}},
+}
+```
+
 ## Licensing and provenance
 
 PTXBench and mini-ptx-agent are Apache-2.0. FIBServe is derived from
