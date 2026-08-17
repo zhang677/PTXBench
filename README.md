@@ -1,7 +1,6 @@
 # PTXBench
 
-PTXBench is an open-source workspace for building and evaluating PTX/CUDA and
-Triton kernel agents. It contains:
+PTXBench is an open-source environment for evaluating and building kernel agents that use architecture-specifc CUDA/PTX. It contains:
 
 - **mini-ptx-agent**: the reusable agent, prompt, trajectory inspection, and
   benchmark implementation.
