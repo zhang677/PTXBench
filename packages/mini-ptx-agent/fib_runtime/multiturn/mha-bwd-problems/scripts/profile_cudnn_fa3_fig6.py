@@ -1,3 +1,9 @@
+# The cudnn_spda_bwd_setup routine below is adapted from
+# Dao-AILab/flash-attention, hopper/benchmark_attn.py.
+# Copyright (c) 2022, the respective contributors, as shown by the upstream
+# AUTHORS file. All rights reserved. The adapted routine is distributed under
+# BSD-3-Clause; see ../../../../licenses/flash-attention.LICENSE.txt.
+
 """Profile cuDNN attention backward using the EXACT setup from FA3 paper Fig. 6.
 
 Source: /home/ubuntu/flash-attention-cutedsl/hopper/benchmark_attn.py

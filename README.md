@@ -225,4 +225,6 @@ Other example datasets include non-4096 sequence-length attention workload recor
 PTXBench and mini-ptx-agent are Apache-2.0. FIBServe is derived from
 FlashInfer Bench and preserves its Apache-2.0 license and NOTICE. mini-swe-agent
 is consumed under its MIT license and is not vendored into this repository.
-tinker-cookbook is consumed under Apache-2.0 and is also not vendored.
+tinker-cookbook is consumed under Apache-2.0 and is also not vendored. See
+[`NOTICE`](NOTICE) for the NVIDIA reference-material rationale, hosted-model
+workflow terms, and licenses for code adapted from Helion and FlashAttention.
