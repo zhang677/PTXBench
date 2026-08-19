@@ -1,5 +1,9 @@
 # PTXBench
 
+[![Paper](https://img.shields.io/badge/arXiv-2608.17379-b31b1b.svg)](https://arxiv.org/pdf/2608.17379)
+[![Blog Post](https://img.shields.io/badge/Blog-ptxbench.html-blue)](https://zhang677.github.io/blog_md/ptxbench.html)
+[![HuggingFace](https://img.shields.io/badge/🤗-PTXBench-yellow)](https://huggingface.co/collections/Genghan/ptxbench-qwen36-27b-sft-series)
+
 PTXBench is an open-source environment for evaluating and building kernel agents that use architecture-specifc CUDA/PTX. It contains:
 
 - **mini-ptx-agent**: the reusable agent, prompt, trajectory inspection, and
@@ -221,15 +225,17 @@ Other example datasets include non-4096 sequence-length attention workload recor
 
 ## Citation
 
-If you use PTXBench in your work, please cite the accompanying [technical write-up](assets/writeup.pdf):
+If you use PTXBench in your work, please cite the [paper](http://arxiv.org/abs/2608.17379):
 
 ```bibtex
 @misc{ptxbench2026,
   title = {{PTXBench}: Benchmark and Adapt {LLMs} for {GPU} Kernel Optimization with Architecture-specific {PTX}},
   author = {Genghan Zhang and Yixin Dong and Chengze Fan and Zhichen Zeng and Yueming Yuan and Shaowei Zhu and Kunle Olukotun},
   year = {2026},
-  publisher = {GitHub},
-  howpublished = {\url{https://github.com/zhang677/PTXBench}},
+  eprint = {2608.17379},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CL},
+  url = {http://arxiv.org/abs/2608.17379},
 }
 ```
 
