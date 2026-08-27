@@ -80,17 +80,6 @@ def submit_and_poll(base_url: str, endpoint: str, payload: dict, timeout: int) -
     sys.exit(1)
 
 
-def has_failure(traces) -> bool:
-    if not traces:
-        return False
-    return any(
-        ((trace.get("evaluation") or {}).get("status"))
-        in ("RUNTIME_ERROR", "TIMEOUT")
-        for trace in traces
-        if isinstance(trace, dict)
-    )
-
-
 def _strip_cu_get_proc_address_noise(log: str) -> str:
     output = []
     skipping = False
@@ -136,68 +125,6 @@ def run_sanitize(base_url: str, solution: dict) -> dict:
     )
 
 
-def render_debug_metadata(metadata: dict) -> str:
-    rendered = []
-    for title, section in metadata.items():
-        if title == "FlashInfer CUDA debug report":
-            continue
-        if isinstance(section, dict) and not section.get("exist"):
-            continue
-        rendered.append(str(title))
-        rendered.append("-" * 80)
-        if isinstance(section, dict) and section.get("msg"):
-            rendered.append(str(section["msg"]))
-        rendered.append("")
-    report = "\n".join(rendered).rstrip()
-    return report + "\n" if report else ""
-
-
-def run_debug(base_url: str, solution: dict, status: str) -> str:
-    payload = {
-        "solution": solution,
-        "workload_uuids": [WORKLOAD_UUID],
-        "sanitizer_types": ["memcheck"],
-        "timeout": sanitizer_timeout,
-        "max_lines": None,
-        "print_limit": 100,
-        "source_context_lines": 4,
-        "enable_coredump": status == "TIMEOUT",
-        "coredump_grace_seconds": 30,
-    }
-    try:
-        data = submit_and_poll(
-            base_url,
-            "debug",
-            payload,
-            sanitizer_timeout + queue_timeout,
-        )
-    except Exception as exc:
-        print(f"Debug task failed; keeping original failure log: {exc}", file=sys.stderr)
-        return ""
-    if data["status"] == "failed":
-        return ""
-    logs = data.get("logs") or []
-    if not logs:
-        return ""
-    metadata = logs[0].get("metadata")
-    if not isinstance(metadata, dict):
-        return ""
-    return render_debug_metadata(metadata)
-
-
-def replace_failure_logs_with_debug(traces, debug_report: str):
-    if not debug_report or not traces:
-        return traces
-    for trace in traces:
-        if not isinstance(trace, dict):
-            continue
-        evaluation = trace.get("evaluation") or {}
-        if evaluation.get("status") in ("RUNTIME_ERROR", "TIMEOUT"):
-            evaluation["log"] = debug_report
-            trace["evaluation"] = evaluation
-    return traces
-
-
 def sanitizer_logs_to_traces(logs, status: str):
     traces = logs or []
     for trace in traces:
@@ -205,8 +132,8 @@ def sanitizer_logs_to_traces(logs, status: str):
             continue
         evaluation = trace.get("evaluation") or {}
         evaluation["status"] = status
-        if "log" not in evaluation and isinstance(trace.get("log"), str):
-            evaluation["log"] = trace["log"]
+        if isinstance(trace.get("log"), str):
+            evaluation["log"] = _strip_cu_get_proc_address_noise(trace["log"])
         trace["evaluation"] = evaluation
     return traces
 
@@ -247,8 +174,6 @@ def main() -> None:
             file=sys.stderr,
         )
         traces = sanitizer_logs_to_traces(failing_logs, sanitizer_status)
-        debug_report = run_debug(base_url, solution, sanitizer_status)
-        replace_failure_logs_with_debug(traces, debug_report)
         write_traces(traces)
         return
 
@@ -260,18 +185,6 @@ def main() -> None:
         queue_timeout,
     )
     traces = data.get("traces")
-    if has_failure(traces):
-        statuses = {
-            (trace.get("evaluation") or {}).get("status")
-            for trace in traces or []
-            if isinstance(trace, dict)
-        }
-        debug_report = run_debug(
-            base_url,
-            solution,
-            "TIMEOUT" if "TIMEOUT" in statuses else "RUNTIME_ERROR",
-        )
-        replace_failure_logs_with_debug(traces, debug_report)
     write_traces(traces)
     if data["status"] == "failed":
         print(
