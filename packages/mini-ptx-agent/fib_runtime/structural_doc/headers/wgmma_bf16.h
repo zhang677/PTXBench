@@ -54,7 +54,7 @@ __device__ __forceinline__ void wgmma_fence_operand_array_fn(float* a, int n) {
     wgmma.mma_async.sync.aligned.shape.dtype.bf16.bf16  d, a-desc, b-desc, scale-d, imm-scale-a, imm-scale-b, imm-trans-a, imm-trans-b;
     wgmma.mma_async.sync.aligned.shape.dtype.bf16.bf16  d, a, b-desc, scale-d, imm-scale-a, imm-scale-b, imm-trans-b;
     .shape   = {.m64n{N}k16 where N={8, 16, 32, ..., 256}};
-    .dtype   = {.f16, .f32};
+    .dtype   = {.f32};
 
     The 5 immediate operands:
       scale-d     = 0  — Overwrite mode (D = A×B); 1 — Accumulate mode (D = A×B + D)
