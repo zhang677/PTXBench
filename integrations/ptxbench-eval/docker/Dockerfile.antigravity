@@ -1,0 +1,41 @@
+FROM golang:1.24-bookworm AS client-build
+
+WORKDIR /src
+COPY ptxbench-eval/client-go/main.go ./main.go
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/ptxbench-eval ./main.go
+
+FROM ubuntu:24.04 AS antigravity-build
+
+ARG ANTIGRAVITY_VERSION=1.1.27
+ARG ANTIGRAVITY_ARCHIVE_URL=https://storage.googleapis.com/antigravity-public/antigravity-cli/1.1.27-5211191891591168/linux-x64/cli_linux_x64.tar.gz
+ARG ANTIGRAVITY_ARCHIVE_SHA512=793d4b9ea2c08d9a7e50bafa02cfc8c19424bd60d6e83f91408d45f9c6d4ce79a5d576fede5bef164d823abf84f81359a14b4ca665952c47b0a7cfd743bb69c0
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      bash ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/* && \
+    curl -fsSL "$ANTIGRAVITY_ARCHIVE_URL" -o /tmp/agy.tar.gz && \
+    echo "$ANTIGRAVITY_ARCHIVE_SHA512  /tmp/agy.tar.gz" | sha512sum -c - && \
+    tar -xzf /tmp/agy.tar.gz -C /tmp antigravity && \
+    install -m 0755 /tmp/antigravity /usr/local/bin/agy && \
+    test "$(/usr/local/bin/agy --version)" = "$ANTIGRAVITY_VERSION" && \
+    rm -f /tmp/agy.tar.gz /tmp/antigravity
+
+FROM ubuntu:24.04
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      bash ca-certificates python3 && \
+    rm -rf /var/lib/apt/lists/* && \
+    groupmod --new-name agent ubuntu && \
+    usermod --login agent --home /home/agent --move-home --shell /bin/bash ubuntu
+
+COPY --from=client-build /out/ptxbench-eval /usr/local/bin/ptxbench-eval
+COPY --from=antigravity-build /usr/local/bin/agy /usr/local/bin/agy
+COPY ptxbench-eval/src/ptxbench_eval/eval_mcp_server.py /usr/local/bin/ptxbench-eval-mcp
+RUN chmod 0111 /usr/local/bin/ptxbench-eval && \
+    chmod 0555 /usr/local/bin/ptxbench-eval-mcp
+
+USER agent
+ENV HOME=/home/agent
+WORKDIR /workspace

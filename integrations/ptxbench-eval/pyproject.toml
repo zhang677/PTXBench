@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ptxbench-eval"
+version = "0.1.0"
+description = "Harness-neutral PTXBench evaluation gateway and agent CLI"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.110",
+  "requests>=2.31",
+  "uvicorn>=0.29",
+]
+
+[project.scripts]
+ptxbench-eval = "ptxbench_eval.cli:main"
+ptxbench-eval-server = "ptxbench_eval.server:main"
+ptxbench-run = "ptxbench_eval.launcher:main"
+ptxbench-token-watch = "ptxbench_eval.token_watcher:main"
+ptxbench-profile-recovery-worker = "ptxbench_eval.profile_recovery_worker:main"
+ptxbench-profile-supervisor = "ptxbench_eval.profile_supervisor:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

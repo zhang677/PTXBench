@@ -1,0 +1,37 @@
+{
+  "experiment_root": "results/ptxbench-eval-gemini-gemm-example",
+  "profile_base_url": "http://127.0.0.1:10000",
+  "task_id": "h100-gemm-n7168-k5120-m8192",
+  "definition": "gemm_n7168_k5120",
+  "workload_uuid": "94920358-01a8-4c5b-9209-3103fd490e94",
+  "language": "cuda",
+  "binding": "tvm-ffi",
+  "target_hardware": [
+    "H100"
+  ],
+  "nvcc_gencode": "arch=compute_90a,code=sm_90a",
+  "target_speedup": 0,
+  "prompt_hub": "../context/hub.json",
+  "prompt_files_root": "../context",
+  "tvm_ffi_example": "../context/example.cu",
+  "gateway_url": "http://127.0.0.1:18082",
+  "agent_image": "ptxbench-antigravity:dev",
+  "model": "gemini-3.1-pro-preview",
+  "token_budget": 200000,
+  "max_parallel": 3,
+  "print_timeout": "24h",
+  "runs": [
+    {
+      "run_id": "exp_000",
+      "prompt_tag": "hopper-no-hint"
+    },
+    {
+      "run_id": "exp_001",
+      "prompt_tag": "hopper-03"
+    },
+    {
+      "run_id": "exp_002",
+      "prompt_tag": "hopper-05"
+    }
+  ]
+}

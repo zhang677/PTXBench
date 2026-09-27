@@ -1,0 +1,29 @@
+FROM golang:1.24-bookworm AS client-build
+
+WORKDIR /src
+COPY ptxbench-eval/client-go/main.go ./main.go
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/ptxbench-eval ./main.go
+
+FROM node:24-bookworm-slim
+
+ARG CODEX_VERSION=0.149.1
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      bash bubblewrap ca-certificates python3 && \
+    rm -rf /var/lib/apt/lists/* && \
+    npm install --global "@openai/codex@${CODEX_VERSION}" && \
+    npm cache clean --force && \
+    groupmod --new-name agent node && \
+    usermod --login agent --home /home/agent --move-home --shell /bin/bash node
+
+COPY --from=client-build /out/ptxbench-eval /usr/local/bin/ptxbench-eval
+COPY --chmod=0555 ptxbench-eval/src/ptxbench_eval/codex_runner.py /usr/local/bin/ptxbench-codex
+COPY ptxbench-eval/src/ptxbench_eval/eval_mcp_server.py /usr/local/bin/ptxbench-eval-mcp
+RUN chmod 0111 /usr/local/bin/ptxbench-eval && \
+    chmod 0555 /usr/local/bin/ptxbench-eval-mcp
+
+USER agent
+ENV HOME=/home/agent
+ENV CODEX_HOME=/var/ptxbench-codex-home
+WORKDIR /workspace

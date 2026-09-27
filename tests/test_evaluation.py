@@ -185,21 +185,3 @@ def test_architecture_usage_is_extracted_from_ptx_opcodes_only() -> None:
     assert usage["source"] == "compiled_ptx_artifact"
     assert usage["instruction_counts"] == {"cp.async.bulk.": 1, "wgmma.": 1}
     assert usage["architecture_counts"] == {"hopper": 2}
-
-
-def test_harbor_gemm_task_is_bound_to_quickstart_workload() -> None:
-    task_root = ROOT / "integrations" / "harbor" / "tasks" / "gemm_n7168_k5120"
-    manifest_text = (task_root / "environment" / "task.json").read_text()
-    manifest = json.loads(manifest_text)
-    instruction = (task_root / "instruction.md").read_text()
-    environment = task_root / "environment"
-    dockerfile = (environment / "Dockerfile").read_text()
-    reference = (environment / "reference" / "README.md").read_text()
-
-    assert json.loads((task_root / "tests" / "task.json").read_text()) == manifest
-    assert manifest["definition"] == "gemm_n7168_k5120"
-    assert manifest["workload_uuids"] == ["94920358-01a8-4c5b-9209-3103fd490e94"]
-    assert not (environment / "kernel.cu").exists()
-    assert "kernel.cu" not in dockerfile
-    assert "ptxbench eval /workspace/kernel.cu --json" in instruction
-    assert "TVM_FFI_DLL_EXPORT_TYPED_FUNC(run, run)" in reference

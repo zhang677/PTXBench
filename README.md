@@ -9,6 +9,8 @@ PTXBench is an open-source environment for evaluating and building kernel agents
 - **mini-ptx-agent**: the reusable agent, prompt, trajectory inspection, and
   benchmark implementation.
 - **FIBServe**: a GPU profiling service derived from [FlashInfer-Bench](https://bench.flashinfer.ai/).
+- **ptxbench-eval**: an evaluation gateway and coding-agent launcher with
+  Codex and Antigravity examples.
 
 🚧 This repository is still under construction.
 
@@ -205,15 +207,36 @@ docker compose -f docker/compose.yaml run --rm \
   --entrypoint bash agent scripts/smoke_fixit.sh --check
 ```
 
-## Harbor
+## Coding-agent evaluation
 
-PTXBench includes [Harbor-compatible tasks](integrations/harbor/README.md) that
-run on an unmodified Harbor checkout while using `ptxbench eval` and FIBServe
-for compilation, sanitization, and H100 benchmarking. The agent creates its implementation
-from scratch; before launching a run, the checked-in instruction can be
-refreshed from the live FIBServe definition to keep its task encoding aligned
-with AccRL. The integration guide covers image builds, prompt rendering, Harbor
-launch options, and the resulting ATIF trajectory.
+[`integrations/ptxbench-eval`](integrations/ptxbench-eval) contains the
+standalone `ptxbench-eval` CLI, evaluation gateway, and `ptxbench-run`
+launcher. Its [Codex](integrations/ptxbench-eval/examples/gpt56_gemm) and
+[Antigravity](integrations/ptxbench-eval/examples/gemini_gemm) examples include
+experiment configs, prompt context, Docker images, and launch scripts. The
+gateway sends candidate kernels to FIBServe for correctness and performance
+feedback.
+
+Install the host-side package from this checkout:
+
+```bash
+python -m pip install -e integrations/ptxbench-eval
+ptxbench-run --help
+```
+
+With an H100 FIBServe instance and Codex authentication configured, launch the
+Codex GEMM example from the repository root:
+
+```bash
+PROFILE_BASE_URL=http://127.0.0.1:11000 \
+EXPERIMENT_ROOT="$PWD/data/eval_runs/codex-gpt56-gemm" \
+bash integrations/ptxbench-eval/examples/gpt56_gemm/run_experiment.sh
+```
+
+The script checks the requested FIBServe workload, builds the gateway and
+agent images from `integrations/`, and writes run artifacts to
+`EXPERIMENT_ROOT`. Set `GEMINI_API_KEY` and use the corresponding Antigravity
+script for the Gemini example.
 
 ## Huggingface
 Other example datasets include non-4096 sequence-length attention workload records at [`Genghan/accrl-training-heavy`](https://huggingface.co/datasets/Genghan/accrl-training-heavy) and a more diverse [`flashinfer-ai/flashinfer-trace`](https://huggingface.co/datasets/flashinfer-ai/flashinfer-trace). The byte-exact historical s0-s6 training parquets are also retained in

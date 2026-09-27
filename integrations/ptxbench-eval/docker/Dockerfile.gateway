@@ -1,0 +1,10 @@
+ARG BASE_IMAGE=ptxbench-eval-base:latest
+FROM ${BASE_IMAGE}
+
+COPY ptxbench-eval /opt/ptxbench-eval
+RUN pip install --no-cache-dir /opt/ptxbench-eval
+
+USER 1000:1000
+ENV HOME=/tmp
+
+ENTRYPOINT ["ptxbench-eval-server"]

@@ -339,7 +339,7 @@ def test_aggregator_uses_only_native_dynamic_sass_tags(tmp_path: Path) -> None:
     assert [row["n_correct_turns"] for row in rows] == [1, 2]
     assert [row["n_unknown_correct_turns"] for row in rows] == [0, 1]
     assert all(row["tag_evidence"] == "dynamic_sass" for row in rows)
-    assert all("exp_dir" not in row for row in rows)
+    assert all(row["exp_dir"] == str(run_dir) for row in rows)
 
 
 def test_aggregator_rejects_legacy_arch_tag_csv(tmp_path: Path) -> None:
