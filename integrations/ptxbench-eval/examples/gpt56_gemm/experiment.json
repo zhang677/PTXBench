@@ -16,11 +16,12 @@
   "tvm_ffi_example": "../context/example.cu",
   "gateway_url": "http://127.0.0.1:18082",
   "agent": "codex",
+  "disable_web": true,
   "agent_image": "ptxbench-codex:dev",
   "codex_auth_file": "~/.codex/auth.json",
   "model": "gpt-5.6-sol",
   "effort": "xhigh",
-  "token_budget": 200000,
+  "token_budget": 500000,
   "max_parallel": 3,
   "print_timeout": "24h",
   "runs": [

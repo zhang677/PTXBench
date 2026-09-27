@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Complete launcher for the Gemini 3.1 Pro Preview H100 GEMM experiment.
+# Complete launcher for the Gemini 3.1 Pro (High) H100 GEMM experiment.
 #
 # Required:
 #   export GEMINI_API_KEY=...
