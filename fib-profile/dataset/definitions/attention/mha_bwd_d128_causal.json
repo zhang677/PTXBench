@@ -1,0 +1,121 @@
+{
+  "name": "mha_bwd_d128_causal",
+  "description": "Causal multi-head attention backward, bf16. Inputs are Q, K, V, forward output O, upstream gradient dO, log-sum-exp L. Reference uses cuDNN SDPA backward and returns dQ, dK, dV.",
+  "op_type": "attention",
+  "tags": [
+    "status:reference",
+    "source:flashattention3",
+    "ref:cudnn_pygraph_sdpa_backward",
+    "causal:true",
+    "direction:backward"
+  ],
+  "axes": {
+    "B": {
+      "type": "const",
+      "value": 4,
+      "description": "batch size"
+    },
+    "H": {
+      "type": "const",
+      "value": 48,
+      "description": "number of attention heads"
+    },
+    "d": {
+      "type": "const",
+      "value": 128,
+      "description": "head dimension"
+    },
+    "S": {
+      "type": "var",
+      "description": "sequence length; Q and KV share this axis"
+    }
+  },
+  "inputs": {
+    "Q": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "d"
+      ],
+      "dtype": "bfloat16"
+    },
+    "K": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "d"
+      ],
+      "dtype": "bfloat16"
+    },
+    "V": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "d"
+      ],
+      "dtype": "bfloat16"
+    },
+    "O": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "d"
+      ],
+      "dtype": "bfloat16",
+      "description": "forward attention output"
+    },
+    "dO": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "d"
+      ],
+      "dtype": "bfloat16",
+      "description": "upstream gradient for O"
+    },
+    "L": {
+      "shape": [
+        "B",
+        "H",
+        "S"
+      ],
+      "dtype": "float32",
+      "description": "natural-log logsumexp of QK^T/sqrt(d)"
+    }
+  },
+  "outputs": {
+    "dQ": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "d"
+      ],
+      "dtype": "bfloat16"
+    },
+    "dK": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "d"
+      ],
+      "dtype": "bfloat16"
+    },
+    "dV": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "d"
+      ],
+      "dtype": "bfloat16"
+    }
+  },
+  "reference": "import math\n\nimport cudnn\nimport torch\n\n\ndef _cudnn_dtype(t):\n    if t == torch.float16:\n        return cudnn.data_type.HALF\n    if t == torch.bfloat16:\n        return cudnn.data_type.BFLOAT16\n    if t == torch.float32:\n        return cudnn.data_type.FLOAT\n    raise ValueError(t)\n\n\n_GRAPH_CACHE = {}\n\n\ndef _build_graph(Q, K, V, O, dO, lse, dQ, dK, dV):\n    b, h, s, d = Q.shape\n    graph = cudnn.pygraph(\n        io_data_type=_cudnn_dtype(Q.dtype),\n        intermediate_data_type=cudnn.data_type.FLOAT,\n        compute_data_type=cudnn.data_type.FLOAT,\n    )\n    q_t = graph.tensor_like(Q.detach())\n    k_t = graph.tensor_like(K.detach())\n    v_t = graph.tensor_like(V.detach())\n    o_t = graph.tensor_like(O.detach())\n    g_t = graph.tensor_like(dO.detach())\n    s_t = graph.tensor_like(lse.detach())\n    dq, dk, dv = graph.sdpa_backward(\n        name=\"sdpa_backward\",\n        q=q_t, k=k_t, v=v_t, o=o_t, dO=g_t, stats=s_t,\n        attn_scale=1.0 / math.sqrt(d),\n        use_causal_mask=True,\n    )\n    dq.set_output(True).set_dim(dQ.shape).set_stride(dQ.stride())\n    dk.set_output(True).set_dim(dK.shape).set_stride(dK.stride())\n    dv.set_output(True).set_dim(dV.shape).set_stride(dV.stride())\n    graph.validate()\n    graph.build_operation_graph()\n    graph.create_execution_plans([cudnn.heur_mode.A, cudnn.heur_mode.FALLBACK])\n    graph.check_support()\n    graph.build_plans()\n    workspace = torch.empty(graph.get_workspace_size(), device=Q.device, dtype=torch.uint8)\n    return graph, (q_t, k_t, v_t, o_t, g_t, s_t, dq, dk, dv), workspace\n\n\ndef _cache_key(*tensors):\n    return tuple((tuple(t.shape), tuple(t.stride()), t.dtype, t.device) for t in tensors)\n\n\ndef run(Q, K, V, O, dO, L):\n    with torch.cuda.device(Q.device):\n        lse = L.unsqueeze(-1) if L.dim() == 3 else L\n        dQ = torch.empty_like(Q)\n        dK = torch.empty_like(K)\n        dV = torch.empty_like(V)\n\n        key = _cache_key(Q, K, V, O, dO, lse)\n        cached = _GRAPH_CACHE.get(key)\n        if cached is None:\n            cached = _build_graph(Q, K, V, O, dO, lse, dQ, dK, dV)\n            _GRAPH_CACHE[key] = cached\n        graph, (q_t, k_t, v_t, o_t, g_t, s_t, dq, dk, dv), workspace = cached\n\n        graph.execute({\n            q_t: Q, k_t: K, v_t: V, o_t: O,\n            g_t: dO, s_t: lse,\n            dq: dQ, dk: dK, dv: dV,\n        }, workspace)\n        return dQ, dK, dV\n"
+}

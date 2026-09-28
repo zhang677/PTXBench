@@ -1,0 +1,20 @@
+[
+  {
+    "num_trajectories": 1,
+    "num_turns": 5,
+    "target_speedup": 1.2,
+    "prompt_tag": "hopper-no-hint-mha-patched"
+  },
+  {
+    "num_trajectories": 1,
+    "num_turns": 5,
+    "target_speedup": 1.2,
+    "prompt_tag": "hopper-012-mha-patched"
+  },
+  {
+    "num_trajectories": 1,
+    "num_turns": 5,
+    "target_speedup": 1.2,
+    "prompt_tag": "hopper-013-mha-patched"
+  }
+]

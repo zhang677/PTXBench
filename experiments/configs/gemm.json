@@ -1,0 +1,20 @@
+[
+  {
+    "num_trajectories": 1,
+    "num_turns": 5,
+    "target_speedup": 1.2,
+    "prompt_tag": "hopper-no-hint"
+  },
+  {
+    "num_trajectories": 1,
+    "num_turns": 5,
+    "target_speedup": 1.2,
+    "prompt_tag": "hopper-00"
+  },
+  {
+    "num_trajectories": 1,
+    "num_turns": 5,
+    "target_speedup": 1.2,
+    "prompt_tag": "hopper-05"
+  }
+]

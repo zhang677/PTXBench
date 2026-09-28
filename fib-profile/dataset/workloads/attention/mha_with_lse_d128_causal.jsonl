@@ -1,0 +1,1 @@
+{"definition":"mha_with_lse_d128_causal","solution":null,"workload":{"uuid":"6d2f67a7-225a-4af5-87d3-cbb99b496325","axes":{"B":4,"H":48,"D":128,"S":4096},"inputs":{"Q":{"type":"random"},"K":{"type":"random"},"V":{"type":"random"}}},"evaluation":null}

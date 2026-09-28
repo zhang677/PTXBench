@@ -1,0 +1,6 @@
+model,arch,definition,workload,exp_dir,test_path,config_path
+Qwen3.6-27B,hopper,mha_with_lse_d128,bc38b351-d595-451b-9153-8e225702e53b,${PTXBENCH_DATA_ROOT}/eval_runs/fixit-sft-mha_with_lse_d128,${PTXBENCH_ROOT}/multiturn/tests/cuda/mha_with_lse_d128.py,${PTXBENCH_ROOT}/experiments/configs/mha_forward_patched.json
+Qwen3.6-27B,hopper,mha_with_lse_d128_causal,6d2f67a7-225a-4af5-87d3-cbb99b496325,${PTXBENCH_DATA_ROOT}/eval_runs/fixit-sft-mha_with_lse_d128_causal,${PTXBENCH_ROOT}/multiturn/tests/cuda/mha_with_lse_d128_causal.py,${PTXBENCH_ROOT}/experiments/configs/mha_forward_patched.json
+Qwen3.6-27B,hopper,mha_bwd_d128,38c3b07c-f006-5f5e-9860-ba214c805a6b,${PTXBENCH_DATA_ROOT}/eval_runs/fixit-sft-mha_bwd_d128,${PTXBENCH_ROOT}/multiturn/tests/cuda/mha_bwd_d128.py,${PTXBENCH_ROOT}/experiments/configs/mha_backward_patched.json
+Qwen3.6-27B,hopper,mha_bwd_d128_causal,c119b3f0-c051-5e96-9c2a-2268d992fe1a,${PTXBENCH_DATA_ROOT}/eval_runs/fixit-sft-mha_bwd_d128_causal,${PTXBENCH_ROOT}/multiturn/tests/cuda/mha_bwd_d128_causal.py,${PTXBENCH_ROOT}/experiments/configs/mha_backward_patched.json
+Qwen3.6-27B,hopper,gemm_n7168_k5120,94920358-01a8-4c5b-9209-3103fd490e94,${PTXBENCH_DATA_ROOT}/eval_runs/fixit-sft-gemm_n7168_k5120,${PTXBENCH_ROOT}/multiturn/tests/cuda/gemm_n7168_k5120.py,${PTXBENCH_ROOT}/experiments/configs/gemm.json

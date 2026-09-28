@@ -1,0 +1,259 @@
+{
+  "hopper-no-hint": [
+    "structural_doc/document/ptx_knowledge_sm90_plus.md",
+    "structural_doc/document/arch_param_h100.md",
+    "structural_doc/headers/simt.h",
+    "structural_doc/headers/barrier.h",
+    "structural_doc/headers/tma_bf16.h",
+    "structural_doc/headers/wgmma_bf16.h",
+    "structural_doc/document/debug_hints_sm90.md"
+  ],
+  "hopper-00": [
+    "hopper-no-hint",
+    "structural_doc/patterns/cluster_multicast_load.md"
+  ],
+  "hopper-05": [
+    "hopper-no-hint",
+    "structural_doc/patterns/warp_specialization.md"
+  ],
+  "hopper-07": [
+    "hopper-no-hint",
+    "structural_doc/patterns/fa3_fwd_v0.md"
+  ],
+  "hopper-08": [
+    "hopper-no-hint",
+    "structural_doc/patterns/fa3_fwd_v1.md"
+  ],
+  "hopper-012": [
+    "hopper-no-hint",
+    "structural_doc/patterns/fa3_bwd_2ker.md"
+  ],
+  "hopper-013": [
+    "hopper-no-hint",
+    "structural_doc/patterns/fa3_bwd_2ker_fwd_v0.md"
+  ],
+  "hopper-wo-knowledge": [
+    "structural_doc/document/arch_param_h100.md",
+    "structural_doc/headers_wo_doc/simt.h",
+    "structural_doc/headers_wo_doc/barrier.h",
+    "structural_doc/headers_wo_doc/tma_bf16.h",
+    "structural_doc/headers_wo_doc/wgmma_bf16.h",
+    "structural_doc/document/debug_hints_sm90.md"
+  ],
+  "hopper-wo-knowledge-00": [
+    "hopper-wo-knowledge",
+    "structural_doc/patterns/cluster_multicast_load.md"
+  ],
+  "hopper-wo-knowledge-05": [
+    "hopper-wo-knowledge",
+    "structural_doc/patterns/warp_specialization.md"
+  ],
+  "hopper-arch-only": [
+    "structural_doc/document/arch_param_h100.md"
+  ],
+  "b200-bf16": [
+    "structural_doc/document/ptx_knowledge_sm90_plus.md",
+    "structural_doc/document/ptx_knowledge_sm100_plus.md",
+    "structural_doc/document/arch_param_b200.md",
+    "structural_doc/headers/simt.h",
+    "structural_doc/headers/barrier.h",
+    "structural_doc/headers/tma_bf16_sm100.h",
+    "structural_doc/headers/umma_bf16.h"
+  ],
+  "b200-bf16-00": [
+    "b200-bf16",
+    "structural_doc/patterns/cluster_multicast_load.md"
+  ],
+  "b200-bf16-04": [
+    "b200-bf16",
+    "structural_doc/patterns/tma_store.md"
+  ],
+  "b200-bf16-010": [
+    "b200-bf16",
+    "structural_doc/patterns/fa4_tdblog_fwd.md"
+  ],
+  "b200-bf16-011": [
+    "b200-bf16",
+    "structural_doc/patterns/fa4_tdblog_fwd_wo_nongemm.md"
+  ],
+  "b200-bf16-012": [
+    "b200-bf16",
+    "structural_doc/patterns/fa4_tdblog_bwd.md"
+  ],
+  "b200-bf16-013": [
+    "b200-bf16",
+    "structural_doc/patterns/fa4_tdblog_bwd_1cta.md"
+  ],
+  "hopper-arch-only-012": [
+    "hopper-arch-only",
+    "structural_doc/patterns/fa3_bwd_2ker.md"
+  ],
+  "hopper-arch-only-013": [
+    "hopper-arch-only",
+    "structural_doc/patterns/fa3_bwd_2ker_fwd_v0.md"
+  ],
+  "hopper-wo-knowledge-012": [
+    "hopper-wo-knowledge",
+    "structural_doc/patterns/fa3_bwd_2ker.md"
+  ],
+  "hopper-wo-knowledge-013": [
+    "hopper-wo-knowledge",
+    "structural_doc/patterns/fa3_bwd_2ker_fwd_v0.md"
+  ],
+  "hopper-arch-only-07": [
+    "hopper-arch-only",
+    "structural_doc/patterns/fa3_fwd_v0.md"
+  ],
+  "hopper-arch-only-08": [
+    "hopper-arch-only",
+    "structural_doc/patterns/fa3_fwd_v1.md"
+  ],
+  "hopper-wo-knowledge-07": [
+    "hopper-wo-knowledge",
+    "structural_doc/patterns/fa3_fwd_v0.md"
+  ],
+  "hopper-wo-knowledge-08": [
+    "hopper-wo-knowledge",
+    "structural_doc/patterns/fa3_fwd_v1.md"
+  ],
+  "hopper-arch-only-00": [
+    "hopper-arch-only",
+    "structural_doc/patterns/cluster_multicast_load.md"
+  ],
+  "hopper-arch-only-05": [
+    "hopper-arch-only",
+    "structural_doc/patterns/warp_specialization.md"
+  ],
+  "triton-hopper": [
+    "structural_doc/document/triton_knowledge_sm90_plus.md"
+  ],
+  "triton-hopper-01": [
+    "triton-hopper",
+    "structural_doc/patterns/l2_swizzle_triton.md"
+  ],
+  "triton-hopper-03": [
+    "triton-hopper",
+    "structural_doc/patterns/persistent_kernel_triton.md"
+  ],
+  "triton-hopper-07": [
+    "triton-hopper",
+    "structural_doc/patterns/fa3_fwd_v0.md"
+  ],
+  "triton-hopper-08": [
+    "triton-hopper",
+    "structural_doc/patterns/fa3_fwd_v1.md"
+  ],
+  "triton-hopper-012": [
+    "triton-hopper",
+    "structural_doc/patterns/fa3_bwd_2ker.md"
+  ],
+  "triton-hopper-013": [
+    "triton-hopper",
+    "structural_doc/patterns/fa3_bwd_2ker_fwd_v0.md"
+  ],
+  "triton-blackwell": [
+    "structural_doc/document/triton_knowledge_sm100_plus.md"
+  ],
+  "triton-blackwell-01": [
+    "triton-blackwell",
+    "structural_doc/patterns/l2_swizzle_triton.md"
+  ],
+  "triton-blackwell-03": [
+    "triton-blackwell",
+    "structural_doc/patterns/persistent_kernel_blackwell_triton.md"
+  ],
+  "triton-blackwell-010": [
+    "triton-blackwell-011",
+    "structural_doc/patterns/attention_forward_nongemm_blackwell_triton.md"
+  ],
+  "triton-blackwell-011": [
+    "triton-blackwell",
+    "structural_doc/patterns/attention_forward_blackwell_triton.md"
+  ],
+  "triton-blackwell-012": [
+    "triton-blackwell-013",
+    "structural_doc/patterns/attention_backward_split_blackwell_triton.md"
+  ],
+  "triton-blackwell-013": [
+    "triton-blackwell",
+    "structural_doc/patterns/attention_backward_1cta_blackwell_triton.md"
+  ],
+  "triton-hopper-autotune-banned-v1": [
+    "structural_doc/document/triton_knowledge_sm90_plus_autotune_banned_v1.md"
+  ],
+  "triton-hopper-07-autotune-banned-v1": [
+    "triton-hopper-autotune-banned-v1",
+    "structural_doc/patterns/fa3_fwd_v0.md"
+  ],
+  "triton-hopper-08-autotune-banned-v1": [
+    "triton-hopper-autotune-banned-v1",
+    "structural_doc/patterns/fa3_fwd_v1.md"
+  ],
+  "triton-hopper-012-autotune-banned-v1": [
+    "triton-hopper-autotune-banned-v1",
+    "structural_doc/patterns/fa3_bwd_2ker.md"
+  ],
+  "triton-hopper-013-autotune-banned-v1": [
+    "triton-hopper-autotune-banned-v1",
+    "structural_doc/patterns/fa3_bwd_2ker_fwd_v0.md"
+  ],
+  "triton-hopper-01-autotune-banned-v1": [
+    "triton-hopper-autotune-banned-v1",
+    "structural_doc/patterns/l2_swizzle_triton_autotune_banned_v1.md"
+  ],
+  "triton-hopper-03-autotune-banned-v1": [
+    "triton-hopper-autotune-banned-v1",
+    "structural_doc/patterns/persistent_kernel_triton_autotune_banned_v1.md"
+  ],
+  "triton-blackwell-autotune-banned-v1": [
+    "structural_doc/document/triton_knowledge_sm100_plus_autotune_banned_v1.md"
+  ],
+  "triton-blackwell-011-autotune-banned-v1": [
+    "triton-blackwell-autotune-banned-v1",
+    "structural_doc/patterns/attention_forward_blackwell_triton_autotune_banned_v1.md"
+  ],
+  "triton-blackwell-010-autotune-banned-v1": [
+    "triton-blackwell-011-autotune-banned-v1",
+    "structural_doc/patterns/attention_forward_nongemm_blackwell_triton.md"
+  ],
+  "triton-blackwell-013-autotune-banned-v1": [
+    "triton-blackwell-autotune-banned-v1",
+    "structural_doc/patterns/attention_backward_1cta_blackwell_triton.md"
+  ],
+  "triton-blackwell-012-autotune-banned-v1": [
+    "triton-blackwell-013-autotune-banned-v1",
+    "structural_doc/patterns/attention_backward_split_blackwell_triton_autotune_banned_v1.md"
+  ],
+  "triton-blackwell-01-autotune-banned-v1": [
+    "triton-blackwell-autotune-banned-v1",
+    "structural_doc/patterns/l2_swizzle_triton_autotune_banned_v1.md"
+  ],
+  "triton-blackwell-03-autotune-banned-v1": [
+    "triton-blackwell-autotune-banned-v1",
+    "structural_doc/patterns/persistent_kernel_blackwell_triton_autotune_banned_v1.md"
+  ],
+  "hopper-no-hint-mha-patched": [
+    "hopper-no-hint",
+    "structural_doc/patterns/qwen36-27b-mha-patch.md"
+  ],
+  "hopper-07-mha-patched": [
+    "hopper-07",
+    "structural_doc/patterns/qwen36-27b-mha-patch.md"
+  ],
+  "hopper-08-mha-patched": [
+    "hopper-08",
+    "structural_doc/patterns/qwen36-27b-mha-patch.md"
+  ],
+  "hopper-012-mha-patched": [
+    "hopper-012",
+    "structural_doc/patterns/qwen36-27b-mha-patch.md"
+  ],
+  "hopper-013-mha-patched": [
+    "hopper-013",
+    "structural_doc/patterns/qwen36-27b-mha-patch.md"
+  ],
+  "hopper-03": [
+    "hopper-no-hint",
+    "structural_doc/patterns/persistent_kernel.md"
+  ]
+}

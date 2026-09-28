@@ -1,0 +1,6 @@
+rtol: 1e-2
+atol: 1e-2
+
+# Fraction of each GPU worker's total HBM its persistent baseline cache may use.
+# Serve restarts to stay within this budget.
+max_mem_ratio: 0.85

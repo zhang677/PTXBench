@@ -1,7 +1,9 @@
 .git
 .venv
 .ptxbench
+.harbor
 data
+results
 outputs
 **/__pycache__
 **/.pytest_cache
@@ -10,5 +12,3 @@ outputs
 **/.agents
 **/.codex
 **/.claude
-
-packages/mini-ptx-agent/fib_runtime/multiturn/analyze_trajectories

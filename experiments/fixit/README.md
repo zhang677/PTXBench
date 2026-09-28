@@ -1,131 +1,70 @@
-# Fixit
+# Fixit SFT
 
-This directory contains the Fixit recipe. The supported user entrypoint is
-`scripts/reproduce_fixit.sh`; files under `packages/` are shared
-implementation details.
+Fixit trains a Qwen3.6-27B LoRA adapter from failed base-model CUDA kernels
+repaired by Gemini 3.1 Pro. It uses the shared multiturn runner for both
+source generation and final evaluation. The checked-in process example covers
+four bundled H100 MHA definitions and five-turn configs. It intentionally does
+not reproduce the original paper's dataset size or results.
 
-## Pipeline from scratch
+## Prerequisites
 
-```text
-Qwen3.6-27B on 8 MHA definitions
-  -> failed source kernels
-  -> Gemini repairs
-  -> successful wrong/fixed kernel pairs
-  -> Qwen reasoning synthesis
-  -> five-message Fixit SFT parquet
-  -> Qwen3.6-27B SFT
-  -> serve final checkpoint
-  -> expert-guided five-definition evaluation
-```
-
-The first four `source-*` stages are the missing upstream data-generation
-path. They generate the `qwen36-27b-linfo-mha*` evaluation roots, select failed
-kernels, ask Gemini to repair them, and collect successful pairs into the
-historical filename `fixit-v5-gemini-kernel-pairs.csv`.
-
-The source Qwen runs intentionally use the unpatched prompt: their purpose is
-to mine failures for repair. Final checkpoint evaluation has only the
-expert-guided/MHA-patched path used by the paper. There is no second unpatched
-evaluation lane. Each GEMM, MHA-forward, and MHA-backward plan uses exactly
-three prompt tags with four replicas per tag.
-
-From the repository root:
+Follow the root [setup](../../README.md#setup), including the profiler's two
+backward-attention blobs and the multiturn Docker image. A base Qwen3.6-27B
+OpenAI-compatible endpoint must serve model ID `Qwen/Qwen3.6-27B`; set
+`PTXBENCH_MODEL_HOST=host:port`. Export `GEMINI_API_KEY` for the repair stage,
+`TINKER_API_KEY` for training, and use a Qwen endpoint again for reasoning
+synthesis. A separate SGLang GPU host is used to serve the trained checkpoint.
 
 ```bash
-uv sync --all-packages --extra training --group dev
-
-export PTXBENCH_ROOT="$(pwd)"
-export MINI_PTX_AGENT_ROOT="$PTXBENCH_ROOT/packages/mini-ptx-agent"
-export PTXBENCH_DATA_ROOT=/path/to/ptxbench-data
-
-scripts/reproduce_fixit.sh --check
-scripts/reproduce_fixit.sh from-scratch
+export PTXBENCH_DATA_ROOT="$PWD/data"   # or persistent storage
+export SERVICE_URL=http://localhost:10000
+export PTXBENCH_MODEL_HOST=localhost:30002
+bash scripts/reproduce_fixit.sh --check
 ```
 
-`from-scratch` executes the following stages in order:
+The dispatcher accepts a stage number (`00` through `09`) or `all`. Run one
+stage at a time when checking output and choosing resource limits. `all` is
+provided for an environment with every external service configured; it does
+not wait for the asynchronous Tinker training job to finish before stage 08.
+Stage 08 does wait for the final checkpoint.
 
-| Stage | Result | External dependency |
+| Stage | Command | Output or action |
 | --- | --- | --- |
-| `source-00` | eight `qwen36-27b-linfo-mha*` source runs | Qwen3.6-27B endpoint and FIBServe |
-| `source-01` | balanced failed-kernel set and Gemini config | none |
-| `source-02` | Gemini repair trajectories | Gemini API and FIBServe |
-| `source-03` | successful wrong/fixed kernel-pair CSV | none |
-| `00` | raw Qwen pair-reasoning JSONL | Qwen3.6-27B endpoint |
-| `01` | length-filtered/repaired reasoning JSONL | Qwen3.6-27B endpoint |
-| `02` | five-message Fixit parquet | none |
-| `03` | trained checkpoint | Tinker API |
-| `04` | served final checkpoint | SSH-accessible SGLang host |
-| `05` | expert-guided five-definition evaluation roots | model endpoint and FIBServe |
+| 00 | `bash scripts/reproduce_fixit.sh 00` | Base Qwen source trajectories from `source-runs.csv` |
+| 01 | `bash scripts/reproduce_fixit.sh 01` | Failed kernels, first five turns, repair config and per-kernel prompt files under `data/fixit/` |
+| 02 | `bash scripts/reproduce_fixit.sh 02` | Gemini repair trajectories under `data/eval_runs/fixit-repairs/` |
+| 03 | `bash scripts/reproduce_fixit.sh 03` | Correct repair pairs with dynamic SASS verification |
+| 04 | `bash scripts/reproduce_fixit.sh 04` | Qwen reasoning JSONL for repair pairs |
+| 05 | `bash scripts/reproduce_fixit.sh 05` | Resynthesized rows that failed the reasoning quality or token filters |
+| 06 | `bash scripts/reproduce_fixit.sh 06` | SFT parquet in `data/fixit/data/` |
+| 07 | `bash scripts/reproduce_fixit.sh 07` | Tinker LoRA training in a local tmux session |
+| 08 | `bash scripts/reproduce_fixit.sh 08` | Download, merge, and serve final checkpoint through SGLang and SSH tunnel |
+| 09 | `bash scripts/reproduce_fixit.sh 09` | Five-workload SFT evaluation from `eval-runs.csv` |
 
-The long-running watchers resume interrupted trajectories and exit only after
-their output roots pass the final audit. Configure the model and evaluator
-endpoints before running:
+Stage 01 keeps only the MHA prompt families `hopper-07/08` and
+`hopper-012/013`, then selects source turns 0–4. It keeps all selected rows by
+default; set `PER_DEFINITION_CAP` to downsample each definition. If no failed
+kernel is found, run more source trajectories or use another source manifest.
+Stage 03 requires the profiling service's runtime SASS path; errors in this
+step should be resolved before treating the pairs as training data. Run the
+collector on a host with CUDA `nvcc` and `cuobjdump` available.
 
-```bash
-MODEL_NAME=Qwen3.6-27B \
-ACCRL_MODEL_HOST=localhost:30062 \
-SERVICE_URL=http://localhost:10000 \
-scripts/reproduce_fixit.sh source-00
+Stages 04 and 05 use the base Qwen endpoint via `OPENAI_BASE_URL`, which the
+wrappers set from `PTXBENCH_MODEL_HOST`. Stage 04 can take many passes; set
+`MAX_PASSES` and `MAX_CONCURRENT` to match the endpoint. Stage 05 uses the
+`Qwen/Qwen3.6-27B` tokenizer and can download it from Hugging Face.
 
-GEMINI_API_KEY=... \
-SERVICE_URL=http://localhost:10000 \
-scripts/reproduce_fixit.sh source-02
-```
+For stage 08, set `REMOTE` to the SSH host and `CONTAINER` to an existing
+SGLang container on that host. The container must have `tmux`, Tinker Cookbook,
+a writable `/data02` directory, and its Tinker key in `/data02/TINKER_API_KEY`.
+`REMOTE_PYTHON` and `PTXBENCH_REMOTE_DATA_ROOT` change those defaults. The
+serving stage copies the checkpoint manifest and shared download helper to the
+container, downloads and merges weights, starts SGLang, and creates the local
+SSH tunnel. It serves ID `Qwen/Qwen3.6-27B`; for stage 09 set
+`PTXBENCH_MODEL_HOST` to the tunnel (`localhost:30052` by default).
 
-Each stage can be run separately:
-
-```bash
-scripts/reproduce_fixit.sh source-01
-scripts/reproduce_fixit.sh source-03
-ACCRL_MODEL_HOST=localhost:30022 scripts/reproduce_fixit.sh 00
-ACCRL_MODEL_HOST=localhost:30022 scripts/reproduce_fixit.sh 01
-scripts/reproduce_fixit.sh 02
-TINKER_API_KEY=... scripts/reproduce_fixit.sh 03
-scripts/reproduce_fixit.sh 04
-scripts/reproduce_fixit.sh 05
-```
-
-The serving stage retains historical defaults for its remote host, container,
-and ports. Override `REMOTE`, `CONTAINER`, `REMOTE_PORT`, `LOCAL_PORT`, and
-`REMOTE_PYTHON` for the target infrastructure. The remote environment must
-contain the locked `tinker-cookbook` dependency.
-
-## Starting from the exact historical pairs
-
-For a historical replay rather than regenerating pairs, extract the relocatable
-258-pair data bundle and point `PTXBENCH_DATA_ROOT` at its `ptxbench-data`
-directory:
-
-```bash
-scripts/reproduce_fixit.sh --check-data
-scripts/reproduce_fixit.sh all
-```
-
-`--check-data` verifies every trajectory, wrong kernel, log, fixed kernel,
-plan, and correctness export referenced by the pair CSV.
-
-Release maintainers can build that bundle with:
-
-```bash
-python scripts/build_fixit_data_bundle.py \
-  --pairs-csv /path/to/fixit-v5-gemini-kernel-pairs.csv \
-  --data-root /path/to/AccRL-exps \
-  --mini-agent-root /path/to/AccRL \
-  --output dist/fixit-source-data.tar.gz
-```
-
-## Layout
-
-| Location | Purpose |
-| --- | --- |
-| `experiments/fixit/` | Fixit orchestration and run instructions |
-| `configs/fixit/` | source-mining and expert-guided evaluation plans |
-| `packages/mini-ptx-agent/` | reusable collection, synthesis, training, and agent code |
-| `packages/fibserve/` | independent GPU correctness/profiling service |
-| `$PTXBENCH_DATA_ROOT/` | source runs and generated artifacts |
-
-For an evaluation-only static preflight, use:
-
-```bash
-scripts/smoke_fixit.sh --check
-```
+Source and evaluation manifests can be edited to use more workloads or
+trajectory configs; `experiments/shared/run_manifest.py --check` validates
+paths and prompt tags before running. Output roots resume from their
+`plan.json`; choose fresh roots for a different experiment. Keep source and
+SFT evaluation roots separate.

@@ -1,0 +1,83 @@
+{
+  "name": "mha_with_lse_d128_causal",
+  "description": "Causal multi-head attention forward returning O and LSE, bf16 inputs. Q/K/V share shape (B,H,S,D). Outputs: O = softmax(Q@K^T/sqrt(D))@V (bf16, [B,H,S,D]) and LSE = max(P) + log(sum(exp(P - max(P)))) where P = Q@K^T/sqrt(D) (fp32 natural-log, [B,H,S]), with a lower-triangular mask over (query_pos, key_pos). Reference is torch.ops.aten._scaled_dot_product_cudnn_attention; LSE is squeezed from (B,H,S,1) to (B,H,S).",
+  "op_type": "attention",
+  "tags": [
+    "status:verified",
+    "source:tritonbench",
+    "bench:flash_attention",
+    "ref:aten_cudnn_attention",
+    "returns:o_and_lse",
+    "causal:true"
+  ],
+  "axes": {
+    "B": {
+      "type": "const",
+      "value": 4,
+      "description": "batch size"
+    },
+    "H": {
+      "type": "const",
+      "value": 48,
+      "description": "number of attention heads"
+    },
+    "D": {
+      "type": "const",
+      "value": 128,
+      "description": "head dimension"
+    },
+    "S": {
+      "type": "var",
+      "description": "sequence length (Q and KV share this axis)"
+    }
+  },
+  "inputs": {
+    "Q": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "D"
+      ],
+      "dtype": "bfloat16"
+    },
+    "K": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "D"
+      ],
+      "dtype": "bfloat16"
+    },
+    "V": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "D"
+      ],
+      "dtype": "bfloat16"
+    }
+  },
+  "outputs": {
+    "O": {
+      "shape": [
+        "B",
+        "H",
+        "S",
+        "D"
+      ],
+      "dtype": "bfloat16"
+    },
+    "LSE": {
+      "shape": [
+        "B",
+        "H",
+        "S"
+      ],
+      "dtype": "float32"
+    }
+  },
+  "reference": "import torch\n\n\ndef run(Q, K, V):\n    out = torch.ops.aten._scaled_dot_product_cudnn_attention(\n        Q, K, V,\n        None,    # attn_bias\n        True,    # compute_log_sumexp\n        0.0,     # dropout_p\n        True,    # is_causal\n        False,   # return_debug_mask\n    )\n    return out[0], out[1].squeeze(-1)\n"
+}

@@ -1,0 +1,19 @@
+You are an expert Triton kernel developer. Your task is to write an optimized NVIDIA GPU kernel using Triton.
+
+## Response Format
+
+Each response must provide the complete `kernel.py` implementation inside a single ```python code block.
+You will receive evaluation feedback showing import or compilation errors, correctness results, or performance measurements. Use this feedback to iteratively improve your kernel.
+
+## Requirements
+
+- Use Triton (`triton` and `triton.language`) for the GPU computation and define a destination-passing `run(...)` entry point.
+- The reference function describes the required semantics only; do not copy its signature or output-allocation behavior. The public `run(...)` entry point receives every input tensor in definition order, followed by every preallocated output tensor in definition order. Write each result into the supplied output tensor; allocating or replacing outputs is not allowed.
+- Use one or more real `@triton.jit` kernels and launch them from `run(...)` on the current CUDA stream.
+- Do not use CuTeDSL, CUDA extensions, inline CUDA C++, cuBLAS, cuDNN, or PyTorch compute operations as a fallback.
+- PyTorch may be used for tensor metadata and CUDA runtime/device operations. Do not call `torch.empty`, `torch.zeros`, or related allocation functions except inside a function installed with `triton.set_allocator` solely for device-created tensor-descriptor storage.
+- Keep runtime-varying sizes and scalar values as ordinary kernel arguments unless specialization is intentional. Use `tl.constexpr` for tile shapes, feature flags, dtypes, axes, and other compile-time decisions.
+- Provide a single self-contained Python file. The available kernel dependencies are `torch` and `triton`.
+
+## Reference Material
+

@@ -1,0 +1,1 @@
+{"definition":"mha_with_lse_d128","solution":null,"workload":{"uuid":"bc38b351-d595-451b-9153-8e225702e53b","axes":{"B":4,"H":48,"D":128,"S":4096},"inputs":{"Q":{"type":"random"},"K":{"type":"random"},"V":{"type":"random"}}},"evaluation":null}

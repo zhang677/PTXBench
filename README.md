@@ -1,274 +1,137 @@
 # PTXBench
 
-[![Paper](https://img.shields.io/badge/arXiv-2608.17379-b31b1b.svg)](https://arxiv.org/pdf/2608.17379)
-[![Blog Post](https://img.shields.io/badge/Blog-ptxbench.html-blue)](https://zhang677.github.io/blog_md/ptxbench.html)
-[![HuggingFace](https://img.shields.io/badge/🤗-PTXBench-yellow)](https://huggingface.co/collections/Genghan/ptxbench-qwen36-27b-sft-series)
+PTXBench contains one GPU profiling service and two ways to run kernel agents:
+the multiturn model loop and the coding-agent gateway. Fixit SFT and KernelGen
+use the same multiturn runner and prompt registry for source and final evaluation.
+This repository gives the experiment process and a small set of runnable examples;
+it does not include paper outputs, plots, or the full prepared experiment matrix.
 
-PTXBench is an open-source environment for evaluating and building kernel agents that use architecture-specifc CUDA/PTX. It contains:
+| Directory | Purpose |
+| --- | --- |
+| `fib-profile/` | Five bundled H100 workload definitions and the GPU profiling service |
+| `multiturn/` | Model loop, CUDA/Triton evaluator tests, prompt registry, and runner |
+| `ptxbench-eval/` | Coding-agent gateway, launcher, agent images, and examples |
+| `experiments/prepared/configs/` | One multiturn config example |
+| `experiments/fixit/` | Failed-kernel repair, reasoning, SFT, serving, evaluation |
+| `experiments/kernelgen/` | Correct-kernel reasoning, SFT, serving, evaluation |
+| `experiments/shared/` | Run manifests, turn export, and shared training/serving code |
 
-- **mini-ptx-agent**: the reusable agent, prompt, trajectory inspection, and
-  benchmark implementation.
-- **FIBServe**: a GPU profiling service derived from [FlashInfer-Bench](https://bench.flashinfer.ai/).
-- **ptxbench-eval**: an evaluation gateway and coding-agent launcher with
-  Codex and Antigravity examples.
+## Setup
 
-🚧 This repository is still under construction.
-
-## System overview
-
-![PTXBench system diagram](assets/ptxbench-system.png)
-
-## Get a first result
-
-The smallest real PTXBench run asks one model to optimize one GEMM for three
-turns. It needs:
-
-- an NVIDIA Hopper/H100-class FIBServe instance loaded with the
-  [`AccRL/accrl-training`](https://huggingface.co/datasets/AccRL/accrl-training)
-  FlashInfer Trace dataset;
-- the `ptxbench-eval:dev` Docker image; and
-- either an OpenAI-compatible Qwen endpoint or credentials for one of the
-  hosted models supported by `mini-ptx-agent`.
-
-Set up the Python environment and evaluator image:
+Use Python 3.12, Docker with NVIDIA GPU access, `tmux`, and an H100 host for the
+bundled workloads. SFT runtime-SASS export also needs host `nvcc`,
+`cuobjdump`, and TVM-FFI headers/libraries. The profiling service has its own
+environment in the Docker image; install the host runner and coding-agent
+launcher separately:
 
 ```bash
-uv sync --all-packages --group dev
-docker build -f docker/Dockerfile.eval -t ptxbench-eval:dev .
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -e '.[sft,dev]'
+pip install -e ./ptxbench-eval
+pip install -r multiturn/requirements.txt
 ```
 
-Start FIBServe as described below, then select a model. For a Qwen endpoint,
-the served ID must exactly match `MODEL_NAME`:
+The SFT extra installs Tinker Cookbook for training and checkpoint handling.
+Training also needs a Tinker account. For evaluation alone, `pip install -e .`
+and the multiturn requirements suffice. Model provider credentials are read from
+environment variables; see `.env.example`.
+
+Start the service using [fib-profile/scripts/README.md](fib-profile/scripts/README.md).
+For the backward attention workloads, generate the two checksum-verified input
+blobs as described in [fib-profile/dataset/README.md](fib-profile/dataset/README.md)
+before starting the service. Check service health with:
 
 ```bash
-export MODEL_NAME=Qwen3.6-27B
-export ACCRL_MODEL_HOST=localhost:30062
-export SERVICE_URL=http://localhost:10000
-
-uv run ptxbench quickstart --check
-uv run ptxbench quickstart --run
+curl -fsS http://localhost:10000/health
 ```
 
-For example, a hosted OpenAI model can be used without
-`ACCRL_MODEL_HOST`:
+Build the multiturn evaluator image:
 
 ```bash
-export MODEL_NAME=GPT-5.4
-export OPENAI_API_KEY=...
-uv run ptxbench quickstart --run
+docker build -f multiturn/docker/Dockerfile.eval -t ptxbench-multiturn-eval:latest .
 ```
 
-### Triton quickstart
+## Multiturn model loop
 
-The same quickstart can generate and evaluate Triton kernels through the
-standard evaluator and FIBServe setup; no Triton-specific Docker image is
-required. Pass `--language triton` to select the checked-in Hopper Triton
-prompt and configuration:
+The runner expands a JSON config into trajectories and writes a `plan.json`,
+trajectories, logs, and success artifacts into a new output root. The shared
+prompt registry is `multiturn/prompts/hub.json`; assembled documents are under
+`multiturn/prompts/assembled`. The same runner supports CUDA and Triton test
+scripts under `multiturn/tests/`.
 
 ```bash
-uv run ptxbench quickstart --language triton --check
-uv run ptxbench quickstart --language triton --run
+export GEMINI_API_KEY=...  # for this example model
+python multiturn/scripts/render.py --check
+python multiturn/run_parallel_v2.py \
+  --config experiments/prepared/configs/example.json \
+  --definition gemm_n7168_k5120 \
+  --test-path multiturn/tests/cuda/gemm_n7168_k5120.py \
+  --model gemini-3.1-pro-preview \
+  --service-url http://localhost:10000 \
+  --gpu-arch hopper --without-local-gpu \
+  --max-parallel 1 --max-profiles 1 \
+  --image ptxbench-multiturn-eval:latest \
+  --output-root data/eval_runs/gemini-gemm-example
 ```
 
-CUDA remains the default when `--language` is omitted.
+Resume an interrupted root with the same model, service, image, and output
+options plus `--resume`, omitting config, definition, and test path. To run a
+locally served Qwen model, set `PTXBENCH_MODEL_HOST=host:port` and use
+`--model Qwen3.6-27B`; the endpoint must expose model ID
+`Qwen/Qwen3.6-27B` via its OpenAI-compatible API.
 
-Every run leaves the full `trajectories/exp_000.json`, evaluator logs, and a
-concise `quickstart-result.json` under
-`data/eval_runs/quickstart-...-gemm/`. CUDA candidates are saved as
-`exp_000/kernel.cu`, while Triton candidates are saved as
-`exp_000/kernel.py`; correctness-passing versions are additionally saved under
-`success/exp_000/` as `kernel_vN.cu` or `kernel_vN.py`, respectively. The
-report deliberately distinguishes “the runner completed” from “the kernel was
-correct” and “the 1.0x target was achieved.” mini-ptx-agent writes trajectories
-in a JSON format compatible with mini-swe-agent and its trajectory tooling.
-Reprint any run with:
+## Coding agents
+
+`ptxbench-eval` uses the same prompt hub and profiling service. Its two H100
+GEMM examples are under `ptxbench-eval/examples/`. The launchers build their
+agent and gateway images, create a fresh experiment root, and run the gateway:
 
 ```bash
-uv run ptxbench quickstart --report data/eval_runs/quickstart-...-gemm
+export GEMINI_API_KEY=...
+bash ptxbench-eval/examples/gemini_gemm/run_experiment.sh
 ```
 
-## Local paths
-
-For local development, configure the project/data paths and the Compose
-trace-set collection:
+For Codex, set up Codex authentication at `~/.codex/auth.json` and run:
 
 ```bash
-export PTXBENCH_ROOT=/home/ubuntu/PTXBench
-export PTXBENCH_DATA_ROOT="$PTXBENCH_ROOT/data"
-export PTXBENCH_TRACESETS_ROOT="$PTXBENCH_ROOT/data/datasets"
-export DATASET_ROOTS=/workspace/trace-sets/accrl-training
-export MINI_PTX_AGENT_ROOT="$PTXBENCH_ROOT/packages/mini-ptx-agent"
+bash ptxbench-eval/examples/gpt56_gemm/run_experiment.sh
 ```
 
-`PTXBENCH_DATA_ROOT` may point at an existing directory to hold experiment artifacts.
+Each `experiment.json` supplies the three example prompt tags, model, workload,
+and limits. Edit a copy for another coding-agent experiment. See
+[ptxbench-eval/WORKFLOW.md](ptxbench-eval/WORKFLOW.md) for prerequisites and
+launcher options.
 
-`PTXBENCH_TRACESETS_ROOT` is a shared parent directory on the host. Each child
-is a complete FlashInfer Trace dataset with its own `definitions/` and
-`workloads/` directories. For example:
+## SFT experiments
 
-```text
-$PTXBENCH_TRACESETS_ROOT/
-├── accrl-training/
-│   ├── definitions/
-│   └── workloads/
-└── another-trace-set/
-    ├── definitions/
-    └── workloads/
-```
-
-Compose bind-mounts that parent directory read-only at `/workspace/trace-sets`:
-
-```text
-host:      /home/ubuntu/PTXBench/data/datasets
-container: /workspace/trace-sets
-```
-
-`DATASET_ROOTS` is always a colon-separated list selecting dataset directories
-inside the mount; a single dataset is simply a one-item list. Compose uses the
-shared parent because it cannot expand one environment variable into a variable
-number of bind mounts.
-
-Download the quickstart trace set from
-[`AccRL/accrl-training`](https://huggingface.co/datasets/AccRL/accrl-training)
-into `$PTXBENCH_TRACESETS_ROOT/accrl-training`. To load another trace set,
-place it alongside that directory and extend the list:
+Fixit selects failed base-model kernels, asks Gemini to repair them, synthesizes
+reasoning, trains a LoRA adapter, serves it, and evaluates the result. KernelGen
+selects correct Gemini kernels, synthesizes reasoning with GLM-5.2, then uses
+the same training and evaluation path. Both workflows have ordered stages and
+machine-readable source/evaluation manifests:
 
 ```bash
-export DATASET_ROOTS=/workspace/trace-sets/accrl-training:/workspace/trace-sets/another-trace-set
+bash scripts/reproduce_fixit.sh --check
+bash scripts/reproduce_kernelgen.sh --check
+bash scripts/reproduce_fixit.sh 00       # run one stage
+bash scripts/reproduce_kernelgen.sh 00
 ```
 
-No files are merged on disk, and no dataset is copied into a Docker image.
+The example source manifests use four H100 d128 MHA workloads; evaluation also
+includes the bundled GEMM. Adjust manifests and configs for a larger experiment.
+Run stages in order using the details in [Fixit](experiments/fixit/README.md)
+and [KernelGen](experiments/kernelgen/README.md). Outputs default to `data/`;
+set `PTXBENCH_DATA_ROOT` to persistent storage when running long experiments.
 
-## Development setup
+## Checks
 
 ```bash
-uv sync --all-packages --group dev
+python multiturn/scripts/render.py --check
+bash scripts/reproduce_fixit.sh --check
+bash scripts/reproduce_kernelgen.sh --check
+LITELLM_LOCAL_MODEL_COST_MAP=True pytest multiturn/tests experiments/tests
 ```
 
-Install the optional Tinker training stack when reproducing an AccRL training
-run:
-
-```bash
-uv sync --all-packages --extra training --group dev
-uv run python -c "import tinker, tinker_cookbook"
-```
-
-The training commands require a valid `TINKER_API_KEY`; keep it in the
-environment or a local `.env` file, which is ignored by Git.
-
-Build the isolated kernel evaluator:
-
-```bash
-docker build -f docker/Dockerfile.eval -t ptxbench-eval:dev .
-```
-
-Build and start FIBServe:
-
-```bash
-cp .env.example docker/.env
-docker compose --env-file docker/.env -f docker/compose.yaml up --build fibserve
-```
-
-The public experiment index starts at [`experiments/README.md`](experiments/README.md).
-The source/data boundary and release procedure are documented in
-[`RELEASING.md`](RELEASING.md).
-For Fixit, use
-[`experiments/fixit/README.md`](experiments/fixit/README.md) as the
-single start page and `scripts/reproduce_fixit.sh` as the runnable entrypoint.
-
-Use `scripts/smoke_fixit.sh --check` for a non-mutating dependency and
-configuration preflight.
-
-Use `scripts/reproduce_fixit.sh --check` to validate the complete source
-closure and `from-scratch` to run failure mining, Gemini repair, SFT, and the
-paper's expert-guided evaluation in order. KernelGen starts at
-[`experiments/kernelgen/README.md`](experiments/kernelgen/README.md) and uses
-`scripts/reproduce_kernelgen.sh`. `ptxbench-inspect` remains part of the
-supported CLI.
-
-For a live run, select a dedicated OpenAI-compatible model endpoint. PTXBench
-does not default to a shared model serve:
-
-```bash
-MODEL_NAME=Qwen3.6-27B \
-ACCRL_MODEL_HOST=localhost:30062 \
-SERVICE_URL=http://localhost:11000 \
-scripts/smoke_fixit.sh --run
-```
-
-To run the same orchestration from the agent container, set
-`PTXBENCH_HOST_ROOT` to the checkout's absolute host path. The path is mounted
-at the same location in the agent so sibling eval containers launched through
-the Docker socket can mount trajectory workspaces correctly:
-
-```bash
-export PTXBENCH_HOST_ROOT="$(pwd)"
-docker compose -f docker/compose.yaml run --rm \
-  --entrypoint bash agent scripts/smoke_fixit.sh --check
-```
-
-## Coding-agent evaluation
-
-[`integrations/ptxbench-eval`](integrations/ptxbench-eval) contains the
-standalone `ptxbench-eval` CLI, evaluation gateway, and `ptxbench-run`
-launcher. Its [Codex](integrations/ptxbench-eval/examples/gpt56_gemm) and
-[Antigravity](integrations/ptxbench-eval/examples/gemini_gemm) examples include
-experiment configs, prompt context, Docker images, and launch scripts. The
-gateway sends candidate kernels to FIBServe for correctness and performance
-feedback.
-
-Install the host-side package from this checkout:
-
-```bash
-python -m pip install -e integrations/ptxbench-eval
-ptxbench-run --help
-```
-
-With an H100 FIBServe instance and Codex authentication configured, launch the
-Codex GEMM example from the repository root:
-
-```bash
-PROFILE_BASE_URL=http://127.0.0.1:11000 \
-EXPERIMENT_ROOT="$PWD/data/eval_runs/codex-gpt56-gemm" \
-bash integrations/ptxbench-eval/examples/gpt56_gemm/run_experiment.sh
-```
-
-The script checks the requested FIBServe workload, builds the gateway and
-agent images from `integrations/`, and writes run artifacts to
-`EXPERIMENT_ROOT`. Set `GEMINI_API_KEY` and use the corresponding Antigravity
-script for the Gemini example.
-
-## Huggingface
-Other example datasets include non-4096 sequence-length attention workload records at [`Genghan/accrl-training-heavy`](https://huggingface.co/datasets/Genghan/accrl-training-heavy) and a more diverse [`flashinfer-ai/flashinfer-trace`](https://huggingface.co/datasets/flashinfer-ai/flashinfer-trace). The byte-exact historical s0-s6 training parquets are also retained in
-[`Genghan/PTXBench-Qwen3.6-27B-SFT`](https://huggingface.co/datasets/Genghan/PTXBench-Qwen3.6-27B-SFT).
-
-## Major dependencies
-- **mini-swe-agent 2.4.6**: an external, exactly pinned Python dependency used
-  as the agent runtime and Docker environment abstraction.
-- **tinker-cookbook**: an optional, locked dependency for reproducing the
-  Tinker SFT training and checkpoint-export workflow.
-
-## Citation
-
-If you use PTXBench in your work, please cite the [paper](http://arxiv.org/abs/2608.17379):
-
-```bibtex
-@misc{ptxbench2026,
-  title = {{PTXBench}: Benchmark and Adapt {LLMs} for {GPU} Kernel Optimization with Architecture-specific {PTX}},
-  author = {Genghan Zhang and Yixin Dong and Chengze Fan and Zhichen Zeng and Yueming Yuan and Shaowei Zhu and Kunle Olukotun},
-  year = {2026},
-  eprint = {2608.17379},
-  archivePrefix = {arXiv},
-  primaryClass = {cs.CL},
-  url = {http://arxiv.org/abs/2608.17379},
-}
-```
-
-## Licensing and provenance
-
-PTXBench and mini-ptx-agent are Apache-2.0. FIBServe is derived from
-FlashInfer Bench and preserves its Apache-2.0 license and NOTICE. mini-swe-agent
-is consumed under its MIT license and is not vendored into this repository.
-tinker-cookbook is consumed under Apache-2.0 and is also not vendored. See
-[`NOTICE`](NOTICE) for the NVIDIA reference-material rationale, hosted-model
-workflow terms, and licenses for code adapted from Helion and FlashAttention.
+Static checks validate config and stage wiring. GPU profiling, hosted model
+calls, and Tinker training require their respective services and credentials.

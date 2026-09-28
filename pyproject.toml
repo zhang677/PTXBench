@@ -3,38 +3,32 @@ requires = ["setuptools>=75", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ptxbench"
-version = "0.1.0.dev0"
-description = "Open-source PTX kernel agent and GPU benchmark service"
+name = "ptxbench-workflows"
+version = "0.1.0"
+description = "PTXBench multiturn, coding-agent, Fixit, and KernelGen experiment workflows"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
 dependencies = [
-  "fibserve",
-  "mini-ptx-agent",
+  "mini-swe-agent==2.2.6",
+  "litellm==1.82.4",
+  "requests>=2.32",
+  "httpx[socks]>=0.27",
+  "apache-tvm-ffi>=0.1.2",
+  "pyyaml>=6.0",
+  "datasets>=4.8",
+  "pandas>=2.2",
+  "pyarrow>=23.0",
+  "transformers>=4.50",
 ]
 
 [project.optional-dependencies]
-training = [
-  "mini-ptx-agent[training]",
-]
+sft = ["tinker-cookbook>=0.4.3,<0.5"]
+dev = ["pytest>=8"]
 
-[tool.uv.sources]
-mini-ptx-agent = {workspace = true}
-fibserve = {workspace = true}
-
-[tool.uv.workspace]
-members = [
-  "packages/mini-ptx-agent",
-  "packages/fibserve",
-]
-
-[tool.setuptools]
-packages = []
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["experiments*"]
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "packages/mini-ptx-agent/tests"]
-
-[tool.ruff]
-target-version = "py312"
-line-length = 120
+testpaths = ["multiturn/tests", "experiments/tests"]
