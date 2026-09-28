@@ -111,7 +111,7 @@ metadata mentions HGMMA but is not executable""",
     )
     assert hopper.cubin_sass_arch_tag == "H"
     assert hopper.cubin_gmma_instruction_count == 1
-    assert hopper.cubin_tma_instruction_count == 1
+    assert hopper.cubin_tma_instruction_count == 2
 
     blackwell = exporter.parse_static_sass(
         """/*0000*/ UTCHMMA gdesc[UR1], tmem[UR2];
@@ -132,6 +132,21 @@ def test_dynamic_tag_requires_positive_predicate_true_execution() -> None:
     assert evidence.sass_arch_tag == "H"
     assert evidence.gmma_count == 0
     assert evidence.tma_count == 2
+
+
+def test_raw_sass_opcode_coverage() -> None:
+    for architecture, opcodes in {
+        "hopper": ("UTMALDG.2D", "UTMAREDG.2D", "UTMACCTL.PF", "UTMAPF"),
+        "blackwell": ("UTMALDG.2D", "UTMAPF", "UTC.X", "LDT.x4", "LDTM.x4", "STT.x4", "STTM.x4"),
+    }.items():
+        for opcode in opcodes:
+            static = exporter.parse_static_sass(f"/*0010*/ {opcode} R0, R1;", architecture=architecture)
+            dynamic = exporter.parse_dynamic_sass(f"0x10 {opcode} R0, R1 2 32", architecture=architecture)
+            assert static.cubin_sass_arch_tag == exporter.ARCHITECTURES[architecture].tag, (architecture, opcode)
+            assert dynamic.sass_arch_tag == exporter.ARCHITECTURES[architecture].tag, (architecture, opcode)
+            assert dynamic.tma_count + dynamic.tcgen_count == 2, (architecture, opcode)
+            predicated_off = exporter.parse_dynamic_sass(f"0x10 {opcode} R0, R1 2 0", architecture=architecture)
+            assert predicated_off.sass_arch_tag == "", (architecture, opcode)
 
 
 def test_export_writes_native_sass_arch_tag_and_skips_static_misses(tmp_path: Path) -> None:
@@ -162,6 +177,13 @@ def test_export_writes_native_sass_arch_tag_and_skips_static_misses(tmp_path: Pa
     assert rows[2]["sass_arch_tag"] == "H"
     assert rows[2]["sass_gmma_count"] == "7"
     assert rows[2]["sass_profile_task_id"] == "task-1"
+    assert rows[2]["raw_sass_coverage"] == "raw-sass-utma-all-v1"
+    assert rows[2]["source_sha256"]
+    assert Path(rows[2]["static_cache_file"]).is_file()
+    assert Path(rows[2]["cache_file"]).is_file()
+    assert json.loads(Path(rows[2]["static_cache_file"]).read_text())["raw_sass_coverage"] == "raw-sass-utma-all-v1"
+    assert json.loads(Path(rows[2]["cache_file"]).read_text())["raw_sass_coverage"] == "raw-sass-utma-all-v1"
+    assert rows[1]["cache_file"] == ""
 
 
 def test_export_reuses_static_and_dynamic_caches(tmp_path: Path) -> None:
@@ -183,8 +205,12 @@ def test_export_reuses_static_and_dynamic_caches(tmp_path: Path) -> None:
     assert read_output(run_dir)[2]["sass_arch_tag"] == "H"
 
 
-def test_profile_cache_matches_accrl_v4_schema(tmp_path: Path) -> None:
+def test_profile_cache_v4_schema_and_coverage(tmp_path: Path) -> None:
     assert exporter.SASS_FIELDS == [
+        "source_sha256",
+        "raw_sass_coverage",
+        "static_cache_file",
+        "cache_file",
         "cubin_sass_arch_tag",
         "cubin_gmma_instruction_count",
         "cubin_tma_instruction_count",
@@ -205,6 +231,7 @@ def test_profile_cache_matches_accrl_v4_schema(tmp_path: Path) -> None:
         json.dumps(
             {
                 "schema_version": 4,
+                "raw_sass_coverage": "raw-sass-utma-all-v1",
                 "architecture": "hopper",
                 "definition": "definition",
                 "workload": "workload",
@@ -218,7 +245,7 @@ def test_profile_cache_matches_accrl_v4_schema(tmp_path: Path) -> None:
                     "tma_pred_on_thread_count": 3,
                     "matched_lines": ["0x10 HGMMA.X 7 224"],
                     "profile_line_count": 20,
-                    "task_id": "task-accrl",
+                    "task_id": "task-profile",
                     "tcgen_count": 0,
                     "tcgen_pred_on_thread_count": 0,
                 },
@@ -229,11 +256,20 @@ def test_profile_cache_matches_accrl_v4_schema(tmp_path: Path) -> None:
     evidence = exporter.load_cached_dynamic_evidence(cache_path)
     assert exporter.PROFILE_CACHE_SCHEMA_VERSION == 4
     assert evidence.sass_arch_tag == "H"
-    assert evidence.task_id == "task-accrl"
+    assert evidence.task_id == "task-profile"
     assert (
         exporter.profile_source_hash("source", "definition", "workload", "hopper")
-        == "bebfc04539ff3ec7910c3064433027aa16dd03cfaf59588d20804374e5c9f76c"
+        == "4143c614f9cec51f2c0cd16c8d953d3c235240938e7a086627ad287f2fa2dd65"
     )
+    stale_payload = json.loads(cache_path.read_text())
+    stale_payload.pop("raw_sass_coverage")
+    cache_path.write_text(json.dumps(stale_payload))
+    try:
+        exporter.load_cached_dynamic_evidence(cache_path)
+    except ValueError as exc:
+        assert "unsupported raw SASS coverage" in str(exc)
+    else:
+        raise AssertionError("profile cache without current raw coverage was accepted")
 
 
 def test_correctness_only_mode_is_explicit(tmp_path: Path) -> None:
@@ -276,6 +312,34 @@ def test_cli_refuses_to_silently_reuse_non_native_output(tmp_path: Path) -> None
             raise AssertionError("non-native output was silently reused")
     finally:
         sys.argv = original_argv
+
+
+def test_cli_refuses_to_reuse_correctness_only_output_for_sass(tmp_path: Path, monkeypatch) -> None:
+    run_dir = make_run(tmp_path)
+    run_export(
+        run_dir,
+        verify_sass=False,
+        inspect_one=lambda _candidate: (_ for _ in ()).throw(AssertionError("inspected cubin")),
+        profile_one=lambda _candidate: (_ for _ in ()).throw(AssertionError("profiled kernel")),
+    )
+    manifest = tmp_path / "experiments.csv"
+    write_csv(
+        manifest,
+        ["arch", "definition", "workload", "exp_dir"],
+        [{"arch": "hopper", "definition": "definition", "workload": "workload", "exp_dir": str(run_dir)}],
+    )
+    monkeypatch.setattr(exporter, "find_tvm_ffi_dir", lambda *_: tmp_path)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [str(SCRIPT_PATH), "--experiments-csv", str(manifest), "--base-url", "http://localhost:10000"],
+    )
+    try:
+        exporter.main()
+    except ValueError as exc:
+        assert "outdated SASS coverage" in str(exc)
+    else:
+        raise AssertionError("correctness-only output was silently reused as SASS evidence")
 
 
 def write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, object]]) -> None:

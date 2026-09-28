@@ -11,7 +11,9 @@ for the experiment architecture and its embedded cubin is inspected with
 ``cuobjdump --dump-sass``. Candidates with a selected architecture-specific
 SASS family are then profiled through FIBServe. ``sass_arch_tag`` is set only
 when Nsight Compute reports positive predicate-true execution for a matching
-instruction. No intermediate correctness CSV or CSV merge is required.
+instruction. Raw collection covers all UTMA instructions and the Blackwell
+UTC, LDT, and STT families. The architecture tag reports raw instruction-family
+execution. No intermediate correctness CSV or CSV merge is required.
 """
 
 from __future__ import annotations
@@ -43,11 +45,12 @@ from accrl.utils.code_utils import extract_code_block
 DEFAULT_OUTPUT_NAME = "turn_correctness_arch.csv"
 DEFAULT_STATIC_CACHE_DIR_NAME = "sass_cubin_cache_v1"
 DEFAULT_PROFILE_CACHE_DIR_NAME = "sass_profile_cache_v2"
-STATIC_CACHE_SCHEMA_VERSION = 1
+STATIC_CACHE_SCHEMA_VERSION = 2
 PROFILE_CACHE_SCHEMA_VERSION = 4
 TERMINAL_TASK_STATUSES = {"completed", "failed"}
-TMA_TRANSFER_OPCODES = frozenset({"UTMALDG", "UTMASTG", "UTMAREDG"})
-BLACKWELL_TCGEN_PREFIXES = ("UTC", "LDTM", "STTM")
+RAW_TMA_SASS_COVERAGE = "utma-all-v1"
+BLACKWELL_TCGEN_PREFIXES = ("UTC", "LDT", "STT")
+BLACKWELL_RAW_SASS_COVERAGE = "ldt-stt-v1"
 
 
 @dataclass(frozen=True)
@@ -72,6 +75,10 @@ ARCHITECTURES = {
 
 BASE_FIELDS = ["trajectory_id", "turn", "correctness", "speedup"]
 SASS_FIELDS = [
+    "source_sha256",
+    "raw_sass_coverage",
+    "static_cache_file",
+    "cache_file",
     "cubin_sass_arch_tag",
     "cubin_gmma_instruction_count",
     "cubin_tma_instruction_count",
@@ -93,7 +100,7 @@ SASS_FIELDS = [
 SASS_LINE_RE = re.compile(
     r"^\s*0x[0-9a-f]+\s+.*?\b(?P<opcode>"
     r"[A-Z0-9]*GMMA(?:\.[A-Z0-9]+)*|UTMA[A-Z0-9.]*|"
-    r"UTC[A-Z0-9.]*|LDTM(?:\.[A-Z0-9]+)*|STTM(?:\.[A-Z0-9]+)*)\b"
+    r"UTC[A-Z0-9.]*|LDTM?(?:\.[A-Z0-9]+)*|STTM?(?:\.[A-Z0-9]+)*)\b"
     r".*?\s(?P<count>[0-9][0-9,]*)\s+(?P<pred_on_count>[0-9][0-9,]*)\s*$",
     re.IGNORECASE,
 )
@@ -103,7 +110,7 @@ SASS_LINE_RE = re.compile(
 STATIC_SASS_LINE_RE = re.compile(
     r"^\s*/\*[0-9a-f]+\*/.*?\b(?P<opcode>"
     r"[A-Z0-9]*GMMA(?:\.[A-Z0-9]+)*|UTMA[A-Z0-9.]*|"
-    r"UTC[A-Z0-9.]*|LDTM(?:\.[A-Z0-9]+)*|STTM(?:\.[A-Z0-9]+)*)\b",
+    r"UTC[A-Z0-9.]*|LDTM?(?:\.[A-Z0-9]+)*|STTM?(?:\.[A-Z0-9]+)*)\b",
     re.IGNORECASE,
 )
 
@@ -297,12 +304,12 @@ def parse_static_sass(
         matched_lines.append(line.rstrip())
         if "GMMA" in opcode:
             gmma_count += 1
-        elif opcode.split(".", 1)[0] in TMA_TRANSFER_OPCODES:
+        elif opcode.startswith("UTMA"):
             tma_count += 1
         if opcode.startswith(BLACKWELL_TCGEN_PREFIXES):
             tcgen_count += 1
 
-    has_target = (gmma_count > 0 or tma_count > 0) if architecture == "hopper" else tcgen_count > 0
+    has_target = (gmma_count > 0 or tma_count > 0) if architecture == "hopper" else (tcgen_count > 0 or tma_count > 0)
     return StaticSassEvidence(
         cubin_sass_arch_tag=config.tag if has_target else "",
         cubin_gmma_instruction_count=gmma_count,
@@ -344,7 +351,7 @@ def parse_dynamic_sass(
             gmma_pred_on_thread_count += pred_on_count
             if pred_on_count > 0:
                 gmma_count += count
-        elif opcode.split(".", 1)[0] in TMA_TRANSFER_OPCODES:
+        elif opcode.startswith("UTMA"):
             tma_pred_on_thread_count += pred_on_count
             if pred_on_count > 0:
                 tma_count += count
@@ -353,7 +360,7 @@ def parse_dynamic_sass(
             if pred_on_count > 0:
                 tcgen_count += count
 
-    has_target = (gmma_count > 0 or tma_count > 0) if architecture == "hopper" else tcgen_count > 0
+    has_target = (gmma_count > 0 or tma_count > 0) if architecture == "hopper" else (tcgen_count > 0 or tma_count > 0)
     return DynamicSassEvidence(
         sass_arch_tag=config.tag if has_target else "",
         gmma_count=gmma_count,
@@ -573,15 +580,30 @@ def submit_and_poll_profile(
     return parse_dynamic_sass(report, architecture=architecture, task_id=task_id)
 
 
+def raw_sass_cache_suffix(architecture: str) -> str:
+    """Version raw opcode coverage independently of downstream analysis rules."""
+    architecture = normalize_architecture(architecture)
+    suffix = f"\0raw-sass-{RAW_TMA_SASS_COVERAGE}"
+    if architecture == "blackwell":
+        suffix += f"-{BLACKWELL_RAW_SASS_COVERAGE}"
+    return suffix
+
+
 def static_source_hash(source: str, architecture: str) -> str:
-    material = (f"sass-cubin-v{STATIC_CACHE_SCHEMA_VERSION}\0{normalize_architecture(architecture)}\0{source}").encode()
+    architecture = normalize_architecture(architecture)
+    material = (
+        f"sass-cubin-v{STATIC_CACHE_SCHEMA_VERSION}\0{architecture}\0{source}"
+        f"{raw_sass_cache_suffix(architecture)}"
+    ).encode()
     return hashlib.sha256(material).hexdigest()
 
 
 def profile_source_hash(source: str, definition: str, workload: str, architecture: str) -> str:
+    architecture = normalize_architecture(architecture)
     material = (
         f"sass-profile-v{PROFILE_CACHE_SCHEMA_VERSION}\0"
-        f"{normalize_architecture(architecture)}\0{definition}\0{workload}\0{source}"
+        f"{architecture}\0{definition}\0{workload}\0{source}"
+        f"{raw_sass_cache_suffix(architecture)}"
     ).encode()
     return hashlib.sha256(material).hexdigest()
 
@@ -613,6 +635,8 @@ def load_cached_static_evidence(path: Path) -> StaticSassEvidence:
     data = json.loads(path.read_text())
     if data.get("schema_version") != STATIC_CACHE_SCHEMA_VERSION:
         raise ValueError(f"unsupported static cache schema in {path}")
+    if data.get("raw_sass_coverage") != raw_sass_cache_suffix(data["architecture"]).lstrip("\0"):
+        raise ValueError(f"unsupported raw SASS coverage in {path}")
     evidence = data["evidence"]
     return StaticSassEvidence(
         cubin_sass_arch_tag=evidence["cubin_sass_arch_tag"],
@@ -629,6 +653,8 @@ def load_cached_dynamic_evidence(path: Path) -> DynamicSassEvidence:
     data = json.loads(path.read_text())
     if data.get("schema_version") != PROFILE_CACHE_SCHEMA_VERSION:
         raise ValueError(f"unsupported profile cache schema in {path}")
+    if data.get("raw_sass_coverage") != raw_sass_cache_suffix(data["architecture"]).lstrip("\0"):
+        raise ValueError(f"unsupported raw SASS coverage in {path}")
     evidence = data["evidence"]
     return DynamicSassEvidence(
         sass_arch_tag=evidence["sass_arch_tag"],
@@ -649,6 +675,7 @@ def cache_static_evidence(path: Path, candidate: Candidate, architecture: str, e
         path,
         {
             "schema_version": STATIC_CACHE_SCHEMA_VERSION,
+            "raw_sass_coverage": raw_sass_cache_suffix(architecture).lstrip("\0"),
             "architecture": normalize_architecture(architecture),
             "source_sha256": candidate.source_sha256,
             "first_seen_at": {"trajectory_id": candidate.trajectory_id, "turn": candidate.turn},
@@ -669,6 +696,7 @@ def cache_dynamic_evidence(
         path,
         {
             "schema_version": PROFILE_CACHE_SCHEMA_VERSION,
+            "raw_sass_coverage": raw_sass_cache_suffix(architecture).lstrip("\0"),
             "architecture": normalize_architecture(architecture),
             "definition": definition,
             "workload": workload,
@@ -752,11 +780,13 @@ def export_run(
             if not verify_sass:
                 row["sass_verification_status"] = "not_requested"
                 continue
+            row["raw_sass_coverage"] = raw_sass_cache_suffix(architecture).lstrip("\0")
             assistant = assistant_by_turn.get(turn)
             candidate = candidate_from_message(trajectory_id, turn, assistant or {})
             if candidate is None:
                 row["sass_verification_status"] = "missing_source"
                 continue
+            row["source_sha256"] = candidate.source_sha256
             row_key = (trajectory_id, turn)
             candidate_by_row[row_key] = candidate
             unique_static_candidates.setdefault(static_source_hash(candidate.source, architecture), candidate)
@@ -868,6 +898,8 @@ def export_run(
         if static_key in static_errors:
             row["sass_verification_status"] = "cubin_inspection_error"
             continue
+        static_path = static_cache_dir / f"{static_key}.json"
+        row["static_cache_file"] = str(static_path.resolve())
         cubin = static_evidence[static_key]
         row.update(
             {
@@ -885,6 +917,8 @@ def export_run(
         if profile_key in dynamic_errors:
             row["sass_verification_status"] = "profile_error"
             continue
+        profile_path = profile_cache_dir / f"{profile_key}.json"
+        row["cache_file"] = str(profile_path.resolve())
         dynamic = dynamic_evidence[profile_key]
         row.update(
             {
@@ -1027,10 +1061,22 @@ def main() -> None:
         output_path = run_dir / "figures" / args.out_name
         if output_path.exists() and not args.force:
             with output_path.open(newline="") as handle:
-                fieldnames = set(csv.DictReader(handle).fieldnames or [])
-            required_output_fields = {"sass_arch_tag", "sass_verification_status"}
+                reader = csv.DictReader(handle)
+                fieldnames = set(reader.fieldnames or [])
+                previous_rows = list(reader)
+            required_output_fields = {
+                "sass_arch_tag", "sass_verification_status", "raw_sass_coverage",
+                "source_sha256", "static_cache_file", "cache_file",
+            }
             if not required_output_fields.issubset(fieldnames):
                 raise ValueError(f"{output_path} does not use the native SASS schema; rerun with --force")
+            if not args.skip_sass_verification:
+                coverage = raw_sass_cache_suffix(experiment["arch"]).lstrip("\0")
+                if any(
+                    row.get("correctness") == "Correct" and row.get("raw_sass_coverage") != coverage
+                    for row in previous_rows
+                ):
+                    raise ValueError(f"{output_path} has outdated SASS coverage; rerun with --force")
             print(f"{run_dir}: skipped existing figures/{args.out_name}")
             continue
 

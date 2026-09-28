@@ -9,9 +9,10 @@ canonical per-turn CSV for each evaluation run. Correct CUDA turns receive
 2. FIBServe profiles that static-positive candidate with Nsight Compute and
    reports positive predicate-true execution for that family.
 
-Hopper (`H`) recognizes GMMA and TMA transfer instructions. Blackwell (`B`)
-recognizes TCGEN/TMEM instruction families. A static match by itself never sets
-`sass_arch_tag`.
+Hopper (`H`) recognizes `*GMMA` and every `UTMA*` instruction. Blackwell (`B`)
+recognizes every `UTMA*` instruction plus `UTC*`, `LDT`/`LDTM`, and
+`STT`/`STTM`. A static match by itself never sets `sass_arch_tag`. This tag
+reports execution in those raw instruction families.
 
 ## Export per-turn results
 
@@ -34,10 +35,12 @@ python benchmark/export_turn_correctness_arch.py \
 
 The output is written directly to
 `<exp_dir>/figures/turn_correctness_arch.csv`; there is no intermediate CSV or
-merge step. Static and dynamic results are cached below `figures/`. Use
+merge step. Correct rows include the source hash, raw collection coverage, and
+paths to any static and dynamic evidence caches. Those JSON caches retain
+matched SASS rows and are keyed by the current opcode coverage. Use
 `--force` to rewrite the output, `--force-static` to rebuild cubin evidence, and
 `--force-profile` to rerun dynamic profiling. An existing output that does not
-have the native SASS schema must be replaced with `--force`.
+have the current SASS schema or coverage must be replaced with `--force`.
 
 `sass_verification_status` distinguishes missing source, static absence,
 inspection/profile failures, dynamic non-execution, and verified dynamic
