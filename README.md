@@ -5,7 +5,7 @@
 # PTXBench
 [![Paper](https://img.shields.io/badge/arXiv-2608.17379-b31b1b.svg)](https://arxiv.org/pdf/2608.17379)
 [![Blog Post](https://img.shields.io/badge/Blog-ptxbench.html-blue)](https://zhang677.github.io/blog_md/ptxbench.html)
-[![HuggingFace](https://img.shields.io/badge/🤗-PTXBench-yellow)](https://huggingface.co/collections/Genghan/ptxbench-qwen36-27b-sft-series
+[![HuggingFace](https://img.shields.io/badge/🤗-PTXBench-yellow)](https://huggingface.co/collections/Genghan/ptxbench-qwen36-27b-sft-series)
 
 PTXBench contains one GPU profiling service and two ways to run kernel agents:
 the multiturn model loop and the coding-agent gateway. Fixit SFT and KernelGen
