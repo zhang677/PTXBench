@@ -2,7 +2,7 @@
 
 This directory contains the five definitions and five workload rows selected by
 `../../multiturn/tests/{cuda,triton}`. It preserves the source
-dataset layout so `TraceSet.from_path()` can load it.
+dataset layout so `TraceSet.from_path()` can load it. The complete dataset is on [huggingface](https://huggingface.co/collections/Genghan/ptxbench-qwen36-27b-sft-series).
 
 Each workload file contains only the UUID selected by
 the corresponding evaluator test. The two MHA backward rows reference the

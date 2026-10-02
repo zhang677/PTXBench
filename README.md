@@ -15,7 +15,7 @@ it does not include paper outputs, plots, or the full prepared experiment matrix
 
 | Directory | Purpose |
 | --- | --- |
-| `fib-profile/` | Five bundled H100 workload definitions and the GPU profiling service |
+| `fib-profile/` | GPU profiling service |
 | `multiturn/` | Model loop, CUDA/Triton evaluator tests, prompt registry, and runner |
 | `ptxbench-eval/` | Coding-agent gateway, launcher, agent images, and examples |
 | `experiments/prepared/configs/` | One multiturn config example |
