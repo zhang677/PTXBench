@@ -23,7 +23,12 @@ done
 # shellcheck disable=SC1091
 source "$HERE/gpu_preflight.sh"
 if command -v nvidia-smi >/dev/null 2>&1; then
-    FIB_DEVICES="$(profile_service_filter_cool_gpu_devices "[run_container]" "$FIB_DEVICES" nvidia-smi)"
+    runtime=docker
+    case "$(docker --version)" in
+        *[Pp]odman*) runtime=podman ;;
+    esac
+    # Check the selected host GPUs without renumbering container CUDA devices.
+    profile_service_check_host_gpu_temperatures "[run_container]" "$GPUS" "$runtime" nvidia-smi
 fi
 
 docker rm -f "$NAME" >/dev/null 2>&1 || true

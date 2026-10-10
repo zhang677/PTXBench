@@ -43,6 +43,14 @@ the container. For example, host GPUs 4–7 appear as container GPUs 0–3:
 GPUS='"device=4,5,6,7"' FIB_DEVICES='cuda:0,cuda:1,cuda:2,cuda:3' ./scripts/run_container.sh
 ```
 
+The host temperature check uses the devices selected by `GPUS` and leaves
+`FIB_DEVICES` unchanged. Docker GPU count requests defer temperature checks to
+the container because the selected host identities are not known in advance.
+During service startup, each CUDA device is matched by its UUID to the
+`nvidia-smi` temperature record; CUDA and `nvidia-smi` indices need not agree.
+Hot devices are excluded. Missing UUIDs or temperature readings stop startup.
+The host check uses `python3`; the container check uses its installed Torch runtime.
+
 ## Verify
 
 ```bash

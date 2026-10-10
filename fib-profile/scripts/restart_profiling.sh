@@ -147,11 +147,8 @@ cuda_preflight() {
     if filtered_devices="$(profile_service_filter_cool_gpu_devices "[restart_profiling]" "$SERVICE_DEVICES" nvidia-smi)"; then
         SERVICE_DEVICES="$filtered_devices"
     else
-        local filter_status=$?
-        if [ "$filter_status" -eq 1 ]; then
-            exit 1
-        fi
-        [ -n "$filtered_devices" ] && SERVICE_DEVICES="$filtered_devices"
+        # Unknown UUIDs or missing temperature readings must stop startup.
+        exit 1
     fi
 
     limit_profile_gpus
