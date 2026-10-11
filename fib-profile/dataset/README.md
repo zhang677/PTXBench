@@ -7,7 +7,8 @@ dataset layout so `TraceSet.from_path()` can load it. The complete dataset is on
 Each workload file contains only the UUID selected by
 the corresponding evaluator test. The two MHA backward rows reference the
 safetensors files expected under `blob/workloads/attention/`. These large files
-are intentionally not tracked in Git; generate them before running the backward tests.
+are intentionally not tracked in Git; generate them before running the backward tests,
+or use `FIB_DATASET_MODE=bundled` during container creation to prepare them at startup.
 The other three workloads generate their inputs and do not require blobs. The
 evaluator tests submit their own solutions, so this subset contains no
 `solutions/` directory.
@@ -15,7 +16,8 @@ evaluator tests submit their own solutions, so this subset contains no
 ## Generate the two MHA backward blobs
 
 From the repository root, activate a CUDA 13 Python environment with PyTorch
-2.11.0+cu130, cuDNN Python frontend 1.18.0, and `safetensors` 0.7.0. Then run:
+2.12.1+cu130 (matching `entrypoint.sh`), cuDNN Python frontend 1.21.0, and
+`safetensors` 0.8.0. Then run:
 
 ```bash
 cd fib-profile
@@ -33,9 +35,23 @@ the versions listed above:
 docker exec fib-profile bash -lc 'source /workspace/acc/bin/activate && env LD_LIBRARY_PATH= python /workspace/dataset/generate_blobs.py'
 ```
 
-The service installation does not pin those exact generation versions. The
-script checks the expected SHA-256 before installing each generated blob, so a
-different environment cannot silently substitute different inputs.
+The entrypoint pins Torch 2.12.1+cu130; cuDNN frontend and `safetensors` are
+resolved from the bench's dependency requirements rather than pinned to these
+exact versions. The script checks the expected SHA-256 before installing each
+generated blob, so a different environment cannot silently substitute different inputs.
+
+The container launcher defaults to `FIB_DATASET_MODE=existing`, which uses the
+mounted dataset without running this generator. For the bundled subset, set
+`FIB_DATASET_MODE=bundled` when running `scripts/run_container.sh`; the entrypoint
+then generates or verifies both blobs after installing the runtime, before
+starting the service. It selects a cool device from `FIB_DEVICES` using the
+service's UUID-based temperature check. Manual generation accepts
+`--device cuda:1` to select another CUDA device.
+
+For an existing dataset, set `HOST_DATASET_DIR=/absolute/path/to/dataset` and
+leave `FIB_DATASET_MODE=existing`. That dataset must contain `definitions/`,
+`workloads/`, and any blobs referenced by its workloads; it does not need
+`generate_blobs.py`. See [container setup](../scripts/README.md) for examples.
 
 The script reads the two workload rows, draws BF16 Q/K/V tensors from a seeded
 normal distribution, computes O and log-sum-exp L with cuDNN SDPA forward,
@@ -49,5 +65,9 @@ SHA-256 matches the corresponding value below.
 | `mha_bwd_d128` | `c13f08ac9488481cecfb4a119235a6fdd05bb1f36de0acaa32445d2982dbd46b` |
 | `mha_bwd_d128_causal` | `a2f25c87a1a20bc01a00cbc6e9db8677c3f5d80615a3ff6e548b792798a1b794` |
 
-Fresh generation of both matching checksums was verified on an NVIDIA H100
-using the environment above.
+On 2026-10-11, fresh generation of both matching checksums and subsequent
+verification of the existing blobs passed on a leased NVIDIA H100 80GB HBM3
+using Torch 2.12.1+cu130, cuDNN Python frontend 1.21.0, `safetensors` 0.8.0,
+cuDNN 9.20.0, and driver 580.126.20. The environment used the entrypoint's
+package installation pins. Generation on a different GPU or runtime may fail
+checksum validation; mismatching blobs are never installed.

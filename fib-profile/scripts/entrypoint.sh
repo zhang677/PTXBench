@@ -8,6 +8,18 @@ FIB_DIR="${FIB_DIR:-flashinfer-bench-private}"
 BENCH_ROOT="$WORKDIR/$FIB_DIR"
 DATASET_ROOT="${FIB_DATASET_DIR:-$WORKDIR/dataset}"
 VENV_DIR="${VENV_DIR:-$WORKDIR/acc}"
+FIB_DATASET_MODE="${FIB_DATASET_MODE:-existing}"
+
+case "$FIB_DATASET_MODE" in
+    existing) ;;
+    bundled)
+        if [ ! -f "$DATASET_ROOT/generate_blobs.py" ]; then
+            echo "[entrypoint] ERROR: bundled mode requires $DATASET_ROOT/generate_blobs.py" >&2
+            exit 1
+        fi
+        ;;
+    *) echo "[entrypoint] ERROR: FIB_DATASET_MODE must be existing or bundled" >&2; exit 1 ;;
+esac
 
 for required in "$BENCH_ROOT/pyproject.toml" "$DATASET_ROOT/definitions" "$DATASET_ROOT/workloads"; do
     if [ ! -e "$required" ]; then
@@ -33,5 +45,17 @@ import triton
 assert torch.__version__ == "2.12.1+cu130", torch.__version__
 assert triton.__version__ == "3.7.1", triton.__version__
 PY
+
+if [ "$FIB_DATASET_MODE" = bundled ]; then
+    # Use the same UUID-based thermal filter as service startup, before generation.
+    # shellcheck disable=SC1091
+    source "$HERE/gpu_preflight.sh"
+    cool_devices="$(profile_service_filter_cool_gpu_devices "[entrypoint]" \
+        "${FIB_DEVICES:-cuda:0,cuda:1,cuda:2,cuda:3}" nvidia-smi)"
+    blob_device="${cool_devices%%,*}"
+    echo "[entrypoint] Preparing bundled blobs on $blob_device" >&2
+    env LD_LIBRARY_PATH= "$VENV_DIR/bin/python" \
+        "$DATASET_ROOT/generate_blobs.py" --dataset-root "$DATASET_ROOT" --device "$blob_device"
+fi
 
 exec "$HERE/restart_profiling.sh"

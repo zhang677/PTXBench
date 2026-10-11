@@ -121,6 +121,8 @@ printf '%s\n' "$@" >> "$TEST_DOCKER_LOG"
                         FIB_GPU_MAX_TEMP_C="45", TEST_HOST_TEMP="30",
                         TEST_DOCKER_LOG=str(self.root / "docker.log"))
         self.env.pop("FIB_SKIP_GPU_THERMAL_PREFLIGHT", None)
+        for name in ("HOST_DATASET_DIR", "FIB_DATASET_MODE"):
+            self.env.pop(name, None)
 
     def command(self, name, text):
         path = self.bin / name
@@ -143,6 +145,52 @@ printf '%s\n' "$@" >> "$TEST_DOCKER_LOG"
         result = self.launch()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("host GPU 3", result.stderr)
+        self.assertFalse((self.root / "docker.log").exists())
+
+    def test_existing_dataset_without_generator_and_loopback_bind(self):
+        dataset = self.root / "external dataset"
+        for directory in ("definitions", "workloads"):
+            (dataset / directory).mkdir(parents=True)
+        self.env.update(HOST_DATASET_DIR=str(dataset))
+        result = self.launch()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        args = (self.root / "docker.log").read_text().splitlines()
+        self.assertIn(f"{dataset}:/workspace/dataset", args)
+        self.assertIn("FIB_DATASET_MODE=existing", args)
+        self.assertEqual(args[args.index("-p") + 1], "127.0.0.1:10000:10000")
+
+    def test_port_binding_is_always_loopback(self):
+        result = self.launch()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        args = (self.root / "docker.log").read_text().splitlines()
+        self.assertEqual(args[args.index("-p") + 1], "127.0.0.1:10000:10000")
+
+    def test_bundled_requires_generator_before_container_removal(self):
+        self.env["FIB_DATASET_MODE"] = "bundled"
+        result = self.launch()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("generate_blobs.py", result.stderr)
+        self.assertFalse((self.root / "docker.log").exists())
+
+    def test_bundled_mode_reaches_container_environment(self):
+        (self.root / "dataset" / "generate_blobs.py").touch()
+        self.env["FIB_DATASET_MODE"] = "bundled"
+        result = self.launch()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("FIB_DATASET_MODE=bundled", (self.root / "docker.log").read_text().splitlines())
+
+    def test_invalid_mode_does_not_remove_container(self):
+        self.env["FIB_DATASET_MODE"] = "typo"
+        result = self.launch()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("FIB_DATASET_MODE", result.stderr)
+        self.assertFalse((self.root / "docker.log").exists())
+
+    def test_external_dataset_requires_workloads_before_container_removal(self):
+        self.env["HOST_DATASET_DIR"] = str(self.root / "missing")
+        result = self.launch()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("missing", result.stderr)
         self.assertFalse((self.root / "docker.log").exists())
 
     def test_shell_cuda_filter_matches_uuid(self):

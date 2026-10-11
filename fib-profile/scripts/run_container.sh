@@ -4,6 +4,8 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 HOST_FIB_ROOT="${HOST_FIB_ROOT:-$(cd "$HERE/.." && pwd)}"
+HOST_DATASET_DIR="${HOST_DATASET_DIR:-$HOST_FIB_ROOT/dataset}"
+FIB_DATASET_MODE="${FIB_DATASET_MODE:-existing}"
 IMAGE="${IMAGE:-fib-profile:latest}"
 NAME="${NAME:-fib-profile}"
 PROFILE_PORT="${PROFILE_PORT:-10000}"
@@ -13,12 +15,27 @@ FIB_DEVICES="${FIB_DEVICES:-cuda:0,cuda:1,cuda:2,cuda:3}"
 FIB_GPU_MAX_TEMP_C="${FIB_GPU_MAX_TEMP_C:-45}"
 TVM_FFI_CUDA_ARCH_LIST="${TVM_FFI_CUDA_ARCH_LIST:-9.0a}"
 
-for required in flashinfer-bench-private/pyproject.toml dataset/definitions dataset/workloads scripts/restart_profiling.sh; do
+case "$FIB_DATASET_MODE" in
+    existing|bundled) ;;
+    *) echo "[run_container] ERROR: FIB_DATASET_MODE must be existing or bundled" >&2; exit 1 ;;
+esac
+
+for required in flashinfer-bench-private/pyproject.toml scripts/restart_profiling.sh; do
     if [ ! -e "$HOST_FIB_ROOT/$required" ]; then
         echo "[run_container] ERROR: missing $HOST_FIB_ROOT/$required" >&2
         exit 1
     fi
 done
+for required in definitions workloads; do
+    if [ ! -d "$HOST_DATASET_DIR/$required" ]; then
+        echo "[run_container] ERROR: missing $HOST_DATASET_DIR/$required" >&2
+        exit 1
+    fi
+done
+if [ "$FIB_DATASET_MODE" = bundled ] && [ ! -f "$HOST_DATASET_DIR/generate_blobs.py" ]; then
+    echo "[run_container] ERROR: bundled mode requires $HOST_DATASET_DIR/generate_blobs.py" >&2
+    exit 1
+fi
 
 # shellcheck disable=SC1091
 source "$HERE/gpu_preflight.sh"
@@ -34,15 +51,16 @@ fi
 docker rm -f "$NAME" >/dev/null 2>&1 || true
 docker run -d --init --name "$NAME" --gpus "$GPUS" \
     -v "$HOST_FIB_ROOT/flashinfer-bench-private:/workspace/flashinfer-bench-private" \
-    -v "$HOST_FIB_ROOT/dataset:/workspace/dataset" \
+    -v "$HOST_DATASET_DIR:/workspace/dataset" \
     -v "$HOST_FIB_ROOT/scripts:/workspace/scripts:ro" \
     -e "FIB_DATASET_DIR=/workspace/dataset" \
     -e "FIB_DATASET_DIRS=/workspace/dataset" \
+    -e "FIB_DATASET_MODE=$FIB_DATASET_MODE" \
     -e "FIB_DEVICES=$FIB_DEVICES" \
     -e "FIB_GPU_MAX_TEMP_C=$FIB_GPU_MAX_TEMP_C" \
     -e "PROFILE_PORT=$PROFILE_PORT" \
     -e "TVM_FFI_CUDA_ARCH_LIST=$TVM_FFI_CUDA_ARCH_LIST" \
-    -p "$HOST_PROFILE_PORT:$PROFILE_PORT" \
+    -p "127.0.0.1:$HOST_PROFILE_PORT:$PROFILE_PORT" \
     "$IMAGE" bash -lc 'sleep infinity'
 
 echo "[run_container] $NAME is up with $FIB_DEVICES; run /workspace/scripts/entrypoint.sh to install and start the service" >&2

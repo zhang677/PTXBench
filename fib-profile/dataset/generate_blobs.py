@@ -85,13 +85,13 @@ def cudnn_forward(q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, causal: boo
     return output, lse
 
 
-def generate(destination: Path, shape: tuple[int, ...], causal: bool) -> str:
+def generate(destination: Path, shape: tuple[int, ...], causal: bool, device: torch.device) -> str:
     b, h, s, d = shape
     seed = BASE_SEED + s + 100_000 * d + 10_000_000 * int(causal)
-    generator = torch.Generator(device="cuda")
+    generator = torch.Generator(device=device)
     generator.manual_seed(seed)
     tensors = [
-        torch.empty((b, h, s, d), dtype=torch.bfloat16, device="cuda").normal_(
+        torch.empty((b, h, s, d), dtype=torch.bfloat16, device=device).normal_(
             0.0, 1.0, generator=generator
         )
         for _ in range(3)
@@ -134,9 +134,17 @@ def main() -> None:
         "--dataset-root", type=Path, default=Path(__file__).resolve().parent,
         help="directory containing workloads/ and blob/ (default: this script's directory)",
     )
+    parser.add_argument("--device", default="cuda:0", help="container CUDA device (default: cuda:0)")
     args = parser.parse_args()
+    try:
+        device = torch.device(args.device)
+    except (RuntimeError, ValueError) as error:
+        parser.error(str(error))
+    if device.type != "cuda":
+        parser.error("--device must be a CUDA device")
     if not torch.cuda.is_available():
         parser.error("CUDA is required for cuDNN SDPA forward")
+    torch.cuda.set_device(device)
     torch.manual_seed(BASE_SEED)
     torch.backends.cuda.matmul.allow_tf32 = False
     dataset_root = args.dataset_root.resolve()
@@ -151,7 +159,7 @@ def main() -> None:
                 )
             print(f"verified {destination}: {digest}", flush=True)
             continue
-        digest = generate(destination, shape, definition.endswith("_causal"))
+        digest = generate(destination, shape, definition.endswith("_causal"), device)
         print(f"generated {destination}: {digest}", flush=True)
 
 
