@@ -21,6 +21,13 @@ experiment root. `SKIP_BUILD=1` reuses already built images. Set
 bundled examples target H100 GEMM. Copy a config and update its workload UUID,
 definition, target hardware, and prompt tags for another workload.
 
+The gateway accepts `--max-profiles N` to run at most N complete `/v1/evaluate`
+operations concurrently. Each operation holds its slot through compilation,
+sanitization, profiling, debugging, and retries; excess requests wait in the
+gateway while callers remain synchronous. The limit is per gateway and separate
+from the launcher's `max_parallel` agent limit. Omitting it preserves the default
+thread-pool concurrency. `/health` reports the configured `max_profiles` value.
+
 ## CuTeDSL
 
 The gateway also supports CuTeDSL kernels. Use `language: "cutedsl"` in

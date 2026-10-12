@@ -21,9 +21,15 @@ from .registry import Registry
 class EvaluationJobs:
     """Keep evaluations owned by the gateway after an HTTP client disconnects."""
 
-    def __init__(self, evaluator: Evaluator):
+    def __init__(self, evaluator: Evaluator, *, max_profiles: int | None = None):
+        if max_profiles is not None and (type(max_profiles) is not int or max_profiles <= 0):
+            raise ValueError("max_profiles must be a positive integer")
         self.evaluator = evaluator
+        self.max_profiles = max_profiles
+        # One worker owns a complete /v1/evaluate operation, including all
+        # compilation, sanitizer, profiling, debug, and retry work.
         self.executor = concurrent.futures.ThreadPoolExecutor(
+            max_workers=max_profiles,
             thread_name_prefix="ptxbench-evaluation"
         )
         self.lock = threading.Lock()
@@ -59,6 +65,7 @@ def create_app(
     profile_recovery_timeout: float = 720.0,
     profile_recovery_poll_interval: float = 1.0,
     max_profile_recoveries: int = 1,
+    max_profiles: int | None = None,
 ) -> FastAPI:
     # None means the app setting was omitted; injected evaluators own their mode.
     if feedback_style is not None:
@@ -88,7 +95,7 @@ def create_app(
             feedback_style=feedback_style if feedback_style is not None else "default",
         )
     recovery_gate = evaluator.recovery_gate
-    evaluation_jobs = EvaluationJobs(evaluator)
+    evaluation_jobs = EvaluationJobs(evaluator, max_profiles=max_profiles)
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
@@ -113,6 +120,7 @@ def create_app(
             "root": str(registry.root),
             "feedback_style": evaluator.feedback_style,
             "profile_recovery": recovery,
+            "max_profiles": evaluation_jobs.max_profiles,
         }
 
     @app.post("/v1/evaluate")
@@ -152,7 +160,13 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--profile-recovery-timeout", type=float, default=720.0)
     parser.add_argument("--profile-recovery-poll-interval", type=float, default=1.0)
     parser.add_argument("--max-profile-recoveries", type=int, default=1)
+    parser.add_argument(
+        "--max-profiles", type=int,
+        help="Maximum concurrent complete evaluations per gateway; excess requests wait",
+    )
     args = parser.parse_args(argv)
+    if args.max_profiles is not None and args.max_profiles <= 0:
+        parser.error("max profiles must be positive")
     if args.profile_recovery_timeout <= 0 or args.profile_recovery_poll_interval <= 0:
         parser.error("profile recovery timeout and poll interval must be positive")
     if args.max_profile_recoveries < 0:
@@ -166,6 +180,7 @@ def main(argv: list[str] | None = None) -> None:
             profile_recovery_timeout=args.profile_recovery_timeout,
             profile_recovery_poll_interval=args.profile_recovery_poll_interval,
             max_profile_recoveries=args.max_profile_recoveries,
+            max_profiles=args.max_profiles,
         ),
         host=args.host,
         port=args.port,
