@@ -69,20 +69,13 @@ are left unchanged. An unknown checksum is always an error.
 | `mha_bwd_d128` | `c13f08ac9488481cecfb4a119235a6fdd05bb1f36de0acaa32445d2982dbd46b` | `d57de4d25ecbd180f55ba8ea41f57cb98f21b83f308047b153f6f2a65091ec83` |
 | `mha_bwd_d128_causal` | `a2f25c87a1a20bc01a00cbc6e9db8677c3f5d80615a3ff6e548b792798a1b794` | `77541ccc959a00072446bb725b8c0498a09991b3e44e3f609c5e0843cf7bbabf` |
 
-GPU-seeded `normal_` generation is not guaranteed to be bitwise identical across
-GPU architectures: its CUDA launch geometry affects how RNG streams map to
-tensor elements. H100 and B200 produce different Q/K/V with this generator;
-the difference is not just cuDNN rounding in O/L. The workload shapes, seeds,
-and UUIDs stay the same, but the input tensors differ between these two variants.
+The workload shapes, seeds, and UUIDs stay the same, but H100 and B200 generate
+different input tensors with this GPU-seeded generator.
 Keep the generation GPU and blob hashes with experiment results when comparing runs.
 
 On 2026-10-11, fresh generation of both matching checksums and subsequent
 verification of the existing blobs passed on a leased NVIDIA H100 80GB HBM3
 using Torch 2.12.1+cu130, cuDNN Python frontend 1.21.0, `safetensors` 0.8.0,
 cuDNN 9.20.0, and driver 580.126.20. The environment used the entrypoint's
-package installation pins. Fresh generation on Modal H100 also reproduced both
-original hashes. Fresh generation on Modal B200 and catalyst-fleet1 B200
-reproduced the two B200 hashes with the same package versions; full per-tensor
-hashes of Q/K/V/O/L matched between both B200 machines, and verification of
-existing B200 blobs passed. Generation on another GPU or runtime may fail
+package installation pins. Generation on another GPU or runtime may fail
 checksum validation; mismatching blobs are never installed.
