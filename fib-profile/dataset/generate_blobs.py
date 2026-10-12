@@ -21,6 +21,17 @@ EXPECTED_SHA256 = {
     "mha_bwd_d128": "c13f08ac9488481cecfb4a119235a6fdd05bb1f36de0acaa32445d2982dbd46b",
     "mha_bwd_d128_causal": "a2f25c87a1a20bc01a00cbc6e9db8677c3f5d80615a3ff6e548b792798a1b794",
 }
+B200_EXPECTED_SHA256 = {
+    "mha_bwd_d128": "d57de4d25ecbd180f55ba8ea41f57cb98f21b83f308047b153f6f2a65091ec83",
+    "mha_bwd_d128_causal": "77541ccc959a00072446bb725b8c0498a09991b3e44e3f609c5e0843cf7bbabf",
+}
+
+
+def generated_checksum(definition: str, device: torch.device) -> str:
+    # CUDA normal_ distributes the RNG stream according to GPU launch geometry.
+    # The same seed therefore need not produce the same Q/K/V on H100 and B200.
+    hashes = B200_EXPECTED_SHA256 if "B200" in torch.cuda.get_device_name(device) else EXPECTED_SHA256
+    return hashes[definition]
 
 
 def sha256(path: Path) -> str:
@@ -114,7 +125,7 @@ def generate(destination: Path, shape: tuple[int, ...], causal: bool, device: to
     try:
         save_file(materialized, str(temporary))
         digest = sha256(temporary)
-        expected = EXPECTED_SHA256[destination.parent.name]
+        expected = generated_checksum(destination.parent.name, device)
         if digest != expected:
             raise RuntimeError(
                 f"generated {destination.name} has SHA-256 {digest}; expected {expected}. "
@@ -148,13 +159,16 @@ def main() -> None:
     torch.manual_seed(BASE_SEED)
     torch.backends.cuda.matmul.allow_tf32 = False
     dataset_root = args.dataset_root.resolve()
-    for definition, expected in EXPECTED_SHA256.items():
+    for definition in EXPECTED_SHA256:
         destination, shape = workload(dataset_root, definition)
         if destination.exists():
             digest = sha256(destination)
-            if digest != expected:
+            # Both published variants are valid existing inputs on either GPU.
+            # Fresh generation must still match the selected GPU's exact hash.
+            accepted = {EXPECTED_SHA256[definition], B200_EXPECTED_SHA256[definition]}
+            if digest not in accepted:
                 raise RuntimeError(
-                    f"existing {destination} has SHA-256 {digest}; expected {expected}. "
+                    f"existing {destination} has SHA-256 {digest}; expected one of {sorted(accepted)}. "
                     "Move or remove it before regenerating."
                 )
             print(f"verified {destination}: {digest}", flush=True)
