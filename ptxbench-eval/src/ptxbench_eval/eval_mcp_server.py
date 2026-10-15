@@ -22,7 +22,7 @@ EVALUATOR_TIMEOUT_SECONDS = 930
 
 def _evaluator_command() -> list[str]:
     command = list(EVALUATOR_COMMAND)
-    if os.environ.get("PTXBENCH_KERNEL_LANGUAGE") == "cutedsl":
+    if os.environ.get("PTXBENCH_KERNEL_LANGUAGE") in {"cutedsl", "triton"}:
         command[1] = "/workspace/kernel.py"
     return command
 EVALUATOR_ENVIRONMENT_KEYS = (

@@ -269,6 +269,14 @@ def _prompt_context_sources(
     return sources
 
 
+def _example_key(language: str) -> str:
+    return {"cuda": "tvm_ffi_example", "cutedsl": "cutedsl_example", "triton": "triton_example"}[language]
+
+
+def _language_label(language: str) -> str:
+    return {"cuda": "TVM-FFI", "cutedsl": "CuTeDSL", "triton": "Triton"}[language]
+
+
 def _materialize_prompt_context(
     workspace: Path,
     sources: list[tuple[str, Path]],
@@ -286,6 +294,9 @@ def _materialize_prompt_context(
             "Follow this destination-passing wrapper, DLPack conversion, dynamic-layout "
             "marking, CUDA stream handling, and compile-once/execute-many pattern.\n\n```python\n"
             if language == "cutedsl" else
+            "\n\n## Triton integration example\n\n"
+            "Follow this destination-passing Python wrapper and Triton kernel launch pattern.\n\n```python\n"
+            if language == "triton" else
             "\n\n## Required TVM-FFI wrapper example\n\n"
             "Use this exact registration and destination-passing pattern.\n\n```cpp\n"
         )
@@ -327,7 +338,7 @@ def _materialize_prompt_context(
         ],
     }
     if example_source_path is not None:
-        example_key = "cutedsl_example" if language == "cutedsl" else "tvm_ffi_example"
+        example_key = _example_key(language)
         result.update({
             f"{example_key}_sha256": _sha256_text(example_source_path.read_text()),
             f"{example_key}_source": str(example_source_path),
@@ -591,6 +602,24 @@ Use architecture-specific CuTeDSL operations to optimize the kernel."""
             "This is a CPU-only agent environment. CuTeDSL JIT compilation and GPU execution "
             "happen in the profiling service through the provided evaluator."
         )
+    elif language == "triton":
+        evaluation_instructions = evaluation_instructions.replace("kernel.cu", "kernel.py")
+        implementation_instructions = """Your task is to implement an optimized Triton kernel in /workspace/kernel.py.
+Define a Python `run` function receiving all definition inputs followed by all
+preallocated definition outputs, each in definition order. Write results into
+those outputs without allocating or replacing them. Use Triton for GPU computation;
+PyTorch may provide tensor views, but must not compute the result.
+
+GPU architecture knowledge and a Triton integration example are in
+/workspace/knowledge_pack.md. Keep kernel.py self-contained: only that file is
+submitted. Import triton and triton.language normally; those packages are
+installed in the profiling service. The Python run wrapper should launch your
+@triton.jit kernels with the supplied tensors.
+Use architecture-specific Triton operations to optimize the kernel."""
+        environment_instructions = (
+            "This is a CPU-only agent environment. Triton JIT compilation and GPU execution "
+            "happen in the profiling service through the provided evaluator."
+        )
     return f"""{goal_instructions}
 
 Do not write or edit any code before reading `/opt/ptxbench/workload.json` completely.
@@ -632,7 +661,7 @@ def prepare(config: dict[str, Any]) -> Registry:
     if not isinstance(prompt_root_value, str) or not prompt_root_value.strip():
         raise ValueError("prompt_files_root is required")
     prompt_root = _resolve(config, prompt_root_value).resolve()
-    example_key = "cutedsl_example" if config["language"] == "cutedsl" else "tvm_ffi_example"
+    example_key = _example_key(config["language"])
     example_value = _required_config_string(config, example_key)
     example_source_path = _resolve(config, example_value).resolve()
     example_source = example_source_path.read_text()
@@ -728,7 +757,7 @@ def prepare(config: dict[str, Any]) -> Registry:
             if existing_provenance.get(f"{example_key}_sha256") != _sha256_text(
                 example_source
             ):
-                example_label = "CuTeDSL" if config["language"] == "cutedsl" else "TVM-FFI"
+                example_label = _language_label(config["language"])
                 raise ValueError(f"existing run {run_id} has a different {example_label} example")
             token_path = registry.root / "secrets" / f"{run_id}.token"
             env_path = registry.root / "secrets" / f"{run_id}.env"
@@ -832,7 +861,7 @@ def prepare(config: dict[str, Any]) -> Registry:
                 )
                 agent_definition.parent.mkdir(parents=True, exist_ok=True)
                 definition = _agy_no_web_agent_definition()
-                if config["language"] == "cutedsl":
+                if config["language"] in {"cutedsl", "triton"}:
                     definition = definition.replace("kernel.cu", "kernel.py")
                 agent_definition.write_text(definition)
         token = registry.create_run(
@@ -880,10 +909,11 @@ def _registry_for_launch(config: dict[str, Any]) -> Registry:
 
     validate_language_contract(config)
     cutedsl_source = _cutedsl_source(config)
-    cutedsl_example_sha256 = None
-    if config.get("language") == "cutedsl":
-        example_path = _resolve(config, _required_config_string(config, "cutedsl_example"))
-        cutedsl_example_sha256 = _sha256_text(example_path.read_text())
+    example_key = _example_key(config["language"])
+    example_sha256 = None
+    if config["language"] in {"cutedsl", "triton"}:
+        example_path = _resolve(config, _required_config_string(config, example_key))
+        example_sha256 = _sha256_text(example_path.read_text())
     feedback_style = feedback_style_from_config(config)
     task_view = task_view_from_config(config)
     root = Path(config["experiment_root"]).expanduser().resolve()
@@ -916,8 +946,10 @@ def _registry_for_launch(config: dict[str, Any]) -> Registry:
         run_record = registry.get_run(run_id)
         if (run_record.get("artifact_provenance") or {}).get("cutedsl_source") != cutedsl_source:
             raise ValueError(f"prepared run {run_id} has different CuTeDSL source")
-        if (run_record.get("artifact_provenance") or {}).get("cutedsl_example_sha256") != cutedsl_example_sha256:
-            raise ValueError(f"prepared run {run_id} has a different CuTeDSL example")
+        if config["language"] in {"cutedsl", "triton"} and (
+            (run_record.get("artifact_provenance") or {}).get(f"{example_key}_sha256") != example_sha256
+        ):
+            raise ValueError(f"prepared run {run_id} has a different {_language_label(config['language'])} example")
         if run_record.get("task_view", "full") != task_view:
             raise ValueError(f"prepared run {run_id} has a different task_view")
         if run_record.get("feedback_style", "default") != feedback_style:
@@ -936,7 +968,7 @@ def _registry_for_launch(config: dict[str, Any]) -> Registry:
             expected_instruction = (
                 "`ptxbench-eval` MCP server's `evaluate_kernel` tool"
                 if codex_use_mcp
-                else f"`ptxbench-eval /workspace/{'kernel.py' if snapshot.data['language'] == 'cutedsl' else 'kernel.cu'} /opt/ptxbench/workload.json`"
+                else f"`ptxbench-eval /workspace/{'kernel.py' if snapshot.data['language'] in {'cutedsl', 'triton'} else 'kernel.cu'} /opt/ptxbench/workload.json`"
             )
             if expected_instruction not in prompt:
                 mode = "MCP" if codex_use_mcp else "native command-line"
@@ -1196,7 +1228,8 @@ def _evaluator_container_args(
 ) -> list[str]:
     if _uses_eval_exchange(config):
         return [
-            *(["-e", "PTXBENCH_KERNEL_LANGUAGE=cutedsl"] if config.get("language") == "cutedsl" else []),
+            *(["-e", f"PTXBENCH_KERNEL_LANGUAGE={config['language']}"]
+              if config.get("language") in {"cutedsl", "triton"} else []),
             "-e",
             f"PTXBENCH_RUN_ID={run_id}",
             "-e",

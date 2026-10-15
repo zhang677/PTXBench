@@ -29,8 +29,8 @@ _PTXBENCH_MCP_TOOL_TIMEOUT_SECONDS = 960
 
 def _ptxbench_mcp_server_config() -> dict[str, Any]:
     return {
-        **({"env": {"PTXBENCH_KERNEL_LANGUAGE": "cutedsl"}}
-           if os.environ.get("PTXBENCH_KERNEL_LANGUAGE") == "cutedsl" else {}),
+        **({"env": {"PTXBENCH_KERNEL_LANGUAGE": os.environ["PTXBENCH_KERNEL_LANGUAGE"]}}
+           if os.environ.get("PTXBENCH_KERNEL_LANGUAGE") in {"cutedsl", "triton"} else {}),
         "command": _PTXBENCH_MCP_COMMAND,
         "args": [],
         "cwd": "/workspace",

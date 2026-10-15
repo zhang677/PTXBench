@@ -3,7 +3,7 @@
 The gateway and launcher code in this directory are the coding-agent path.
 They reuse `../multiturn/prompts/hub.json` and the same profiling service as
 the model-loop experiments. The launcher materializes prompt fragments and a
-TVM-FFI example inside each agent workspace.
+language-specific integration example inside each agent workspace.
 
 1. Start `fib-profile` as described in `../fib-profile/scripts/README.md` and
    verify `http://127.0.0.1:10000/health`.
@@ -70,3 +70,26 @@ gateway checks Python syntax without executing it, then submits
 profiling service for JIT compilation, sanitization, and benchmarking.
 The service must have `nvidia-cutlass-dsl` and `cuda-python` installed;
 `fib-profile/scripts/entrypoint.sh` installs them on a fresh setup.
+
+## Triton
+
+Use `language: "triton"` and omit `binding`, `nvcc_gencode`, and
+`tvm_ffi_example`. When copying a bundled GEMM config, set `triton_example`
+to `../../../multiturn/prompts/examples/triton.py` and select the
+`triton-hopper` prompt tag (or `triton-blackwell` for Blackwell). Paths are
+relative to the config file. No CuTeDSL source snapshot is needed.
+
+The agent writes a self-contained `/workspace/kernel.py` with a Python
+`run(...)` wrapper that receives definition inputs followed by preallocated
+outputs in definition order, and launches `@triton.jit` kernels to fill those
+outputs. PyTorch may provide tensor views, but must not compute the result.
+Use the same `ptxbench-eval /workspace/kernel.py /opt/ptxbench/workload.json`
+command as CuTeDSL; the MCP evaluator also selects `kernel.py` automatically.
+
+The gateway checks Python syntax without importing the submission and sends
+`language: "triton"`, `kernel.py::run`, and the `triton` dependency to the
+profiling service's Triton builder. JIT compilation, sanitization, correctness
+checks, and timing happen in that service. The standard profiling setup already
+installs Triton via `fib-profile/scripts/entrypoint.sh`. Preparation records the
+integration example's hash, and preparation/launch reject example drift for an
+existing run.

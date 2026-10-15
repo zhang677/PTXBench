@@ -17,11 +17,12 @@ def validate_language_contract(value: dict[str, Any]) -> None:
             raise ContractError("CUDA requires binding=tvm-ffi")
         if not isinstance(value.get("nvcc_gencode"), str) or not value["nvcc_gencode"].strip():
             raise ContractError("CUDA requires nvcc_gencode")
-    elif language == "cutedsl":
+    elif language in ("cutedsl", "triton"):
         if value.get("binding") is not None:
-            raise ContractError("CuTeDSL uses the Python builder; omit binding")
+            label = "CuTeDSL" if language == "cutedsl" else "Triton"
+            raise ContractError(f"{label} uses a Python-based builder; omit binding")
     else:
-        raise ContractError("language must be cuda or cutedsl")
+        raise ContractError("language must be cuda, cutedsl, or triton")
 
 
 @dataclass(frozen=True)
@@ -68,15 +69,19 @@ class WorkloadManifest:
         return json_digest(self.data)
 
     def solution(self, source: str) -> dict[str, Any]:
-        if self.data["language"] == "cutedsl":
+        language = self.data["language"]
+        if language in {"cutedsl", "triton"}:
             return {
                 "name": "eval_kernel",
                 "definition": self.data["definition"],
                 "spec": {
-                    "language": "python",
+                    "language": "python" if language == "cutedsl" else "triton",
                     "target_hardware": self.data["target_hardware"],
                     "entry_point": "kernel.py::run",
-                    "dependencies": ["nvidia-cutlass-dsl", "cuda-python"],
+                    "dependencies": (
+                        ["nvidia-cutlass-dsl", "cuda-python"]
+                        if language == "cutedsl" else ["triton"]
+                    ),
                     "destination_passing_style": True,
                 },
                 "author": "eval",

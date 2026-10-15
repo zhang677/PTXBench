@@ -1,16 +1,19 @@
 import hashlib
 import json
 import subprocess
+from pathlib import Path
 
 import pytest
 
-from ptxbench_eval.cutedsl import source_snapshot, validation_error
+from ptxbench_eval.cutedsl import source_snapshot
+from ptxbench_eval.python_kernel import validation_error
+from ptxbench_eval.codex_runner import _ptxbench_mcp_server_config
 from ptxbench_eval.evaluator import Evaluator
 from ptxbench_eval.eval_mcp_server import _evaluate_kernel, _handle_request
 from ptxbench_eval.launcher import (
     _cutedsl_mount_args, _evaluator_container_args, _registry_for_launch, prepare,
 )
-from ptxbench_eval.models import ContractError, WorkloadManifest
+from ptxbench_eval.models import ContractError, WorkloadManifest, validate_language_contract
 from ptxbench_eval.registry import Registry
 
 
@@ -168,9 +171,9 @@ def config(tmp_path):
         ],
     }
 
-def python_manifest():
+def python_manifest(language="cutedsl"):
     manifest = {k: v for k, v in MANIFEST.items() if k not in {"binding", "nvcc_gencode"}}
-    manifest["language"] = "cutedsl"
+    manifest["language"] = language
     return manifest
 
 
@@ -188,17 +191,25 @@ def snapshot(tmp_path):
     return root
 
 
-def test_cutedsl_uses_python_service_contract():
-    manifest = WorkloadManifest.parse(python_manifest())
+@pytest.mark.parametrize("language", ["cutedsl", "triton"])
+def test_python_service_contract(language):
+    manifest = WorkloadManifest.parse(python_manifest(language))
     solution = manifest.solution("def run(A, B, C): pass")
     assert solution["spec"] == {
-        "language": "python", "target_hardware": ["H100"],
-        "entry_point": "kernel.py::run", "dependencies": ["nvidia-cutlass-dsl", "cuda-python"],
+        "language": "python" if language == "cutedsl" else "triton",
+        "target_hardware": ["H100"], "entry_point": "kernel.py::run",
+        "dependencies": ["nvidia-cutlass-dsl", "cuda-python"] if language == "cutedsl" else ["triton"],
         "destination_passing_style": True,
     }
     assert solution["sources"][0]["path"] == "kernel.py"
     with pytest.raises(ContractError, match="omit binding"):
-        WorkloadManifest.parse({**python_manifest(), "binding": "tvm-ffi"})
+        WorkloadManifest.parse({**python_manifest(language), "binding": "tvm-ffi"})
+
+
+@pytest.mark.parametrize("language", [None, "python", [], {}])
+def test_unsupported_language_rejected(language):
+    with pytest.raises(ContractError, match="language must be cuda, cutedsl, or triton"):
+        validate_language_contract({"language": language})
 
 
 @pytest.mark.parametrize("corruption", ["changed", "missing", "extra", "symlink"])
@@ -261,18 +272,21 @@ def test_prepare_cutedsl_context_prompt_and_readonly_mount(tmp_path):
 
 
 @pytest.mark.parametrize("example", [None, "", "missing.py"])
-def test_prepare_requires_cutedsl_example(tmp_path, example):
+@pytest.mark.parametrize("language", ["cutedsl", "triton"])
+def test_prepare_requires_python_example(tmp_path, example, language):
     write_inputs(tmp_path)
     settings = config(tmp_path)
-    settings.update(language="cutedsl", cutedsl_source=str(snapshot(tmp_path)))
+    settings.update(language=language)
+    if language == "cutedsl":
+        settings["cutedsl_source"] = str(snapshot(tmp_path))
     settings.pop("binding")
     if example is not None:
-        settings["cutedsl_example"] = example
+        settings[f"{language}_example"] = example
     if example == "missing.py":
         with pytest.raises(FileNotFoundError):
             prepare(settings)
     else:
-        with pytest.raises(ValueError, match="cutedsl_example is required"):
+        with pytest.raises(ValueError, match=f"{language}_example is required"):
             prepare(settings)
 
 
@@ -286,10 +300,11 @@ def test_python_preflight_never_executes_source_and_rejects_shortcuts():
 
 
 @pytest.mark.parametrize("source,passes", [("def run(A, B, C): pass", True), ("def run(:", False)])
-def test_cutedsl_gateway_bypasses_nvcc_and_preserves_feedback(tmp_path, monkeypatch, source, passes):
+@pytest.mark.parametrize("language", ["cutedsl", "triton"])
+def test_python_gateway_bypasses_nvcc_and_preserves_feedback(tmp_path, monkeypatch, source, passes, language):
     monkeypatch.setattr("ptxbench_eval.evaluator.compile_source", lambda *a, **k: pytest.fail("NVCC called for Python"))
     registry = Registry(tmp_path)
-    manifest = python_manifest()
+    manifest = python_manifest(language)
     token = registry.create_run(run_id="exp_000", manifest=manifest, agent_prompt="task", token_budget=100,
                                 harness="codex", model="test", prompt_tag="hopper-no-header", feedback_style="multiturn")
     registry.update_usage("exp_000", {"total_tokens": 1}, source_event=1)
@@ -303,11 +318,14 @@ def test_cutedsl_gateway_bypasses_nvcc_and_preserves_feedback(tmp_path, monkeypa
     events = [json.loads(line) for line in registry.raw_events_path("exp_000").read_text().splitlines()]
     submissions = [e for e in events if e["event"] == "fake_call"]
     if passes:
-        assert all(e["request"]["solution"]["spec"]["language"] == "python" for e in submissions)
+        expected_language = "python" if language == "cutedsl" else "triton"
+        assert all(e["request"]["solution"]["spec"]["language"] == expected_language for e in submissions)
 
 
-def test_cutedsl_mcp_selects_kernel_py(monkeypatch):
-    monkeypatch.setenv("PTXBENCH_KERNEL_LANGUAGE", "cutedsl")
+@pytest.mark.parametrize("language", ["cutedsl", "triton"])
+def test_python_mcp_selects_kernel_py(monkeypatch, language):
+    monkeypatch.setenv("PTXBENCH_KERNEL_LANGUAGE", language)
+    assert _ptxbench_mcp_server_config()["env"] == {"PTXBENCH_KERNEL_LANGUAGE": language}
     monkeypatch.setenv("PTXBENCH_RUN_ID", "exp_000")
     monkeypatch.setenv("PTXBENCH_EVAL_EXCHANGE_DIR", "/workspace/exchange")
     observed = []
@@ -320,3 +338,56 @@ def test_cutedsl_mcp_selects_kernel_py(monkeypatch):
     response = _handle_request({"jsonrpc": "2.0", "id": 1, "method": "tools/list"})
     assert "kernel.py" in response["result"]["tools"][0]["description"]
 
+
+@pytest.mark.parametrize("agent,use_mcp", [("codex", False), ("codex", True), ("agy", False)])
+def test_prepare_triton_agent_and_example_drift(tmp_path, agent, use_mcp):
+    write_inputs(tmp_path)
+    settings = config(tmp_path)
+    settings.update(language="triton", agent=agent, disable_web=True,
+                    task_view="multiturn", feedback_style="multiturn",
+                    triton_example="example.py", codex_use_mcp=use_mcp)
+    for key in ["binding", "nvcc_gencode", "tvm_ffi_example"]:
+        settings.pop(key)
+    example_path = Path(__file__).resolve().parents[2] / "multiturn/prompts/examples/triton.py"
+    example = example_path.read_text()
+    (tmp_path / "example.py").write_text(example)
+    settings["runs"] = [{"run_id": "exp_000", "prompt_tag": "triton-hopper"}]
+    (tmp_path / "hub.json").write_text(json.dumps({"triton-hopper": ["docs/base.md"]}))
+    registry = prepare(settings)
+    workspace = registry.root / "workspaces/exp_000"
+    assert {p.name for p in workspace.iterdir()} == {"knowledge_pack.md"}
+    knowledge = (workspace / "knowledge_pack.md").read_text()
+    assert "## Triton integration example" in knowledge
+    assert f"```python\n{example.rstrip()}\n```" in knowledge
+    assert "TVM-FFI" not in knowledge and "CuTeDSL" not in knowledge
+    prompt = registry.prompt_path("exp_000").read_text()
+    assert "Triton" in prompt and "preallocated" in prompt
+    assert "kernel.cu" not in prompt and "CuTeDSL" not in prompt
+    if use_mcp or agent == "agy":
+        assert "`evaluate_kernel` tool" in prompt
+    else:
+        assert "ptxbench-eval /workspace/kernel.py /opt/ptxbench/workload.json" in prompt
+    assert _cutedsl_mount_args(settings) == []
+    assert "PTXBENCH_KERNEL_LANGUAGE=triton" in _evaluator_container_args(settings, "exp_000", tmp_path / "secret")
+    provenance = registry.get_run("exp_000")["artifact_provenance"]
+    assert provenance["triton_example_sha256"] == hashlib.sha256(example.encode()).hexdigest()
+    assert "cutedsl_source" not in provenance and "tvm_ffi_example_sha256" not in provenance
+    if agent == "agy":
+        definitions = list((registry.root / "antigravity_home").rglob("agent.md"))
+        # The no-web AGY agent must use the same fixed Python evaluator path.
+        assert len(definitions) == 1
+        assert "/workspace/kernel.py" in definitions[0].read_text()
+        assert "kernel.cu" not in definitions[0].read_text()
+    prepare(settings)
+    _registry_for_launch(settings)
+    (tmp_path / "example.py").write_text(example + "# changed\n")
+    for check in [prepare, _registry_for_launch]:
+        with pytest.raises(ValueError, match="different Triton example"):
+            check(settings)
+
+
+def test_triton_preflight_accepts_example_and_labels_shortcuts():
+    example = Path(__file__).resolve().parents[2] / "multiturn/prompts/examples/triton.py"
+    assert validation_error(example.read_text(), language="Triton") is None
+    feedback = validation_error("import torch\ndef run(A, B, C): torch.mm(A, B, out=C)", language="Triton")
+    assert "Triton" in feedback and "torch.mm" in feedback

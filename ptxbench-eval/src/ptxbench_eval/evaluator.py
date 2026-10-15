@@ -5,7 +5,7 @@ import hashlib
 from typing import Any
 
 from .compiler import compile_source
-from .cutedsl import validation_error as cutedsl_validation_error
+from .python_kernel import validation_error as python_validation_error
 from .events import RawEventLog
 from .feedback import (
     finish_feedback,
@@ -189,8 +189,12 @@ class Evaluator:
         log: RawEventLog,
         usage_snapshot: dict[str, Any],
     ) -> dict[str, Any]:
-        is_cutedsl = manifest.data["language"] == "cutedsl"
-        validation = cutedsl_validation_error(source) if is_cutedsl else validation_error(source)
+        language = manifest.data["language"]
+        is_python = language in {"cutedsl", "triton"}
+        validation = (
+            python_validation_error(source, language="CuTeDSL" if language == "cutedsl" else "Triton")
+            if is_python else validation_error(source)
+        )
         log.emit("source_validation_completed", rejected=bool(validation), feedback=validation)
         compile_result: dict[str, Any] = {
             "ok": False,
@@ -198,11 +202,12 @@ class Evaluator:
             "isa_warning": "",
             "infrastructure_error": False,
         }
-        if not validation and is_cutedsl:
-            # CuTeDSL JIT requires the profiling service's installed CUDA stack.
+        if not validation and is_python:
+            # Python GPU JITs require the profiling service's installed CUDA stack.
             # Local preflight only parses Python; service errors use normal feedback.
             compile_result["ok"] = True
-            log.emit("compilation_deferred", language="python", destination="profiling_service")
+            log.emit("compilation_deferred", language="python" if language == "cutedsl" else language,
+                     destination="profiling_service")
         elif not validation:
             log.emit("compilation_started", nvcc_gencode=manifest.data["nvcc_gencode"])
             compile_result = compile_source(
