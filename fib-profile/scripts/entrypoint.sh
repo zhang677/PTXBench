@@ -9,6 +9,8 @@ BENCH_ROOT="$WORKDIR/$FIB_DIR"
 DATASET_ROOT="${FIB_DATASET_DIR:-$WORKDIR/dataset}"
 VENV_DIR="${VENV_DIR:-$WORKDIR/acc}"
 FIB_DATASET_MODE="${FIB_DATASET_MODE:-existing}"
+FLASH_KDA_REPO_URL="https://github.com/MoonshotAI/FlashKDA.git"
+FLASH_KDA_DIR="${FLASH_KDA_DIR:-$WORKDIR/flash-kda}"
 
 case "$FIB_DATASET_MODE" in
     existing) ;;
@@ -38,9 +40,25 @@ uv pip install --index-strategy unsafe-best-match \
     --extra-index-url https://download.pytorch.org/whl/cu130 \
     -e "$BENCH_ROOT[serve]" httpx cupti-python "flash-linear-attention==0.5.2" \
     "torch==2.12.1+cu130" "triton==3.7.1" "nvidia-cutlass-dsl==4.6.0" "cuda-python==13.0.3"
+
+# Build FlashKDA from the default branch on a fresh clone. Reuse an existing
+# checkout as-is; there is no commit pin or automatic branch change.
+if [ ! -e "$FLASH_KDA_DIR" ]; then
+    git clone "$FLASH_KDA_REPO_URL" "$FLASH_KDA_DIR"
+elif [ ! -e "$FLASH_KDA_DIR/.git" ]; then
+    echo "[entrypoint] ERROR: $FLASH_KDA_DIR exists but is not a git checkout" >&2
+    exit 1
+fi
+git -C "$FLASH_KDA_DIR" submodule update --init --recursive
+(
+    cd "$FLASH_KDA_DIR"
+    uv pip install -v --no-build-isolation .
+)
+
 python - <<'PY'
 import torch
 import triton
+import flash_kda
 
 assert torch.__version__ == "2.12.1+cu130", torch.__version__
 assert triton.__version__ == "3.7.1", triton.__version__
