@@ -1,0 +1,37 @@
+{
+  "triton_log2e": {
+    "log": "Traceback (most recent call last):\n  File \"/workspace/flashinfer-bench-private/flashinfer_bench/bench/evaluators/default.py\", line 138, in check_correctness\n    sol_runnable(*inp, *out)\n  File \"/workspace/flashinfer-bench-private/flashinfer_bench/compile/runnable.py\", line 95, in __call__\n    ret = self._callable(*args)\n  File \"/root/.cache/flashinfer_bench/cache/triton/fib_triton_eval_kernel_604192b2_604192/fib_triton_eval_kernel_604192b2_604192/kernel.py\", line 237, in run\n    _kda_fused[grid](\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/runtime/jit.py\", line 370, in <lambda>\n    return lambda *args, **kwargs: self.run(grid=grid, warmup=False, *args, **kwargs)\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/runtime/jit.py\", line 739, in run\n    kernel = self._do_compile(key, signature, device, constexprs, options, attrs, warmup)\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/runtime/jit.py\", line 884, in _do_compile\n    kernel = self.compile(src, target=target, options=options.__dict__)\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/compiler/compiler.py\", line 307, in compile\n    module = src.make_ir(target, options, codegen_fns, module_map, context)\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/compiler/compiler.py\", line 80, in make_ir\n    return ast_to_ttir(self.fn, self, context=context, options=options, codegen_fns=codegen_fns,\ntriton.compiler.errors.CompilationError: at 44:50:\n\n    ti = tl.arange(0, C)[:, None]\n    kcol = tl.arange(0, K)[None, :]\n    vv = v_tile * BLOCK_V + tl.arange(0, BLOCK_V)[None, :]\n    rr = tl.arange(0, C)[:, None]\n    cc = tl.arange(0, C)[None, :]\n    same8 = (rr // 8) == (cc // 8)\n    r8 = rr % 8\n    c8 = cc % 8\n    beta_row = tl.arange(0, C)\n\n    a_scale = tl.exp2(tl.load(a_log_ptr + head) * LOG2E)\n                                                  ^\nNameError(\"Cannot access global variable LOG2E from within @jit'ed function. Triton kernels can only access global variables that are instanstiated as constexpr (`x = triton.language.constexpr(42)`). Note that this is different from annotating a variable as constexpr (`x: triton.language.constexpr = 42`), which is not supported.  Alternatively, set the envvar TRITON_ALLOW_NON_CONSTEXPR_GLOBALS=1, but we do not promise to support this forever.\")\n",
+    "metadata": {
+      "Primary diagnostics": {
+        "exist": true,
+        "msg": "- Error: at 44:50:\n- WARNING: memcheck detected issues!"
+      },
+      "Source locations": {
+        "exist": true,
+        "msg": "kernel.py:196\n  line 196: outside available source range 1-100"
+      }
+    }
+  },
+  "triton_c": {
+    "log": "Traceback (most recent call last):\n  File \"/workspace/flashinfer-bench-private/flashinfer_bench/bench/evaluators/default.py\", line 138, in check_correctness\n    sol_runnable(*inp, *out)\n  File \"/workspace/flashinfer-bench-private/flashinfer_bench/compile/runnable.py\", line 95, in __call__\n    ret = self._callable(*args)\n  File \"/root/.cache/flashinfer_bench/cache/triton/fib_triton_eval_kernel_183748cc_183748/fib_triton_eval_kernel_183748cc_183748/kernel.py\", line 400, in run\n    _uw_kernel[(bh * nc,)](\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/runtime/jit.py\", line 370, in <lambda>\n    return lambda *args, **kwargs: self.run(grid=grid, warmup=False, *args, **kwargs)\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/runtime/jit.py\", line 739, in run\n    kernel = self._do_compile(key, signature, device, constexprs, options, attrs, warmup)\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/runtime/jit.py\", line 884, in _do_compile\n    kernel = self.compile(src, target=target, options=options.__dict__)\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/compiler/compiler.py\", line 307, in compile\n    module = src.make_ir(target, options, codegen_fns, module_map, context)\n  File \"/workspace/acc/lib/python3.10/site-packages/triton/compiler/compiler.py\", line 80, in make_ir\n    return ast_to_ttir(self.fn, self, context=context, options=options, codegen_fns=codegen_fns,\ntriton.compiler.errors.CompilationError: at 4:14:\ndef _uw_kernel(k, v, g, beta, Akk, work, wsave, T: tl.constexpr):\n    work_bf = work.to(tl.pointer_type(tl.bfloat16))\n    pid = tl.program_id(0)\n    nc = T // C\n              ^\nNameError(\"Cannot access global variable C from within @jit'ed function. Triton kernels can only access global variables that are instanstiated as constexpr (`x = triton.language.constexpr(42)`). Note that this is different from annotating a variable as constexpr (`x: triton.language.constexpr = 42`), which is not supported.  Alternatively, set the envvar TRITON_ALLOW_NON_CONSTEXPR_GLOBALS=1, but we do not promise to support this forever.\")\n",
+    "metadata": {
+      "Primary diagnostics": {
+        "exist": true,
+        "msg": "- Error: at 44:50:\n- WARNING: memcheck detected issues!"
+      },
+      "Source locations": {
+        "exist": true,
+        "msg": "kernel.py:196\n  line 196: outside available source range 1-100"
+      }
+    }
+  },
+  "python_type_error": {
+    "log": "Traceback (most recent call last):\n  File \"kernel.py\", line 2, in run\n    compiled_kernel(x)\nTypeError: incompatible argument types\n",
+    "metadata": {
+      "Primary diagnostics": {
+        "exist": true,
+        "msg": "- WARNING: memcheck detected issues!"
+      }
+    }
+  }
+}

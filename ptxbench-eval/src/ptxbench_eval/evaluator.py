@@ -8,11 +8,11 @@ from .compiler import compile_source
 from .python_kernel import validation_error as python_validation_error
 from .events import RawEventLog
 from .feedback import (
+    append_runtime_diagnostics,
     finish_feedback,
     has_runtime_failure,
     prepend_log,
     render_debug_metadata,
-    replace_runtime_logs,
     sanitizer_failure_status,
     sanitizer_traces,
     validate_feedback_style,
@@ -388,7 +388,7 @@ class Evaluator:
         if failing_logs is not None:
             traces = sanitizer_traces(failing_logs, sanitizer_status or "RUNTIME_ERROR")
             report = self._debug(solution, workload_uuid, sanitizer_status or "RUNTIME_ERROR", log)
-            replace_runtime_logs(traces, report)
+            append_runtime_diagnostics(traces, report)
             return traces
         result = self.client.submit_and_poll(
             "evaluate",
@@ -416,7 +416,7 @@ class Evaluator:
                 "TIMEOUT" if "TIMEOUT" in statuses else "RUNTIME_ERROR",
                 log,
             )
-            replace_runtime_logs(traces, report)
+            append_runtime_diagnostics(traces, report)
         return traces
 
     def _debug(
@@ -450,7 +450,7 @@ class Evaluator:
             return ""
         logs = result.get("logs") or []
         metadata = logs[0].get("metadata") if logs and isinstance(logs[0], dict) else None
-        return render_debug_metadata(metadata)
+        return render_debug_metadata(metadata, language=solution["spec"]["language"])
 
     @staticmethod
     def _validate_evaluate_traces(

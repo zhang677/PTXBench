@@ -174,9 +174,26 @@ def sanitizer_traces(raw: Any, status: str) -> list[dict[str, Any]]:
     return traces
 
 
-def render_debug_metadata(metadata: Any) -> str:
+def render_debug_metadata(metadata: Any, *, language: str = "cuda") -> str:
     if not isinstance(metadata, dict):
         return ""
+    # Python GPU JIT/compiler exceptions are already present in the original
+    # evaluation traceback. A CUDA-oriented summary of them can be misleading
+    # (for example, just "Error: at 44:50" followed by a memcheck warning).
+    # CuTeDSL uses the backend's existing "python" language tag.
+    if language in {"python", "triton"}:
+        device_evidence = any(
+            isinstance(metadata.get(title), dict) and metadata[title].get("exist")
+            for title in ("Most precise CUDA fault", "CUDA core dump analysis", "CUDA core dumps")
+        )
+        primary = metadata.get("Primary diagnostics")
+        if isinstance(primary, dict) and primary.get("exist"):
+            device_evidence = device_evidence or bool(re.search(
+                r"\bCUDA (?:error|Exception)\b|\bRace reported\b",
+                str(primary.get("msg", "")), re.IGNORECASE,
+            ))
+        if not device_evidence:
+            return ""
     rendered: list[str] = []
     for title, section in metadata.items():
         if title == "FlashInfer CUDA debug report":
@@ -191,13 +208,16 @@ def render_debug_metadata(metadata: Any) -> str:
     return report + "\n" if report else ""
 
 
-def replace_runtime_logs(traces: Any, report: str) -> None:
+def append_runtime_diagnostics(traces: Any, report: str) -> None:
+    """Keep the complete original error first, then add device diagnostics."""
     if not report or not isinstance(traces, list):
         return
     for trace in traces:
         evaluation = trace.setdefault("evaluation", {})
         if evaluation.get("status") in {"RUNTIME_ERROR", "TIMEOUT"}:
-            evaluation["log"] = report
+            original = evaluation.get("log", "") or ""
+            additional = "Additional CUDA diagnostics:\n" + report
+            evaluation["log"] = original + ("\n\n" if original else "") + additional
 
 
 def has_runtime_failure(traces: Any) -> bool:

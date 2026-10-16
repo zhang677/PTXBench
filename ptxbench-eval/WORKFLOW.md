@@ -93,3 +93,19 @@ checks, and timing happen in that service. The standard profiling setup already
 installs Triton via `fib-profile/scripts/entrypoint.sh`. Preparation records the
 integration example's hash, and preparation/launch reject example drift for an
 existing run.
+
+
+## Error diagnostics
+
+Runtime-error and timeout feedback preserves the complete original evaluation
+log before appending additional CUDA diagnostics. This applies to both feedback
+styles; `multiturn` omits structured traces from the response, not the error text.
+
+Diagnostic selection uses the solution's existing backend language. CuTeDSL
+remains `python`, and Triton remains `triton`; both keep their original Python/JIT
+tracebacks and only append the CUDA debug report when it contains device-fault
+or core-dump evidence. CUDA submissions retain the additional CUDA debug report.
+No separate CuTeDSL diagnostics tag or configuration field is required.
+Submitted-source excerpts are matched to traceback paths, so library frames are
+not relabeled as lines in `kernel.py` or `kernel.cu`. Sanitizer checks and FLA
+backend selection are unchanged, including `FLA_TILELANG=0` in the LA references.

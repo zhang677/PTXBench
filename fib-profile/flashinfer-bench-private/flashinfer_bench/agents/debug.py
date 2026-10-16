@@ -376,7 +376,21 @@ def format_debug_metadata(
     faults = extract_sanitizer_faults(raw_log)
     api_faults = infer_cuda_api_faults(raw_log, entry_lines)
     coredump_insights = extract_cuda_gdb_insights(raw_log)
-    locations = extract_cuda_source_lines(raw_log)
+    sources = {source.path: source.content.splitlines() for source in solution.sources}
+
+    def source_location(raw_path: str) -> tuple[str, list[str]]:
+        # Cache directories prefix submitted paths. Match a complete path suffix,
+        # never reinterpret a library traceback line as a line in the entry file.
+        for path in sorted(sources, key=len, reverse=True):
+            if raw_path == path or raw_path.endswith("/" + path):
+                return path, sources[path]
+        return raw_path, []
+
+    locations: list[tuple[str, int]] = []
+    for raw_path, line_no in extract_cuda_source_lines(raw_log):
+        path, lines = source_location(raw_path)
+        if lines and (path, line_no) not in locations:
+            locations.append((path, line_no))
     diagnostics: list[str] = []
     for pattern in _DIAGNOSTIC_PATTERNS:
         for match in pattern.finditer(raw_log):
@@ -410,15 +424,18 @@ def format_debug_metadata(
             assert isinstance(frames, list)
             for frame in frames[:3]:
                 label = "device frame" if frame["is_device_frame"] else "faulting instruction"
-                section.append(f"  {label}: {entry_path}:{frame['line']}")
+                path, _ = source_location(str(frame["path"]))
+                section.append(f"  {label}: {path}:{frame['line']}")
                 section.append(f"    {frame['text']}")
             if len(frames) >= 2:
                 first = frames[0]
                 second = frames[1]
+                first_path, _ = source_location(str(first["path"]))
+                second_path, _ = source_location(str(second["path"]))
                 section.append(
                     "  interpretation: the wrapper/synchronize line may only report the "
-                    f"asynchronous CUDA failure; inspect {entry_path}:{second['line']} "
-                    f"and the helper at {entry_path}:{first['line']} first."
+                    f"asynchronous CUDA failure; inspect {second_path}:{second['line']} "
+                    f"and the helper at {first_path}:{first['line']} first."
                 )
     elif api_faults:
         for fault in api_faults[:3]:
@@ -451,8 +468,9 @@ def format_debug_metadata(
             line_no = int(frame["line"])
             inline_line = frame.get("inline_line")
             function = str(frame["function"])
-            source_line = _line_text(entry_lines, line_no)
-            section.append(f"- frame #{frame['index']}: {entry_path}:{line_no}")
+            path, lines = source_location(str(frame["path"]))
+            source_line = _line_text(lines, line_no)
+            section.append(f"- frame #{frame['index']}: {path}:{line_no}")
             if function:
                 section.append(f"  function: {function}")
             if source_line:
@@ -460,8 +478,9 @@ def format_debug_metadata(
             else:
                 section.append(f"  raw: {frame['text']}")
             if isinstance(inline_line, int) and inline_line != line_no:
-                inline_source_line = _line_text(entry_lines, inline_line)
-                section.append(f"  inlined call site: {entry_path}:{inline_line}")
+                inline_path, inline_lines = source_location(str(frame["inline_path"]))
+                inline_source_line = _line_text(inline_lines, inline_line)
+                section.append(f"  inlined call site: {inline_path}:{inline_line}")
                 if inline_source_line:
                     section.append(f"  call source: {inline_source_line}")
             haystack = f"{function} {source_line} {frame['text']}".lower()
@@ -473,17 +492,19 @@ def format_debug_metadata(
         if wait_like_frames:
             frame = wait_like_frames[0]
             inspect_line = frame.get("inline_line", frame["line"])
+            inspect_path, _ = source_location(str(frame.get("inline_path", frame["path"])))
             section.append(
                 "  interpretation: the coredump caught the GPU in a wait/barrier path. "
-                f"For timeout failures, inspect {entry_path}:{inspect_line} and its caller "
+                f"For timeout failures, inspect {inspect_path}:{inspect_line} and its caller "
                 "before treating this as a generic CUDA core dump."
             )
         elif "timed out after" in raw_log:
             first = coredump_frames[0]
+            first_path, _ = source_location(str(first["path"]))
             section.append(
                 "  interpretation: this is a timeout coredump; the top CUDA frames show "
                 f"where the kernel was executing when it was interrupted. Start at "
-                f"{entry_path}:{first['line']}."
+                f"{first_path}:{first['line']}."
             )
     metadata["CUDA core dump analysis"] = _section(
         section if section else ["- cuda-gdb produced no source-level backtrace."],
@@ -498,14 +519,11 @@ def format_debug_metadata(
     metadata["Primary diagnostics"] = _section(section, exist=bool(diagnostics))
 
     section = []
-    if locations and entry_lines:
-        for raw_path, line_no in locations[:8]:
-            section.append(f"{entry_path}:{line_no}")
-            section.append(_source_excerpt(entry_lines, line_no, source_context_lines))
+    if locations:
+        for path, line_no in locations[:8]:
+            section.append(f"{path}:{line_no}")
+            section.append(_source_excerpt(sources[path], line_no, source_context_lines))
             section.append("")
-    elif locations:
-        for raw_path, line_no in locations[:8]:
-            section.append(f"- {raw_path}:{line_no} (entry source {entry_path!r} unavailable)")
     else:
         section.append(
             "- No source line was reported. For hangs, inspect any CUDA core dump below."
