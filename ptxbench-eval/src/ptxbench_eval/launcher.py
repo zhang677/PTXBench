@@ -1051,6 +1051,53 @@ def _codex_goal_warning_notice(event: dict[str, Any]) -> str | None:
     return f"{message}: {'; '.join(details)}" if details else message
 
 
+def _codex_capacity_error(event: dict[str, Any]) -> dict[str, Any] | None:
+    if event.get("event") != "codex_app_server":
+        return None
+    payload = event.get("payload")
+    if not isinstance(payload, dict) or payload.get("method") != "error":
+        return None
+    params = payload.get("params")
+    if not isinstance(params, dict) or params.get("willRetry") is not False:
+        return None
+    error = params.get("error")
+    if isinstance(error, dict) and error.get("codexErrorInfo") == "serverOverloaded":
+        return error
+    return None
+
+
+class _ModelCapacityError(RuntimeError):
+    def __init__(self, run_id: str, error: dict[str, Any], source_event: int):
+        super().__init__(
+            f"Model at capacity for {run_id}; aborting the experiment: "
+            f"{error.get('message', 'serverOverloaded')}"
+        )
+        self.run_id = run_id
+        self.failure = {
+            "kind": "model_capacity",
+            "source_run_id": run_id,
+            "observed_at": utc_now(),
+            "source_event": source_event,
+            "error": error,
+        }
+
+
+class _LaunchCancellation:
+    def __init__(self) -> None:
+        self.lock = threading.RLock()
+        self.error: BaseException | None = None
+
+    def cancel(self, error: BaseException) -> None:
+        with self.lock:
+            if self.error is None:
+                self.error = error
+
+    def raise_if_cancelled(self) -> None:
+        with self.lock:
+            if self.error is not None:
+                raise self.error
+
+
 def _agy_completion_validation(
     registry: Registry,
     run_id: str,
@@ -1271,7 +1318,12 @@ def _finish_token_watcher(
         watcher.wait(timeout=10)
 
 
-def _launch_one(config: dict[str, Any], registry: Registry, run: dict[str, Any]) -> int:
+def _launch_one(
+    config: dict[str, Any], registry: Registry, run: dict[str, Any],
+    cancellation: _LaunchCancellation | None = None,
+) -> int:
+    cancellation = cancellation or _LaunchCancellation()
+    cancellation.raise_if_cancelled()
     run_id = run["run_id"]
     initial_record = registry.get_run(run_id)
     stop_request = initial_record.get("stop_request")
@@ -1336,15 +1388,19 @@ def _launch_one(config: dict[str, Any], registry: Registry, run: dict[str, Any])
         config["agent_image"],
     ]
     command.extend(_agent_argv(config, prompt))
-    process = subprocess.Popen(
-        command,
-        stdin=subprocess.PIPE if codex_auth is not None else None,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        bufsize=1,
-    )
-    registry.set_process(run_id, pid=process.pid, container_name=container_name)
+    # Preparation can overlap another worker's failure. Serialize the final
+    # cancellation check, process start, and registration with batch abort.
+    with cancellation.lock:
+        cancellation.raise_if_cancelled()
+        process = subprocess.Popen(
+            command,
+            stdin=subprocess.PIPE if codex_auth is not None else None,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+        )
+        registry.set_process(run_id, pid=process.pid, container_name=container_name)
     exchange_stop: threading.Event | None = None
     exchange_thread: threading.Thread | None = None
     if _uses_eval_exchange(config):
@@ -1361,6 +1417,7 @@ def _launch_one(config: dict[str, Any], registry: Registry, run: dict[str, Any])
     agy_permission_denial: str | None = None
     codex_goal_warning: dict[str, Any] | None = None
     codex_goal_warning_notice: str | None = None
+    capacity_error: _ModelCapacityError | None = None
     assert process.stdout is not None
     for line_number, line in enumerate(process.stdout, start=1):
         line = line.rstrip("\n")
@@ -1380,6 +1437,16 @@ def _launch_one(config: dict[str, Any], registry: Registry, run: dict[str, Any])
         )
         if isinstance(event, dict):
             if agent == "codex":
+                error = _codex_capacity_error(event)
+                if error is not None:
+                    capacity_error = _ModelCapacityError(run_id, error, line_number)
+                    cancellation.cancel(capacity_error)
+                    registry.update_run(
+                        run_id, status="infra_failed", failure=capacity_error.failure,
+                    )
+                    print(str(capacity_error), file=sys.stderr, flush=True)
+                    _stop_agent_containers([run])
+                    break
                 goal_notice = _codex_goal_warning_notice(event)
                 if goal_notice is not None:
                     codex_goal_warning = event
@@ -1518,6 +1585,8 @@ def _launch_one(config: dict[str, Any], registry: Registry, run: dict[str, Any])
                 "ended_at": utc_now(),
             },
         )
+    if capacity_error is not None:
+        raise capacity_error
     return returncode
 
 
@@ -1546,11 +1615,16 @@ def launch(config: dict[str, Any]) -> int:
         ]
     )
     launch_error: BaseException | None = None
+    cancellation = _LaunchCancellation()
+    capacity_cancelled: list[str] = []
     try:
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=int(config.get("max_parallel", len(runnable)))
         ) as pool:
-            futures = [pool.submit(_launch_one, config, registry, run) for run in runnable]
+            futures = [
+                pool.submit(_launch_one, config, registry, run, cancellation)
+                for run in runnable
+            ]
             try:
                 pending = set(futures)
                 while pending:
@@ -1559,6 +1633,7 @@ def launch(config: dict[str, Any]) -> int:
                         timeout=0.5,
                         return_when=concurrent.futures.FIRST_EXCEPTION,
                     )
+                    cancellation.raise_if_cancelled()
                     for future in done:
                         future.result()
                     if pending and watcher.poll() is not None:
@@ -1566,14 +1641,47 @@ def launch(config: dict[str, Any]) -> int:
                             "token watcher exited while agent containers were active: "
                             f"returncode={watcher.returncode}"
                         )
-            except BaseException:
-                _stop_agent_containers(runnable)
+            except BaseException as exc:
+                cancellation.cancel(exc)
+                for future in futures:
+                    future.cancel()
+                if isinstance(cancellation.error, _ModelCapacityError):
+                    for run in runnable:
+                        run_id = run["run_id"]
+                        if (
+                            run_id != cancellation.error.run_id
+                            and registry.get_run(run_id)["status"] not in TERMINAL_STATES
+                        ):
+                            capacity_cancelled.append(run_id)
+                            registry.update_run(
+                                run_id, status="cancelled",
+                                failure=cancellation.error.failure,
+                            )
+                # A docker client started before cancellation may still be
+                # creating its container. Keep stopping until workers exit.
+                while True:
+                    _stop_agent_containers(runnable)
+                    unfinished = [future for future in futures if not future.done()]
+                    if not unfinished:
+                        break
+                    concurrent.futures.wait(unfinished, timeout=0.5)
                 raise
     except BaseException as exc:
         launch_error = exc
         _stop_agent_containers(runnable)
     finally:
         _finish_token_watcher(watcher, launch_error=launch_error)
+    if isinstance(cancellation.error, _ModelCapacityError):
+        # Reconcile after workers and watcher exit so budget/turn accounting
+        # cannot replace the capacity failure or cancellation classification.
+        registry.update_run(
+            cancellation.error.run_id, status="infra_failed",
+            failure=cancellation.error.failure,
+        )
+        for run_id in capacity_cancelled:
+            registry.update_run(
+                run_id, status="cancelled", failure=cancellation.error.failure,
+            )
     if launch_error is not None:
         raise launch_error
     if watcher.returncode != 0:
