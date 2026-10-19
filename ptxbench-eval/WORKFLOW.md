@@ -28,6 +28,37 @@ gateway while callers remain synchronous. The limit is per gateway and separate
 from the launcher's `max_parallel` agent limit. Omitting it preserves the default
 thread-pool concurrency. `/health` reports the configured `max_profiles` value.
 
+## Passing kernel exports
+
+The gateway automatically exports fully passing Codex and AGY evaluations to
+`success/<run_id>/kernel_v0.cu`, `kernel_v1.cu`, and so on (`.py` for Triton
+and CuTeDSL). `record.json` uses the same list format as the multiturn Gemini
+runner: `version`, `turn`, `timestamp`, and complete `traces`. Versions count
+successful submissions from zero; `turn` is the original zero-based evaluation
+turn, including failures. Passing kernels are saved even below the target
+speedup, and repeated submissions remain separate versions.
+
+The shared implementation is `src/ptxbench_eval/export_success.py`. Backfill an
+existing experiment with the same code, without running any GPU evaluations:
+
+```bash
+PYTHONPATH=ptxbench-eval/src python -m ptxbench_eval.export_success \
+  --run-dir /path/to/experiment
+```
+
+Use `--run-id exp_000` to select a run, `--dry-run` to inspect the result, or
+`--backup-existing` to move incompatible artifacts intact into
+`success-backups/` before replacing them. Matching exports are left unchanged;
+later successes append versions. Source bytes are checked against saved hashes.
+For older trajectories, recorded profile submissions restore any trailing
+whitespace stripped by the old serializer; when those events are unavailable,
+the canonical source block is used. Backfills use saved evaluation timestamps
+(an empty timestamp means the old evidence did not contain one).
+
+Rebuild the gateway image to enable automatic exports in an existing image;
+the normal launch scripts do this when image building is enabled. The CLI works
+directly from the checkout for previously completed runs.
+
 ## CuTeDSL
 
 The gateway also supports CuTeDSL kernels. Use `language: "cutedsl"` in

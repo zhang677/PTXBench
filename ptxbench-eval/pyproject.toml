@@ -15,6 +15,7 @@ dependencies = [
 
 [project.scripts]
 ptxbench-eval = "ptxbench_eval.cli:main"
+ptxbench-export-success = "ptxbench_eval.export_success:main"
 ptxbench-eval-server = "ptxbench_eval.server:main"
 ptxbench-run = "ptxbench_eval.launcher:main"
 ptxbench-token-watch = "ptxbench_eval.token_watcher:main"

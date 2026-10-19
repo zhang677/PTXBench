@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import hmac
 import hashlib
+import logging
 import secrets
 import time
 from pathlib import Path
 from typing import Any
 
+from .export_success import export_trajectory
 from .feedback import validate_feedback_style
 from .models import ContractError, WorkloadManifest, normalized_usage
 from .task_view import agent_task_payload, validate_task_view
@@ -438,15 +440,15 @@ class Registry:
         replay_count: int,
         recovery_count: int = 0,
     ) -> None:
-        feedback_style = validate_feedback_style(
-            self.get_run(run_id).get("feedback_style", "default")
-        )
+        run = self.get_run(run_id)
+        feedback_style = validate_feedback_style(run.get("feedback_style", "default"))
         path = self.trajectory_path(run_id)
         with file_lock(path.with_suffix(".lock")):
             trajectory = read_json(path)
             for message in trajectory.get("messages", []):
                 ptxbench = (message.get("extra") or {}).get("ptxbench") or {}
                 if ptxbench.get("action_id") == action_id:
+                    self._export_success(run_id, trajectory, run["manifest"]["language"])
                     return
             turn_idx = self.canonical_turn_count(run_id)
             usage = normalized_usage(usage_snapshot.get("usage"))
@@ -460,10 +462,11 @@ class Registry:
             }
             assistant = {
                 "role": "assistant",
-                "content": f"```cpp\n{source.rstrip()}\n```",
+                "content": f"```cpp\n{source}\n```",
                 "extra": {
                     "ptxbench": {
                         "action_id": action_id,
+                        "source_sha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
                         "cumulative_usage_at_kernel_request": checkpoint,
                     }
                 },
@@ -479,6 +482,7 @@ class Registry:
                     "rollout": {"turn_idx": turn_idx},
                     "ptxbench": {
                         "action_id": action_id,
+                        "evaluated_at": utc_now(),
                         "replay_count": replay_count,
                         "feedback_style": feedback_style,
                         "recovery_count": recovery_count,
@@ -488,3 +492,16 @@ class Registry:
             }
             trajectory["messages"].extend([assistant, evaluation])
             atomic_write_json(path, trajectory)
+            self._export_success(run_id, trajectory, run["manifest"]["language"])
+
+    def _export_success(self, run_id: str, trajectory: dict[str, Any], language: str) -> None:
+        # append_turn holds the trajectory lock, also used by the backfill CLI.
+        # Artifact I/O must not turn a completed evaluation into a failed request.
+        try:
+            export_trajectory(self.root, run_id, trajectory, language)
+        except (OSError, ValueError, KeyError, TypeError):
+            logging.getLogger(__name__).exception(
+                "Could not export success artifacts for %s; repair with "
+                "python -m ptxbench_eval.export_success --run-dir %s --run-id %s",
+                run_id, self.root, run_id,
+            )
