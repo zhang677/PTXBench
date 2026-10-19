@@ -1,6 +1,7 @@
 rtol: 1e-2
 atol: 1e-2
 
-# Fraction of each GPU worker's total HBM its persistent baseline cache may use.
-# Serve restarts to stay within this budget.
+# Fraction of total HBM for observed occupancy plus the next task reservation.
+# Serve checks every task and verifies process/memory cleanup before replacement.
+# Remaining headroom covers candidate scratch; arbitrary allocations can still OOM.
 max_mem_ratio: 0.85

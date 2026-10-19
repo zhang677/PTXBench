@@ -25,11 +25,14 @@ from flashinfer_bench.data import Definition, Evaluation, EvaluationStatus, Solu
 from flashinfer_bench.utils import redirect_stdio_to_tempfile, set_parent_death_signal
 
 from .runner import BaselineHandle, DeviceBaseline, Runner, RunnerError, RunnerFatalError
+from .gpu_memory import GpuMemoryMonitor
 
 logger = logging.getLogger(__name__)
 
 
 class WorkerCommand(Enum):
+    BUILD_BASELINE = "build_baseline"
+    RELEASE_BASELINE = "release_baseline"
     RUN_SOLUTION = "run_solution"
     HEALTH_CHECK = "health_check"
     CLEAR_BASELINES = "clear_baselines"
@@ -37,6 +40,7 @@ class WorkerCommand(Enum):
 
 
 class WorkerResponse(Enum):
+    BASELINE_READY = "baseline_ready"
     READY = "ready"
     EVALUATION = "evaluation"
     ERROR = "error"
@@ -66,8 +70,9 @@ class PersistentSubprocessWorker:
             Device string (e.g. "cuda:0").
         """
         self._device = device
-        self._baselines: Dict[BaselineHandle, DeviceBaseline] = {}
-        self._registry = BuilderRegistry.get_instance()
+        self._baselines: Dict[BaselineHandle, Definition] = {}
+        self._memory = GpuMemoryMonitor(device)
+        self._environment = None
 
         # Solution failure tracking
         self._failure_records: Dict[str, SolutionFailureRecord] = {}
@@ -90,15 +95,22 @@ class PersistentSubprocessWorker:
             target=_persistent_worker_main, args=(child_conn, self._device), daemon=True
         )
         self._worker_proc.start()
+        child_conn.close()
 
         try:
+            if not self._parent_conn.poll(timeout=120):
+                raise RunnerFatalError("Worker startup timed out")
             msg = self._parent_conn.recv()
             if msg.get("cmd") == WorkerResponse.READY.value:
+                self._environment = msg["environment"]
                 self._worker_pgid = self._get_worker_pgid()
+                if self._worker_pgid is None:
+                    raise RunnerFatalError("Worker has no isolated process group")
                 logger.info(f"Persistent worker started for device {self._device}")
             else:
                 raise RunnerFatalError(f"Worker failed to start: {msg}")
         except Exception as e:
+            self._shutdown_worker()
             raise RunnerFatalError(f"Failed to start worker: {e}")
 
     def _get_worker_pgid(self) -> Optional[int]:
@@ -129,60 +141,51 @@ class PersistentSubprocessWorker:
             )
 
     def _shutdown_worker(self) -> None:
+        proc = self._worker_proc
         if self._parent_conn is not None:
             try:
                 self._parent_conn.send({"cmd": WorkerCommand.SHUTDOWN.value})
                 self._parent_conn.close()
-            except Exception:
+            except (OSError, EOFError):
                 pass
             self._parent_conn = None
-
-        if self._worker_proc is not None:
-            try:
-                self._worker_proc.join(timeout=5)
-            except Exception:
-                pass
-            if self._worker_proc.is_alive():
-                try:
-                    self._kill_worker_process_group()
-                    self._worker_proc.terminate()
-                    self._worker_proc.join(timeout=2)
-                except Exception:
-                    pass
-            else:
-                self._kill_worker_process_group()
+        if proc is not None:
+            proc.join(timeout=5)
+            # Signal the group even when its leader exited: descendants can
+            # retain CUDA contexts after the Python worker has gone away.
+            self._kill_worker_process_group()
+            if proc.is_alive():
+                proc.kill()
+            proc.join(timeout=10)
+            if proc.is_alive():
+                raise RunnerFatalError(f"GPU worker {proc.pid} did not exit")
             self._worker_proc = None
             self._worker_pgid = None
+        self._baselines.clear()
+        reclaimed = self._memory.wait_until_reclaimed()
+        logger.info(
+            "GPU state reclaimed on %s: used=%d idle=%d",
+            self._device,
+            reclaimed.used,
+            self._memory.idle.used,
+        )
 
-        # Clear GPU memory after worker shutdown
-        self._clear_device_cache()
+    def memory_snapshot(self):
+        return self._memory.snapshot()
 
-    def _clear_device_cache(self) -> None:
-        try:
-            torch.cuda.set_device(int(self._device.split(":")[1]))
-            gc.collect()
-            torch.cuda.empty_cache()
-            if hasattr(torch.cuda, "ipc_collect"):
-                torch.cuda.ipc_collect()
-            torch.cuda.synchronize(device=self._device)
-        except Exception as e:
-            logger.debug("Failed to clear CUDA cache for %s: %s", self._device, e)
+    def _make_eval(self, **kwargs) -> Evaluation:
+        return make_eval(**kwargs, environment=self._environment)
 
-    def _clear_worker_device_cache(self) -> None:
-        if (
-            self._parent_conn is None
-            or self._parent_conn.closed
-            or self._worker_proc is None
-            or not self._worker_proc.is_alive()
-        ):
-            return
-
-        self._parent_conn.send({"cmd": WorkerCommand.CLEAR_BASELINES.value})
-        if not self._parent_conn.poll(timeout=30.0):
-            raise RunnerError(f"Timed out clearing worker baselines on {self._device}")
-        msg = self._parent_conn.recv()
-        if msg.get("cmd") != WorkerResponse.BASELINES_CLEARED.value:
-            raise RunnerError(f"Failed to clear worker baselines on {self._device}: {msg}")
+    def _baseline_command(self, message, timeout=300):
+        if not self.process_alive:
+            raise RunnerFatalError("GPU worker is not running")
+        self._parent_conn.send(message)
+        if not self._parent_conn.poll(timeout):
+            raise RunnerFatalError("GPU baseline command timed out")
+        response = self._parent_conn.recv()
+        if response.get("cmd") == WorkerResponse.ERROR.value:
+            raise RunnerError(response.get("error", "GPU baseline command failed"))
+        return response
 
     def is_healthy(self) -> bool:
         if (
@@ -323,19 +326,23 @@ class PersistentSubprocessWorker:
         profile_baseline: Optional[bool] = None,
         run_baseline: Optional[bool] = None,
     ) -> BaselineHandle:
-        evaluator_cls = resolve_evaluator(definition)
-        eval_cfg = cfg.resolve_eval_config(
-            definition, profile_baseline=profile_baseline, run_baseline=run_baseline
+        response = self._baseline_command(
+            {
+                "cmd": WorkerCommand.BUILD_BASELINE.value,
+                "definition": definition,
+                "workload": workload,
+                "config": cfg,
+                "trace_set_root": trace_set_root,
+                "profile_baseline": profile_baseline,
+                "run_baseline": run_baseline,
+            },
+            timeout=max(300, cfg.timeout_seconds),
         )
-        baseline = evaluator_cls.build_baseline(
-            definition=definition,
-            workload=workload,
-            cfg=eval_cfg,
-            device=self._device,
-            trace_set_root=trace_set_root,
-        )
-        self._baselines[baseline.handle] = baseline
-        return baseline.handle
+        if response.get("cmd") != WorkerResponse.BASELINE_READY.value:
+            raise RunnerFatalError(f"Invalid baseline response: {response}")
+        handle = response["handle"]
+        self._baselines[handle] = definition
+        return handle
 
     def run_solution(
         self, solution: Solution, baseline: BaselineHandle, cfg: BenchmarkConfig
@@ -343,7 +350,6 @@ class PersistentSubprocessWorker:
         """Run solution using cached compilation."""
         if baseline not in self._baselines:
             raise RunnerError(f"Baseline handle not found: {baseline}")
-        bl = self._baselines[baseline]
 
         solution_name = solution.name
         failure_record = self._should_skip_solution(solution_name)
@@ -351,7 +357,7 @@ class PersistentSubprocessWorker:
             logger.info(
                 f"Skipping solution {solution.name} due to {failure_record.failure_count} consecutive failures"
             )
-            return make_eval(
+            return self._make_eval(
                 status=failure_record.last_status,
                 device=self._device,
                 extra_msg=f"Solution skipped after {failure_record.failure_count} failures. Last error: {failure_record.last_error}",
@@ -359,15 +365,13 @@ class PersistentSubprocessWorker:
 
         # Pre-allocate a log file path so the parent can read subprocess
         # output even if the worker crashes before sending a response.
-        _, worker_log_path = tempfile.mkstemp(suffix=".log", prefix="fib_")
+        log_fd, worker_log_path = tempfile.mkstemp(suffix=".log", prefix="fib_")
+        os.close(log_fd)
 
         eval_msg = {
             "cmd": WorkerCommand.RUN_SOLUTION.value,
-            "definition": bl.definition,
+            "baseline": baseline,
             "solution": solution,
-            "inputs": bl.inputs,
-            "ref_outputs": bl.outputs,
-            "ref_mean_latency_ms": bl.mean_latency_ms,
             "config": cfg,
             "solution_name": solution.name,
             "log_path": worker_log_path,
@@ -379,7 +383,7 @@ class PersistentSubprocessWorker:
                 os.unlink(worker_log_path)
             except OSError:
                 pass
-            return make_eval(
+            return self._make_eval(
                 status=EvaluationStatus.RUNTIME_ERROR, device=self._device, extra_msg=error_msg
             )
 
@@ -414,7 +418,7 @@ class PersistentSubprocessWorker:
                         self._record_failure(
                             solution.name, error_msg, EvaluationStatus.RUNTIME_ERROR
                         )
-                        return make_eval(
+                        return self._make_eval(
                             status=EvaluationStatus.RUNTIME_ERROR,
                             device=self._device,
                             log_path=worker_log_path,
@@ -425,7 +429,7 @@ class PersistentSubprocessWorker:
                         self._record_failure(
                             solution.name, error_msg, EvaluationStatus.RUNTIME_ERROR
                         )
-                        return make_eval(
+                        return self._make_eval(
                             status=EvaluationStatus.RUNTIME_ERROR,
                             device=self._device,
                             log_path=worker_log_path,
@@ -434,7 +438,7 @@ class PersistentSubprocessWorker:
 
                 except (EOFError, ConnectionResetError, OSError) as e:
                     error_msg = f"Runtime error during evaluation ({type(e).__name__}): {e!r}"
-                    return make_eval(
+                    return self._make_eval(
                         status=EvaluationStatus.RUNTIME_ERROR,
                         device=self._device,
                         log_path=worker_log_path,
@@ -450,7 +454,7 @@ class PersistentSubprocessWorker:
                         error_msg = f"Connection closed or corrupted during evaluation: {e}"
                     else:
                         error_msg = f"Failed to decode evaluation response: {e}"
-                    return make_eval(
+                    return self._make_eval(
                         status=EvaluationStatus.RUNTIME_ERROR,
                         device=self._device,
                         log_path=worker_log_path,
@@ -459,7 +463,7 @@ class PersistentSubprocessWorker:
             else:
                 error_msg = f"Evaluation timeout after {cfg.timeout_seconds} seconds for solution {solution.name}"
                 self._record_failure(solution.name, error_msg, EvaluationStatus.TIMEOUT)
-                return make_eval(
+                return self._make_eval(
                     status=EvaluationStatus.TIMEOUT,
                     device=self._device,
                     log_path=worker_log_path,
@@ -468,7 +472,7 @@ class PersistentSubprocessWorker:
 
         except (BrokenPipeError, ConnectionResetError, OSError) as e:
             error_msg = f"Runtime error during evaluation ({type(e).__name__}): {e!r}"
-            return make_eval(
+            return self._make_eval(
                 status=EvaluationStatus.RUNTIME_ERROR,
                 device=self._device,
                 log_path=worker_log_path,
@@ -476,7 +480,7 @@ class PersistentSubprocessWorker:
             )
         except Exception as e:
             error_msg = f"Failed to communicate with worker: {e}"
-            return make_eval(
+            return self._make_eval(
                 status=EvaluationStatus.RUNTIME_ERROR,
                 device=self._device,
                 log_path=worker_log_path,
@@ -484,15 +488,21 @@ class PersistentSubprocessWorker:
             )
 
     def release(self, baseline: BaselineHandle) -> None:
+        if baseline not in self._baselines:
+            return
+        response = self._baseline_command(
+            {"cmd": WorkerCommand.RELEASE_BASELINE.value, "baseline": baseline}
+        )
+        if response.get("cmd") != WorkerResponse.BASELINES_CLEARED.value:
+            raise RunnerFatalError(f"Invalid release response: {response}")
         self._baselines.pop(baseline, None)
-        self._clear_device_cache()
 
     def clear_baselines(self) -> int:
-        count = len(self._baselines)
+        response = self._baseline_command({"cmd": WorkerCommand.CLEAR_BASELINES.value})
+        if response.get("cmd") != WorkerResponse.BASELINES_CLEARED.value:
+            raise RunnerFatalError(f"Invalid clear response: {response}")
         self._baselines.clear()
-        self._clear_device_cache()
-        self._clear_worker_device_cache()
-        return count
+        return response["count"]
 
     def close(self) -> None:
         self._shutdown_worker()
@@ -667,14 +677,14 @@ class PersistentRunner(Runner):
                             logger.error(
                                 f"Failed to rebuild baseline after restart for device {worker._device}: {e}"
                             )
-                            return make_eval(
+                            return worker._make_eval(
                                 status=EvaluationStatus.RUNTIME_ERROR,
                                 device=worker._device,
                                 extra_msg=f"Failed to rebuild baseline after restart: {e}",
                             )
                     else:
                         logger.error(f"Failed to restart worker on device {worker._device}")
-                        return make_eval(
+                        return worker._make_eval(
                             status=EvaluationStatus.RUNTIME_ERROR,
                             device=worker._device,
                             extra_msg="Worker restart failed",
@@ -692,7 +702,7 @@ class PersistentRunner(Runner):
 
             except Exception as e:
                 logger.error(f"Unexpected error in solution execution for {solution.name}: {e}")
-                return make_eval(
+                return worker._make_eval(
                     status=EvaluationStatus.RUNTIME_ERROR,
                     device=worker._device,
                     extra_msg=f"Unexpected error: {e}",
@@ -747,16 +757,15 @@ def _persistent_worker_main(conn: mp.connection.Connection, device: str) -> None
         Device string (e.g. "cuda:0").
     """
     try:
-        try:
-            os.setsid()
-        except OSError as e:
-            print(f"Failed to create worker process group: {e}")
+        os.setsid()
         set_parent_death_signal()
 
         torch.cuda.set_device(int(device.split(":")[1]))
         registry = BuilderRegistry.get_instance()
-
-        conn.send({"cmd": WorkerResponse.READY.value})
+        baselines: Dict[BaselineHandle, DeviceBaseline] = {}
+        conn.send(
+            {"cmd": WorkerResponse.READY.value, "environment": fib_utils.env_snapshot(device)}
+        )
 
         while True:
             try:
@@ -780,23 +789,66 @@ def _persistent_worker_main(conn: mp.connection.Connection, device: str) -> None
                         conn.send({"cmd": WorkerResponse.CORRUPTED.value})
                         break
 
-                elif cmd == WorkerCommand.CLEAR_BASELINES.value:
+                elif cmd == WorkerCommand.BUILD_BASELINE.value:
                     try:
+                        definition = msg["definition"]
+                        cfg = msg["config"]
+                        eval_cfg = cfg.resolve_eval_config(
+                            definition,
+                            profile_baseline=msg["profile_baseline"],
+                            run_baseline=msg["run_baseline"],
+                        )
+                        built = resolve_evaluator(definition).build_baseline(
+                            definition=definition,
+                            workload=msg["workload"],
+                            cfg=eval_cfg,
+                            device=device,
+                            trace_set_root=msg["trace_set_root"],
+                        )
+                        baselines[built.handle] = built
+                        handle = built.handle
+                        built = None
                         gc.collect()
                         torch.cuda.empty_cache()
-                        if hasattr(torch.cuda, "ipc_collect"):
-                            torch.cuda.ipc_collect()
+                        conn.send({"cmd": WorkerResponse.BASELINE_READY.value, "handle": handle})
+                    except Exception:
+                        import traceback
+
+                        conn.send(
+                            {"cmd": WorkerResponse.ERROR.value, "error": traceback.format_exc()}
+                        )
+                    finally:
+                        built = msg = None
+
+                elif cmd in (
+                    WorkerCommand.CLEAR_BASELINES.value,
+                    WorkerCommand.RELEASE_BASELINE.value,
+                ):
+                    try:
+                        count = len(baselines)
+                        if cmd == WorkerCommand.CLEAR_BASELINES.value:
+                            baselines.clear()
+                        else:
+                            baselines.pop(msg["baseline"], None)
+                        gc.collect()
+                        torch.cuda.empty_cache()
                         torch.cuda.synchronize(device=device)
-                        conn.send({"cmd": WorkerResponse.BASELINES_CLEARED.value})
+                        conn.send(
+                            {
+                                "cmd": WorkerResponse.BASELINES_CLEARED.value,
+                                "count": count - len(baselines),
+                            }
+                        )
                     except Exception as e:
                         conn.send({"cmd": WorkerResponse.ERROR.value, "error": str(e)})
 
                 elif cmd == WorkerCommand.RUN_SOLUTION.value:
-                    definition = msg["definition"]
+                    baseline = baselines[msg["baseline"]]
+                    definition = baseline.definition
                     solution = msg["solution"]
-                    inputs_bl = msg["inputs"]
-                    ref_outputs_bl = msg["ref_outputs"]
-                    ref_mean_latency_ms = msg["ref_mean_latency_ms"]
+                    inputs_bl = baseline.inputs
+                    ref_outputs_bl = baseline.outputs
+                    ref_mean_latency_ms = baseline.mean_latency_ms
                     cfg = msg["config"]
 
                     # Use parent-provided log path so the parent can read
@@ -861,7 +913,7 @@ def _persistent_worker_main(conn: mp.connection.Connection, device: str) -> None
                         # admission of headroom for the next (possibly heavier) workload.
                         # Drop every local (and the request msg) still referencing the
                         # cloned/received GPU tensors before emptying the allocator.
-                        inputs = inputs_bl = ref_outputs_bl = None
+                        inputs = inputs_bl = ref_outputs_bl = baseline = None
                         msg = None
                         try:
                             torch.cuda.empty_cache()

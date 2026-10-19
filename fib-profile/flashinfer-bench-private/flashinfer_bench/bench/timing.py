@@ -10,7 +10,6 @@ from multiprocessing.synchronize import Lock as LockType
 from typing import Any, List
 
 import torch
-from flashinfer.testing import bench_gpu_time_with_cupti
 
 from flashinfer_bench.compile import Runnable
 
@@ -68,6 +67,9 @@ def time_runnable(fn: Runnable, args: List[Any], warmup: int, iters: int, device
     float
         The median execution time in milliseconds.
     """
+    # FlashInfer import can initialize CUDA; only import inside the GPU worker.
+    from flashinfer.testing import bench_gpu_time_with_cupti
+
     lock = _device_lock(device)
     with lock:
         with torch.cuda.device(device):

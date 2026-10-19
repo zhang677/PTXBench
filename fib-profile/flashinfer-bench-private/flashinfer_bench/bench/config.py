@@ -69,8 +69,9 @@ class BenchmarkConfig(BaseModel):
     timeout_seconds: int = Field(default=300, gt=0)
     """Timeout in seconds for each solution evaluation."""
     max_mem_ratio: float = Field(default=0.85, gt=0, le=1)
-    """Fraction of a GPU worker's total HBM that its persistent baseline cache may occupy.
-    Used by ``flashinfer-bench serve`` for per-worker baseline cache admission/eviction."""
+    """Fraction of total HBM available for observed occupancy plus task reservations.
+    Serve checks every task and replaces the GPU process under memory pressure.
+    Candidate scratch uses the remaining headroom; this is not an allocation cap."""
     profile_baseline: bool = True
     """Whether to profile the reference implementation for baseline latency."""
     log_dir: Optional[str] = None

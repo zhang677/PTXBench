@@ -19,6 +19,7 @@ from flashinfer_bench.data import (
     Definition,
     Evaluation,
     EvaluationStatus,
+    Environment,
     Performance,
     Workload,
 )
@@ -412,6 +413,7 @@ def make_eval(
     correctness: Optional[Correctness] = None,
     performance: Optional[Performance] = None,
     extra_msg: Optional[str] = None,
+    environment: Optional[Environment] = None,
 ) -> Evaluation:
     log_text = _read_and_cleanup_log(log_path) or ""
     if extra_msg:
@@ -419,7 +421,7 @@ def make_eval(
     return Evaluation(
         status=status,
         log=log_text,
-        environment=env_snapshot(device),
+        environment=environment if environment is not None else env_snapshot(device),
         timestamp=datetime.now().isoformat(),
         correctness=correctness,
         performance=performance,

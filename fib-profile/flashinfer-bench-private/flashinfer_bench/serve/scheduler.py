@@ -7,7 +7,6 @@ import threading
 from math import prod
 from typing import List, Optional
 
-import torch
 
 from flashinfer_bench.agents.debug import flashinfer_bench_debug_solution
 from flashinfer_bench.agents.ncu import flashinfer_bench_run_ncu
@@ -66,16 +65,14 @@ def estimate_baseline_bytes(definition: Definition, workload: Workload, num_tria
 def estimate_eval_reserve_bytes(definition: Definition, workload: Workload, num_trials: int) -> int:
     """Estimate the transient GPU bytes the *live evaluation* of this workload needs.
 
-    Unlike the cached baseline (which lives in the scheduler process), the evaluation
-    runs in the worker subprocess, which re-materializes its own copy of the inputs and
-    reference outputs and produces solution outputs, then runs the float32 correctness
-    check. Peak device usage is therefore the cached baseline PLUS this live working set,
-    so admission must reserve room for it or a heavy evaluation OOMs even while the cache
-    is within budget.
+    Cached baselines and evaluations live in the same disposable GPU process.
+    Evaluation clones inputs, produces outputs, and allocates correctness-check
+    temporaries. Reserve a conservative baseline-sized working set plus those
+    temporaries; CUDA candidate scratch must fit in the remaining headroom.
 
     Modeled generically from the schema as::
 
-        baseline_bytes (subprocess re-materializes a comparable working set)
+        baseline_bytes (conservative live working set)
         + EVAL_CHECK_FACTOR * max(output float32 bytes)   (compute_error_stats temporaries)
 
     Outputs are sized in float32 regardless of their native dtype because the correctness
@@ -93,6 +90,20 @@ def estimate_eval_reserve_bytes(definition: Definition, workload: Workload, num_
     )
 
 
+def _is_cuda_oom(message: Optional[str]) -> bool:
+    text = (message or "").lower()
+    return any(
+        marker in text
+        for marker in (
+            "out of memory",
+            "outofmemoryerror",
+            "cudaerrormemoryallocation",
+            "cuda_error_out_of_memory",
+            "cublas_status_alloc_failed",
+        )
+    )
+
+
 class Scheduler:
     """Manages GPU workers and dispatches evaluate/profile/sanitize tasks."""
 
@@ -100,8 +111,8 @@ class Scheduler:
         self._trace_set = trace_set
         self._config = config
         self._task_store = TaskStore()
-        # Memory-awareness is implemented per-GPU-worker via baseline-cache admission
-        # (see _GPUWorkerThread._admit_baseline), NOT at this top-level scheduler.
+        # Each GPU worker checks real memory before every task, including cache
+        # hits and external tools; pressure restarts its disposable GPU process.
         # Workers self-select tasks from one shared FIFO queue; memory-aware top-level
         # assignment (route a task to the worker with the most free HBM) would require
         # replacing this shared queue with per-worker queues plus a dispatcher, which is
@@ -436,8 +447,8 @@ class _GPUWorkerThread(threading.Thread):
             except Exception as e:
                 logger.error(f"Task {task_id} failed on {self._device}: {e}")
                 self._store.fail_task(task_id, str(e))
-                if not self._gpu_worker.is_healthy():
-                    self._restart_worker("task failure left worker unhealthy", force=True)
+                if _is_cuda_oom(str(e)) or not self._gpu_worker.is_healthy():
+                    self._restart_worker("task failure requires GPU cleanup", force=True)
             finally:
                 with self._worker_lock:
                     self._processing_task = False
@@ -505,6 +516,8 @@ class _GPUWorkerThread(threading.Thread):
                 # health check so illegal accesses do not poison later workloads.
                 if evaluation.status == EvaluationStatus.TIMEOUT:
                     self._restart_worker("TIMEOUT left worker state unknown", force=True)
+                elif _is_cuda_oom(evaluation.log):
+                    self._restart_worker("CUDA OOM requires a clean GPU process", force=True)
                 elif evaluation.status != EvaluationStatus.PASSED:
                     if not self._gpu_worker.is_healthy():
                         self._restart_worker(
@@ -526,6 +539,9 @@ class _GPUWorkerThread(threading.Thread):
 
         logs: List[RunLog] = []
         for workload in workloads:
+            self._admit_external_task(
+                definition=self._trace_set.definitions[task.definition_name], workload=workload
+            )
             log = flashinfer_bench_run_ncu(
                 task.solution,
                 workload,
@@ -548,6 +564,8 @@ class _GPUWorkerThread(threading.Thread):
                     log=log,
                 )
             )
+            if _is_cuda_oom(str(log)) or not self._gpu_worker.is_healthy():
+                self._restart_worker("profile requires GPU cleanup", force=True)
         return logs
 
     def _sanitize_task(self, task: Task) -> List[RunLog]:
@@ -560,6 +578,9 @@ class _GPUWorkerThread(threading.Thread):
 
         logs: List[RunLog] = []
         for workload in workloads:
+            self._admit_external_task(
+                definition=self._trace_set.definitions[task.definition_name], workload=workload
+            )
             log = flashinfer_bench_run_sanitizer(
                 task.solution,
                 workload,
@@ -581,8 +602,8 @@ class _GPUWorkerThread(threading.Thread):
             )
 
             # Sanitizer runs kernels that may have crashed; check worker health.
-            if not self._gpu_worker.is_healthy():
-                self._restart_worker("sanitize left worker unhealthy", force=True)
+            if _is_cuda_oom(str(log)) or not self._gpu_worker.is_healthy():
+                self._restart_worker("sanitize requires GPU cleanup", force=True)
 
         return logs
 
@@ -596,6 +617,9 @@ class _GPUWorkerThread(threading.Thread):
 
         logs: List[RunLog] = []
         for workload in workloads:
+            self._admit_external_task(
+                definition=self._trace_set.definitions[task.definition_name], workload=workload
+            )
             evaluation_timeout = (
                 task.timeout if task.timeout is not None else self._config.timeout_seconds
             )
@@ -623,8 +647,8 @@ class _GPUWorkerThread(threading.Thread):
                 )
             )
 
-            if not self._gpu_worker.is_healthy():
-                self._restart_worker("debug left worker unhealthy", force=True)
+            if _is_cuda_oom(str(debug_result)) or not self._gpu_worker.is_healthy():
+                self._restart_worker("debug requires GPU cleanup", force=True)
 
         return logs
 
@@ -646,7 +670,14 @@ class _GPUWorkerThread(threading.Thread):
         """
         key = (definition.name, workload.uuid, profile_baseline, run_baseline)
         if key in self._baseline_cache:
-            return self._baseline_cache[key]
+            effective = cfg if cfg is not None else self._config
+            resolved = effective.resolve_eval_config(
+                definition, profile_baseline=profile_baseline, run_baseline=run_baseline
+            )
+            reserve = estimate_eval_reserve_bytes(definition, workload, resolved.num_trials)
+            restarted = self._ensure_memory(reserve, "cached-baseline evaluation")
+            if not restarted:
+                return self._baseline_cache[key]
 
         handle = self._build_ref(
             definition,
@@ -674,7 +705,7 @@ class _GPUWorkerThread(threading.Thread):
         )
         estimated_bytes = estimate_baseline_bytes(definition, workload, resolved.num_trials)
         eval_reserve_bytes = estimate_eval_reserve_bytes(definition, workload, resolved.num_trials)
-        # Clear cached baselines under memory pressure so both the new cached baseline
+        # Restart under memory pressure so both the new cached baseline
         # and the live evaluation working set fit the memory budget.
         self._admit_baseline(definition, workload, estimated_bytes, eval_reserve_bytes)
 
@@ -690,49 +721,49 @@ class _GPUWorkerThread(threading.Thread):
 
     # ── Memory-aware baseline cache admission ──
 
-    def _device_index(self) -> int:
-        return int(self._device.split(":")[1])
-
     def _get_device_total_bytes(self) -> int:
-        """Total HBM on this worker's device, in bytes."""
-        _free, total = torch.cuda.mem_get_info(self._device_index())
-        return total
+        return self._gpu_worker.memory_snapshot().total
 
     def _get_device_used_bytes(self) -> int:
-        """Real used bytes on this worker's device (total - free), in bytes.
-
-        Reads actual device memory so the estimate is checked against true
-        occupancy, including the worker subprocess and any other process.
-        """
-        free, total = torch.cuda.mem_get_info(self._device_index())
-        return total - free
-
-    def _empty_device_cache(self) -> None:
-        """Release cached allocator blocks for this worker's device, best-effort."""
-        try:
-            with torch.cuda.device(self._device_index()):
-                torch.cuda.empty_cache()
-        except Exception as e:
-            logger.warning(f"empty_cache failed on {self._device}: {e}")
+        return self._gpu_worker.memory_snapshot().used
 
     def _clear_cached_baselines(self) -> int:
-        """Release cached baselines for this worker and return the tracked count."""
-        tracked_count = len(self._baseline_cache)
-        if hasattr(self._gpu_worker, "clear_baselines"):
-            cleared_count = self._gpu_worker.clear_baselines()
-        else:
-            for handle in list(self._baseline_cache.values()):
-                self._gpu_worker.release(handle)
-            cleared_count = tracked_count
+        count = self._gpu_worker.clear_baselines()
         self._baseline_cache.clear()
-        self._empty_device_cache()
-        logger.info(
-            "Cleared %d cached baseline(s) on %s to free GPU memory (%d tracked by scheduler)",
-            cleared_count,
+        return count
+
+    def _ensure_memory(self, required_bytes: int, purpose: str) -> bool:
+        """Check real device occupancy, then allow at most one verified restart.
+
+        Returning True invalidates every old baseline handle. No CUDA operation
+        is issued in this controller; the disposable process owns all GPU state.
+        """
+        snapshot = self._gpu_worker.memory_snapshot()
+        budget = self._config.max_mem_ratio * snapshot.total
+        if snapshot.used + required_bytes < budget:
+            return False
+        logger.warning(
+            "GPU memory preflight on %s for %s: used=%d reserve=%d budget=%d",
             self._device,
-            tracked_count,
+            purpose,
+            snapshot.used,
+            required_bytes,
+            budget,
         )
-        return cleared_count
+        if not self._restart_worker("memory preflight requires a clean GPU process", force=True):
+            raise RuntimeError("GPU restart unavailable; refusing task")
+        snapshot = self._gpu_worker.memory_snapshot()
+        if snapshot.used + required_bytes >= budget:
+            raise RuntimeError(
+                f"{purpose} requires ~{required_bytes} additional bytes, but used={snapshot.used} "
+                f"and budget={budget:.0f} after verified GPU cleanup; refusing task"
+            )
+        return True
+
+    def _admit_external_task(self, definition: Definition, workload: Workload) -> None:
+        resolved = self._config.resolve_eval_config(definition)
+        reserve = estimate_eval_reserve_bytes(definition, workload, resolved.num_trials)
+        self._ensure_memory(reserve, "external GPU tool")
 
     def _admit_baseline(
         self,
@@ -741,34 +772,4 @@ class _GPUWorkerThread(threading.Thread):
         estimated_bytes: int,
         eval_reserve_bytes: int,
     ) -> None:
-        """Make room for a new baseline and its live evaluation within the budget.
-
-        If the next workload does not fit, clears the worker's cached baselines and
-        then re-reads real device memory before deciding whether to fail.
-        ``estimated_bytes`` is the cached baseline payload (held in this process);
-        ``eval_reserve_bytes`` reserves the transient working set the worker
-        subprocess needs to evaluate this workload (see ``estimate_eval_reserve_bytes``),
-        without which a heavy evaluation can OOM even while the cache is within budget.
-        If the budget cannot be satisfied even after clearing cached baselines on
-        this worker, the task fails early with a clear error.
-        """
-        total_bytes = self._get_device_total_bytes()
-        budget_bytes = self._config.max_mem_ratio * total_bytes
-        required_bytes = estimated_bytes + eval_reserve_bytes
-
-        used_bytes = self._get_device_used_bytes()
-        if required_bytes + used_bytes < budget_bytes:
-            return
-
-        self._clear_cached_baselines()
-        used_bytes = self._get_device_used_bytes()
-        if required_bytes + used_bytes < budget_bytes:
-            return
-
-        raise RuntimeError(
-            f"Baseline for definition '{definition.name}' workload '{workload.uuid}' "
-            f"needs ~{estimated_bytes} cache bytes + ~{eval_reserve_bytes} eval bytes "
-            f"but only ~{max(0.0, budget_bytes - used_bytes):.0f} bytes fit within the "
-            f"memory budget (max_mem_ratio={self._config.max_mem_ratio} * {total_bytes} "
-            f"total HBM bytes) on {self._device} after clearing cached baselines."
-        )
+        self._ensure_memory(estimated_bytes + eval_reserve_bytes, "new baseline and evaluation")
