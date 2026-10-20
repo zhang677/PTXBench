@@ -31,11 +31,9 @@ dependencies = [
   "apache-tvm-ffi>=0.1.2",
   "docstring-parser>=0.16",
   "pyyaml>=6.0",
-  # cuDNN python frontend. Pinned <1.22 because 1.22+ targets cuDNN backend
-  # >=9.22 (Transpose / RESHAPE_MODE op in sdpa_backward); torch's bundled
-  # backend here is 9.20.0, and a newer frontend makes sdpa_backward graph
-  # build fail with CUDNN_STATUS_BAD_PARAM. Lift once the backend is >=9.22.
-  "nvidia-cudnn-frontend<1.22",
+  # FlashInfer 0.7.2 requires cuDNN frontend >=1.31.0. Version 1.31.0 was
+  # validated with the bundled cuDNN 9.20 backend for MHA forward/backward.
+  "nvidia-cudnn-frontend==1.31.0",
 ]
 
 [project.urls]
