@@ -64,7 +64,7 @@ if ! command -v flashinfer-bench >/dev/null 2>&1; then
 fi
 if ! python -c 'import fastapi, httpx, uvicorn' >/dev/null 2>&1; then
     echo "[restart_profiling] ERROR: dispatcher dependencies are missing in $VENV_DIR" >&2
-    echo "[restart_profiling] Run: source $VENV_DIR/bin/activate && uv pip install \"flashinfer-bench[serve]\" httpx" >&2
+    echo "[restart_profiling] Run /workspace/scripts/entrypoint.sh to restore the complete runtime environment." >&2
     exit 1
 fi
 

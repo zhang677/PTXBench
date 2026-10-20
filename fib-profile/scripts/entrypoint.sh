@@ -38,8 +38,7 @@ source "$VENV_DIR/bin/activate"
 # Keep the profiling runtime fixed across clean installs.
 uv pip install --index-strategy unsafe-best-match \
     --extra-index-url https://download.pytorch.org/whl/cu130 \
-    -e "$BENCH_ROOT[serve]" httpx cupti-python "flash-linear-attention==0.5.2" \
-    "torch==2.12.1+cu130" "triton==3.7.1" "nvidia-cutlass-dsl==4.6.2" "cuda-python==13.0.3"
+    -e "$BENCH_ROOT[serve,profile-cu130]"
 
 # Build FlashKDA from the default branch on a fresh clone. Reuse an existing
 # checkout as-is; there is no commit pin or automatic branch change.

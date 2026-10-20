@@ -29,6 +29,7 @@ if [ "${3:-}" = -v ]; then
     printf 'flash-kda install %s\\n' "$*" >> "$TEST_LOG"
     exit "${TEST_FLASH_KDA_INSTALL_EXIT:-0}"
 fi
+printf '%s\\n' "$*" > "$TEST_UV_LOG"
 printf 'install\\n' >> "$TEST_LOG"
 ''')
         self.write(self.bin / "git", '''#!/bin/sh
@@ -60,12 +61,14 @@ exit "${TEST_GENERATE_EXIT:-0}"
 }
 ''')
         self.log = self.root / "startup.log"
+        self.uv_log = self.root / "uv.log"
         self.env = dict(os.environ, WORKDIR=str(self.root), VENV_DIR=str(self.root / "acc"),
                         FIB_DIR="flashinfer-bench-private", FIB_DATASET_DIR=str(self.root / "dataset"),
                         FIB_DEVICES="cuda:1,cuda:2", LD_LIBRARY_PATH="/unwanted/cuda",
                         FLASH_KDA_DIR=str(self.root / "flash-kda"),
                         FLASH_KDA_REPO_URL="https://github.com/MoonshotAI/FlashKDA.git",
-                        TEST_LOG=str(self.log), UV_CACHE_DIR=str(self.root / "cache"))
+                        TEST_LOG=str(self.log), TEST_UV_LOG=str(self.uv_log),
+                        UV_CACHE_DIR=str(self.root / "cache"))
         self.env.pop("FIB_DATASET_MODE", None)
         self.install_steps = [
             "install",
@@ -91,6 +94,14 @@ exit "${TEST_GENERATE_EXIT:-0}"
         result = self.run_entrypoint()
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.log.read_text().splitlines(), self.install_steps + ["serve"])
+
+    def test_installs_consolidated_profile_extra(self):
+        result = self.run_entrypoint()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(
+            str(self.root / "flashinfer-bench-private") + "[serve,profile-cu130]",
+            self.uv_log.read_text(),
+        )
 
     def test_bundled_generates_after_install_on_selected_gpu_before_serving(self):
         result = self.bundled()

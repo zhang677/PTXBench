@@ -27,13 +27,11 @@ dependencies = [
   "torch>=2.8.0",
   "pydantic>=2.0.0",
   "safetensors>=0.5.0",
-  "flashinfer-python==0.7.2",
+  "flashinfer-python>=0.7.2",
   "apache-tvm-ffi>=0.1.2",
   "docstring-parser>=0.16",
   "pyyaml>=6.0",
-  # FlashInfer 0.7.2 requires cuDNN frontend >=1.31.0. Version 1.31.0 was
-  # validated with the bundled cuDNN 9.20 backend for MHA forward/backward.
-  "nvidia-cudnn-frontend==1.31.0",
+  "nvidia-cudnn-frontend>=1.31.0",
 ]
 
 [project.urls]
@@ -58,6 +56,18 @@ dev = [
   "setuptools",
 ]
 serve = ["fastapi>=0.100.0", "uvicorn[standard]>=0.20.0"]
+profile-cu130 = [
+  "httpx",
+  "cupti-python",
+  "flash-linear-attention==0.5.2",
+  "torch==2.12.1+cu130",
+  "triton==3.7.1",
+  "flashinfer-python==0.7.2",
+  "nvidia-cutlass-dsl==4.6.2",
+  # Validated with the bundled cuDNN 9.20 backend for MHA forward/backward.
+  "nvidia-cudnn-frontend==1.31.0",
+  "cuda-python==13.0.3",
+]
 cuda12 = ["nvidia-cublas-cu12>=12.3", "nvidia-cudnn-cu12>=9.0"]
 
 [project.scripts]
