@@ -19,6 +19,8 @@ RUN apt-get update && \
 
 COPY --from=client-build /out/ptxbench-eval /usr/local/bin/ptxbench-eval
 COPY --chmod=0555 ptxbench-eval/src/ptxbench_eval/codex_runner.py /usr/local/bin/ptxbench-codex
+COPY --chmod=0555 ptxbench-eval/src/ptxbench_eval/codex_runner.py /usr/local/bin/codex_runner.py
+COPY --chmod=0555 ptxbench-eval/src/ptxbench_eval/codex_persistent_runner.py /usr/local/bin/ptxbench-codex-persistent
 COPY ptxbench-eval/src/ptxbench_eval/eval_mcp_server.py /usr/local/bin/ptxbench-eval-mcp
 RUN chmod 0111 /usr/local/bin/ptxbench-eval && \
     chmod 0555 /usr/local/bin/ptxbench-eval-mcp

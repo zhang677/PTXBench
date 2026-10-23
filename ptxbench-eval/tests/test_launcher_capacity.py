@@ -301,3 +301,58 @@ def test_capacity_cancels_siblings_before_originating_worker_finishes(batch):
         launcher.launch(batch.config)
     assert active.stopped.is_set()
     assert batch.registry.get_run("active")["status"] == "cancelled"
+
+
+def test_persistent_capacity_checkpoints_then_resumes_only_unfinished_runs(batch):
+    batch.config['agent'] = 'codex-persistent'
+    batch.config['max_parallel'] = 1
+    error = capacity_event()['payload']['params']['error']
+    batch.add('source', events=[capacity_event(), {'event': 'codex_capacity_checkpoint', 'error': error}], hang=True)
+    batch.add('queued')
+    batch.add('completed')
+    batch.registry.update_run('completed', status='completed', best_speedup=2.1)
+    completed = batch.registry.run_path('completed').read_bytes()
+    assert launcher.launch(batch.config) == 75
+    assert batch.started == ['source']
+    assert batch.registry.get_run('source')['status'] == 'waiting_for_capacity'
+    assert batch.registry.get_run('queued')['status'] == 'waiting_for_capacity'
+    assert batch.registry.run_path('completed').read_bytes() == completed
+    assert batch.registry.canonical_turn_count('source') == 0
+    batch.agents['source'] = FakeAgent(events=[{'event': 'result', 'source': 'codex_app_server',
+        'result': {'status': 'completed', 'usage': {'total_tokens': 25, 'input_tokens': 25}}}])
+    batch.watcher.returncode = None
+    assert launcher.launch(batch.config) == 0
+    assert batch.started == ['source', 'source', 'queued']
+    assert batch.registry.run_path('completed').read_bytes() == completed
+    assert batch.registry.usage_snapshot('source')['usage']['total_tokens'] == 25
+    events = [json.loads(line) for line in batch.registry.harness_events_path('source').read_text().splitlines()]
+    assert [e['line_number'] for e in events] == [1, 2, 3]
+
+
+def test_persistent_raw_capacity_does_not_stop_before_checkpoint(batch):
+    batch.config['agent'] = 'codex-persistent'
+    batch.add('source', events=[capacity_event()], returncode=1)
+    assert launcher.launch(batch.config) == 1
+    assert not batch.stops
+    assert batch.registry.get_run('source')['status'] == 'failed'
+
+
+def test_recovery_starts_one_run_before_restoring_parallelism(batch):
+    batch.config['agent'] = 'codex-persistent'
+    (batch.registry.root / 'capacity.json').write_text('{"status":"available"}')
+    def before_output():
+        assert batch.started == ['first']
+    first = batch.add('first', events=[{'event': 'codex_model_available'}], before=before_output, hang=True)
+    batch.add('second', before=lambda: first.stopped.set())
+    assert launcher.launch(batch.config) == 0
+    assert batch.started == ['first', 'second']
+
+
+def test_first_resumed_non_capacity_failure_does_not_start_siblings(batch):
+    batch.config['agent'] = 'codex-persistent'
+    (batch.registry.root / 'capacity.json').write_text('{"status":"available"}')
+    batch.add('first', returncode=1)
+    batch.add('second')
+    with pytest.raises(RuntimeError, match='first resumed Codex run failed'):
+        launcher.launch(batch.config)
+    assert batch.started == ['first']

@@ -1,5 +1,101 @@
 # Coding-agent workflow
 
+## GPU-owning Python launchers
+
+The shared AccRL launchers under `fib_runtime/multiturn/construct_eval_scripts`
+accept an experiment JSON and own GPU acquisition and cleanup:
+
+```bash
+/scratch/zgh23/miniconda3/envs/acc/bin/python ../run_radix_coding_agent.py CONFIG.json
+/scratch/zgh23/miniconda3/envs/acc/bin/python ../run_modal_coding_agent.py CONFIG.json
+```
+
+`run_radix_coding_agent.py` supports `agent: "codex"`, `"codex-persistent"`,
+and `"agy"`. It selects one available GPU of the configured class, acquires a
+Radix assignment, provisions `fib-profile`, starts its SSH tunnel and gateway,
+renews the assignment while needed, and releases only its owned assignment on
+exit. It refuses acquisition while another assignment or active PTXBench
+container remains. The legacy `run_radix_codex.sh` and `run_radix_agy.sh` remain
+available during deprecation; they require an already-acquired lease.
+
+Add these fields to a normal experiment config for Radix (omit `modal`):
+
+```json
+{
+  "radix": {
+    "gpu": "H100",
+    "ssh_key": "/home/zgh23/.ssh/id_rsa",
+    "duration": "1h",
+    "extend_by": "1h",
+    "acquire_timeout_seconds": 3600,
+    "ready_timeout_seconds": 3600
+  }
+}
+```
+
+`radix.gpu` must match `target_hardware` and the CUDA architecture, when used.
+Supported classes are H100, H200, and B200. GPU count is one. The default local
+profiling endpoint is `http://127.0.0.1:18085`; set `profile_base_url` to another
+free loopback port if needed. Keep selected-workload Hugging Face settings under
+`profile_service.dataset`, as with the leased shell launchers. SSH host, port,
+and host-key files are obtained from the assignment. The input JSON is never
+rewritten; resolved configs and ownership/cleanup evidence go under
+`experiment_root/attempts/`.
+
+## Persistent Codex capacity recovery
+
+```json
+{
+  "agent": "codex-persistent",
+  "build_images": true,
+  "codex_persistent": {
+    "gpu_policy": "release",
+    "initial_delay_seconds": 30,
+    "max_delay_seconds": 300,
+    "max_wait_seconds": null,
+    "probe_timeout_seconds": 120,
+    "drain_timeout_seconds": 1000
+  }
+}
+```
+
+Use `gpu_policy: "retain"` (the default) to keep the current lease and gateway
+while waiting, or `"release"` to stop them and reacquire a GPU after model
+availability returns. Both policies work with the Python Modal and Radix
+launchers. Modal's configured sandbox lifetime still applies to retained GPUs.
+Rebuild the Codex image once to install `ptxbench-codex-persistent`.
+
+The new `src/ptxbench_eval/codex_persistent_runner.py` stores non-ephemeral
+Codex threads. On terminal `serverOverloaded` it checkpoints the conversation,
+pauses active and queued runs, and lets submitted evaluations drain before
+releasing a GPU. One supervisor probes the same model, account, and service tier
+using short inference requests with shell, web, and MCP tools disabled. Retry
+delays grow exponentially with jitter up to the configured maximum; a supplied
+retry-after delay is respected. `max_wait_seconds: null` waits until recovery
+or manual cancellation. Other errors stop recovery without changing models.
+
+After a successful probe, the first unfinished run resumes its stored thread;
+other runs start after it produces model output. Completed runs, evaluation
+counts, token usage, and artifacts are preserved. Feedback committed while
+agents were stopping is supplied through `.ptxbench-resume.json`. New GPU
+acquisitions revalidate workload/prompt hashes and dataset provenance. Missing
+or stale session checkpoints stop automatic replay. Credentials stay in the
+container tmpfs and are excluded from the durable Codex snapshots.
+
+`capacity.json` records the waiting state and next probe time;
+`capacity-probes.jsonl` records probe results. Persistent sessions live under
+`codex_home/<run_id>/persistent/`. The same source JSON can resume a persistent
+experiment after a graceful stop. Configuration changes and concurrent
+supervisors are rejected. Ordinary `codex` retains terminal-capacity fail-fast
+behavior; `agy` retains its existing runner and authentication.
+
+The low-level `ptxbench_eval.launcher launch` returns exit code 75 when a
+persistent batch is ready for recovery. Use the GPU-owning Python entry points
+above for automatic waiting and GPU lifecycle management. Existing runs made
+with ephemeral `codex` threads cannot be converted into persistent sessions.
+
+## Manually managed profiling service
+
 The gateway and launcher code in this directory are the coding-agent path.
 They reuse `../multiturn/prompts/hub.json` and the same profiling service as
 the model-loop experiments. The launcher materializes prompt fragments and a

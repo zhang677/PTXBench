@@ -364,7 +364,7 @@ def _agent_kind(config: dict[str, Any]) -> str:
     value = str(config.get("agent", "agy")).strip().lower()
     if value == "antigravity":
         value = "agy"
-    if value not in {"agy", "codex"}:
+    if value not in {"agy", "codex", "codex-persistent"}:
         raise ValueError(f"unsupported coding agent: {value}")
     return value
 
@@ -472,7 +472,7 @@ def _agent_argv(config: dict[str, Any], prompt: str) -> list[str]:
         return command
 
     command = [
-        "ptxbench-codex",
+        "ptxbench-codex-persistent" if agent == "codex-persistent" else "ptxbench-codex",
         "--prompt",
         prompt,
         "--model",
@@ -642,12 +642,14 @@ def prepare(config: dict[str, Any]) -> Registry:
     feedback_style = feedback_style_from_config(config)
     task_view = task_view_from_config(config)
     agent = _agent_kind(config)
+    from .codex_persistent_runner import CapacitySettings
+    CapacitySettings.from_config(config)
     add_goal_command = _add_goal_command(config, agent)
     codex_use_mcp = _codex_use_mcp(config)
-    if codex_use_mcp and agent != "codex":
+    if codex_use_mcp and agent not in {"codex", "codex-persistent"}:
         raise ValueError("codex_use_mcp is only supported for the Codex agent")
     disable_web = _disable_web(config)
-    if agent == "codex":
+    if agent in {"codex", "codex-persistent"}:
         _codex_service_tier(config)
     harness = _agent_harness(agent)
     root = Path(config["experiment_root"]).expanduser().resolve()
@@ -680,7 +682,7 @@ def prepare(config: dict[str, Any]) -> Registry:
             agent,
             _agent_prompt(
                 target_speedup=manifest.data.get("target_speedup"),
-                evaluation_via_mcp=(codex_use_mcp if agent == "codex" else disable_web),
+                evaluation_via_mcp=(codex_use_mcp if agent in {"codex", "codex-persistent"} else disable_web),
                 task_view=task_view,
                 language=config["language"],
                 cutedsl_version=cutedsl_source["version"] if cutedsl_source else None,
@@ -716,6 +718,16 @@ def prepare(config: dict[str, Any]) -> Registry:
                 raise ValueError(f"existing run {run_id} has a different task_view; use a new experiment_root")
             if existing.get("feedback_style", "default") != feedback_style:
                 raise ValueError(f"existing run {run_id} has a different feedback_style")
+            if agent == "codex-persistent":
+                # A reacquired lease changes only the service endpoint. Preserve
+                # the original manifest/digest while validating every payload.
+                saved_source = existing["manifest"].get("profile_source")
+                if isinstance(saved_source, dict) and "base_url" in saved_source:
+                    resumed = dict(manifest.data)
+                    resumed["profile_source"] = {
+                        **resumed["profile_source"], "base_url": saved_source["base_url"]
+                    }
+                    manifest = WorkloadManifest.parse(resumed)
             if existing["manifest_digest"] != manifest.digest:
                 raise ValueError(f"existing run {run_id} has a different workload")
             _validate_agent_task(registry, run_id, manifest, task_view)
@@ -923,6 +935,9 @@ def _registry_for_launch(config: dict[str, Any]) -> Registry:
 
     recorded = read_json(experiment_record)
     expected = {key: value for key, value in config.items() if key != "_config_dir"}
+    if config.get("agent") == "codex-persistent":
+        from .codex_persistent_runner import config_identity
+        recorded, expected = config_identity(recorded), config_identity(expected)
     if recorded != expected:
         raise ValueError(
             f"prepared experiment config differs from the launch config: {root}"
@@ -964,7 +979,7 @@ def _registry_for_launch(config: dict[str, Any]) -> Registry:
             raise ValueError(
                 f"prepared experiment agent prompt changed for {run_id}: {root}"
             )
-        if agent == "codex":
+        if agent in {"codex", "codex-persistent"}:
             expected_instruction = (
                 "`ptxbench-eval` MCP server's `evaluate_kernel` tool"
                 if codex_use_mcp
@@ -1086,6 +1101,9 @@ class _LaunchCancellation:
     def __init__(self) -> None:
         self.lock = threading.RLock()
         self.error: BaseException | None = None
+        self.canary_run_id: str | None = None
+        self.resume_ready = threading.Event()
+        self.resume_ready.set()
 
     def cancel(self, error: BaseException) -> None:
         with self.lock:
@@ -1193,7 +1211,7 @@ def _container_name(run_id: str) -> str:
 def _agent_container_security_args(
     agent: str, *, disable_web: bool = False
 ) -> list[str]:
-    if agent != "codex":
+    if agent not in {"codex", "codex-persistent"}:
         return []
     return [
         "--security-opt",
@@ -1204,7 +1222,7 @@ def _agent_container_security_args(
 
 
 def _agent_container_tmpfs_args(agent: str) -> list[str]:
-    if agent != "codex":
+    if agent not in {"codex", "codex-persistent"}:
         return []
     return [
         "--tmpfs",
@@ -1266,7 +1284,7 @@ def _start_eval_exchange(
 
 def _uses_eval_exchange(config: dict[str, Any]) -> bool:
     return _disable_web(config) or (
-        _agent_kind(config) == "codex" and _codex_use_mcp(config)
+        _agent_kind(config) in {"codex", "codex-persistent"} and _codex_use_mcp(config)
     )
 
 
@@ -1325,7 +1343,18 @@ def _launch_one(
     cancellation = cancellation or _LaunchCancellation()
     cancellation.raise_if_cancelled()
     run_id = run["run_id"]
+    if cancellation.canary_run_id and run_id != cancellation.canary_run_id:
+        while not cancellation.resume_ready.wait(0.2):
+            cancellation.raise_if_cancelled()
+        cancellation.raise_if_cancelled()
     initial_record = registry.get_run(run_id)
+    if config.get("agent") == "codex-persistent":
+        usage = registry.usage_snapshot(run_id)["usage"]
+        exhausted = usage["total_tokens"] >= int(initial_record["token_budget"])
+        max_turns = initial_record.get("max_turns")
+        if exhausted or (max_turns is not None and registry.canonical_turn_count(run_id) >= max_turns):
+            registry.update_run(run_id, status="budget_exhausted" if exhausted else "turn_limit_exhausted")
+            return 0
     stop_request = initial_record.get("stop_request")
     if isinstance(stop_request, dict):
         reason = str(stop_request.get("reason") or "stop_requested")
@@ -1344,7 +1373,7 @@ def _launch_one(
         return 1
     agent = _agent_kind(config)
     disable_web = _disable_web(config)
-    codex_auth = _codex_plan_auth(config) if agent == "codex" else None
+    codex_auth = _codex_plan_auth(config) if agent in {"codex", "codex-persistent"} else None
     workspace = registry.root / "workspaces" / run_id
     task_view = validate_task_view(initial_record.get("task_view", "full"))
     workload = (
@@ -1355,6 +1384,12 @@ def _launch_one(
         registry, run_id, WorkloadManifest.parse(initial_record["manifest"]), task_view
     )
     agent_home = _agent_home(registry, run_id, agent)
+    persistent_mount = []
+    if agent == "codex-persistent":
+        state_home = agent_home / "persistent"
+        state_home.mkdir(parents=True, exist_ok=True, mode=0o700)
+        persistent_mount = ["-v", f"{state_home}:/var/ptxbench-codex-state",
+                            "-e", "PTXBENCH_CODEX_STATE_DIR=/var/ptxbench-codex-state"]
     secret_env = registry.root / "secrets" / f"{run_id}.env"
     prompt = registry.prompt_path(run_id).read_text()
     container_name = _container_name(run_id)
@@ -1373,6 +1408,7 @@ def _launch_one(
         "--tmpfs",
         "/tmp:rw,exec,nosuid,size=512m",
         *_agent_container_tmpfs_args(agent),
+        *persistent_mount,
         *_agent_container_security_args(agent, disable_web=disable_web),
         *agent_runtime_args,
         *evaluator_args,
@@ -1392,6 +1428,8 @@ def _launch_one(
     # cancellation check, process start, and registration with batch abort.
     with cancellation.lock:
         cancellation.raise_if_cancelled()
+        if agent == "codex-persistent" and (initial_record.get("failure") or {}).get("kind") == "model_capacity":
+            registry.update_run(run_id, failure=None)
         process = subprocess.Popen(
             command,
             stdin=subprocess.PIPE if codex_auth is not None else None,
@@ -1419,7 +1457,10 @@ def _launch_one(
     codex_goal_warning_notice: str | None = None
     capacity_error: _ModelCapacityError | None = None
     assert process.stdout is not None
-    for line_number, line in enumerate(process.stdout, start=1):
+    event_path = registry.harness_events_path(run_id)
+    with event_path.open() if event_path.exists() else open(os.devnull) as saved_events:
+        previous_lines = sum(1 for _ in saved_events)
+    for line_number, line in enumerate(process.stdout, start=previous_lines + 1):
         line = line.rstrip("\n")
         try:
             event = json.loads(line)
@@ -1436,8 +1477,15 @@ def _launch_one(
             },
         )
         if isinstance(event, dict):
-            if agent == "codex":
-                error = _codex_capacity_error(event)
+            if event.get("event") == "codex_model_available" and run_id == cancellation.canary_run_id:
+                cancellation.resume_ready.set()
+            if agent in {"codex", "codex-persistent"}:
+                if agent == "codex-persistent":
+                    error = event.get("error") if event.get("event") == "codex_capacity_checkpoint" else None
+                    if not isinstance(error, dict) or error.get("codexErrorInfo") != "serverOverloaded":
+                        error = None
+                else:
+                    error = _codex_capacity_error(event)
                 if error is not None:
                     capacity_error = _ModelCapacityError(run_id, error, line_number)
                     cancellation.cancel(capacity_error)
@@ -1616,13 +1664,25 @@ def launch(config: dict[str, Any]) -> int:
     )
     launch_error: BaseException | None = None
     cancellation = _LaunchCancellation()
+    if (config.get("agent") == "codex-persistent" and len(runnable) > 1
+            and read_json(registry.root / "capacity.json", {}).get("status") == "available"):
+        cancellation.canary_run_id = runnable[0]["run_id"]
+        cancellation.resume_ready.clear()
+    def launch_worker(run):
+        status = _launch_one(config, registry, run, cancellation)
+        if run["run_id"] == cancellation.canary_run_id and not cancellation.resume_ready.is_set():
+            if status == 0 or registry.get_run(run["run_id"])["status"] in {"budget_exhausted", "turn_limit_exhausted"}:
+                cancellation.resume_ready.set()
+            else:
+                cancellation.cancel(RuntimeError("first resumed Codex run failed; stopping recovery"))
+        return status
     capacity_cancelled: list[str] = []
     try:
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=int(config.get("max_parallel", len(runnable)))
         ) as pool:
             futures = [
-                pool.submit(_launch_one, config, registry, run, cancellation)
+                pool.submit(launch_worker, run)
                 for run in runnable
             ]
             try:
@@ -1671,6 +1731,26 @@ def launch(config: dict[str, Any]) -> int:
         _stop_agent_containers(runnable)
     finally:
         _finish_token_watcher(watcher, launch_error=launch_error)
+    if (isinstance(cancellation.error, _ModelCapacityError)
+            and config.get("agent") == "codex-persistent"):
+        from .codex_persistent_runner import CAPACITY_EXIT, save_json
+        resumable = [cancellation.error.run_id, *capacity_cancelled]
+        paused = []
+        for run_id in resumable:
+            record = registry.get_run(run_id)
+            if record["status"] in {"completed", "budget_exhausted", "turn_limit_exhausted"}:
+                continue
+            registry.update_run(run_id, status="waiting_for_capacity", failure=cancellation.error.failure)
+            paused.append(run_id)
+        error = cancellation.error.failure["error"]
+        retry_after = error.get("retryAfterSeconds", error.get("retry_after_seconds", 0))
+        if not isinstance(retry_after, (int, float)) or isinstance(retry_after, bool):
+            retry_after = 0
+        save_json(registry.root / "capacity.json", {
+            "status": "waiting_for_capacity", "runs": paused,
+            "error": error, "retry_after_seconds": max(0, retry_after),
+        })
+        return CAPACITY_EXIT if paused else 0
     if isinstance(cancellation.error, _ModelCapacityError):
         # Reconcile after workers and watcher exit so budget/turn accounting
         # cannot replace the capacity failure or cancellation classification.
