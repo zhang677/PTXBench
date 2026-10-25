@@ -112,6 +112,8 @@ and limits. Edit a copy for another coding-agent experiment. See
 [ptxbench-eval/WORKFLOW.md](ptxbench-eval/WORKFLOW.md) for prerequisites and
 launcher options.
 
+For a Modal profiling GPU, use the [Modal launchers](multiturn/modal/README.md).
+
 ## SFT experiments
 
 Fixit selects failed base-model kernels, asks Gemini to repair them, synthesizes

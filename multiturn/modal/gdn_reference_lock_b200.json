@@ -1,0 +1,369 @@
+{
+  "schema_version": 1,
+  "definition": "gdn_bwd_qk8_v16_d128_k_last",
+  "workload_uuid": "42bead90-d0a9-5d61-9298-039d4332434f",
+  "axes": {
+    "B": 4,
+    "T": 4096,
+    "H": 8,
+    "HV": 16,
+    "K": 128,
+    "V": 128,
+    "BT": 64
+  },
+  "versions": {
+    "torch": "2.12.1+cu130",
+    "triton": "3.7.1",
+    "fla-core": "0.5.2"
+  },
+  "kernels": {
+    "chunk_local_cumsum_scalar_kernel": {
+      "module": "fla.ops.utils.cumsum",
+      "source_relative": "fla/ops/utils/cumsum.py",
+      "source_sha256": "0405701c46cee331088bfee395b3bf37f8384829dace0aa3a55a509844bcf4cb",
+      "config": {
+        "kwargs": {},
+        "num_warps": 2,
+        "num_stages": 3,
+        "num_ctas": 1,
+        "maxnreg": null
+      },
+      "tuner_type": "fla.ops.utils.cache.CachedAutotuner",
+      "cache_entries": [
+        {
+          "key": "(4, 16, 64, False, True, 'torch.float32', 'torch.float32')",
+          "config": {
+            "kwargs": {},
+            "num_warps": 2,
+            "num_stages": 3,
+            "num_ctas": 1,
+            "maxnreg": null
+          }
+        }
+      ]
+    },
+    "chunk_gated_delta_rule_fwd_kernel_h_blockdim64": {
+      "module": "fla.ops.common.chunk_delta_h",
+      "source_relative": "fla/ops/common/chunk_delta_h.py",
+      "source_sha256": "ff461bcc40e9cd0b2ca24af9ae9c3c6d99b2deae047c3737687c93b3fcd6ea57",
+      "config": {
+        "kwargs": {
+          "BV": 32
+        },
+        "num_warps": 2,
+        "num_stages": 3,
+        "num_ctas": 1,
+        "maxnreg": null
+      },
+      "tuner_type": "fla.ops.utils.cache.CachedAutotuner",
+      "cache_entries": [
+        {
+          "key": "(8, 16, 128, 128, 64, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32', 'torch.bfloat16', 'torch.float32')",
+          "config": {
+            "kwargs": {
+              "BV": 32
+            },
+            "num_warps": 2,
+            "num_stages": 3,
+            "num_ctas": 1,
+            "maxnreg": null
+          }
+        }
+      ]
+    },
+    "chunk_gated_delta_rule_bwd_kernel_dhu_blockdim64": {
+      "module": "fla.ops.common.chunk_delta_h",
+      "source_relative": "fla/ops/common/chunk_delta_h.py",
+      "source_sha256": "ff461bcc40e9cd0b2ca24af9ae9c3c6d99b2deae047c3737687c93b3fcd6ea57",
+      "config": {
+        "kwargs": {
+          "BV": 32
+        },
+        "num_warps": 4,
+        "num_stages": 2,
+        "num_ctas": 1,
+        "maxnreg": null
+      },
+      "tuner_type": "fla.ops.utils.cache.CachedAutotuner",
+      "cache_entries": [
+        {
+          "key": "(8, 16, 128, 128, 64, True, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32', 'torch.float32', 'torch.float32', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16')",
+          "config": {
+            "kwargs": {
+              "BV": 32
+            },
+            "num_warps": 4,
+            "num_stages": 2,
+            "num_ctas": 1,
+            "maxnreg": null
+          }
+        }
+      ]
+    },
+    "chunk_bwd_kernel_dqkwg": {
+      "module": "fla.ops.common.chunk_o",
+      "source_relative": "fla/ops/common/chunk_o.py",
+      "source_sha256": "f174d431ce67139204a0916f638b5af158dd5917e2cb37c0ca03f5ce735466a0",
+      "config": {
+        "kwargs": {},
+        "num_warps": 8,
+        "num_stages": 2,
+        "num_ctas": 1,
+        "maxnreg": null
+      },
+      "tuner_type": "fla.ops.utils.cache.CachedAutotuner",
+      "cache_entries": [
+        {
+          "key": "(8, 16, 128, 128, 64, 128, 128, True, False, True, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')",
+          "config": {
+            "kwargs": {},
+            "num_warps": 8,
+            "num_stages": 2,
+            "num_ctas": 1,
+            "maxnreg": null
+          }
+        }
+      ]
+    },
+    "chunk_bwd_kernel_dv_local": {
+      "module": "fla.ops.common.chunk_o",
+      "source_relative": "fla/ops/common/chunk_o.py",
+      "source_sha256": "f174d431ce67139204a0916f638b5af158dd5917e2cb37c0ca03f5ce735466a0",
+      "config": {
+        "kwargs": {},
+        "num_warps": 2,
+        "num_stages": 2,
+        "num_ctas": 1,
+        "maxnreg": null
+      },
+      "tuner_type": "fla.ops.utils.cache.CachedAutotuner",
+      "cache_entries": [
+        {
+          "key": "(8, 16, 128, 128, 64, 128, 128, True, 'torch.bfloat16', 'torch.bfloat16', 'torch.float32', 'torch.bfloat16', 'torch.bfloat16')",
+          "config": {
+            "kwargs": {},
+            "num_warps": 2,
+            "num_stages": 2,
+            "num_ctas": 1,
+            "maxnreg": null
+          }
+        }
+      ]
+    },
+    "recompute_w_u_fwd_kernel": {
+      "module": "fla.ops.gated_delta_rule.wy_fast",
+      "source_relative": "fla/ops/gated_delta_rule/wy_fast.py",
+      "source_sha256": "bf24a66524ea56383fe6c9a97ae6b060ebe9490589c8499fba06d6172dc4510f",
+      "config": {
+        "kwargs": {},
+        "num_warps": 8,
+        "num_stages": 3,
+        "num_ctas": 1,
+        "maxnreg": null
+      },
+      "tuner_type": "fla.ops.utils.cache.CachedAutotuner",
+      "cache_entries": [
+        {
+          "key": "(8, 16, 128, 128, 64, 64, 64, False, 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.bfloat16', 'torch.float32')",
+          "config": {
+            "kwargs": {},
+            "num_warps": 8,
+            "num_stages": 3,
+            "num_ctas": 1,
+            "maxnreg": null
+          }
+        }
+      ]
+    },
+    "prepare_wy_repr_bwd_kernel": {
+      "module": "fla.ops.gated_delta_rule.wy_fast",
+      "source_relative": "fla/ops/gated_delta_rule/wy_fast.py",
+      "source_sha256": "bf24a66524ea56383fe6c9a97ae6b060ebe9490589c8499fba06d6172dc4510f",
+      "config": {
+        "kwargs": {},
+        "num_warps": 2,
+        "num_stages": 4,
+        "num_ctas": 1,
+        "maxnreg": null
+      },
+      "tuner_type": "fla.ops.utils.cache.CachedAutotuner",
+      "cache_entries": []
+    }
+  },
+  "compiler": {
+    "path": "/workspace/acc/lib/python3.10/site-packages/triton/backends/nvidia/bin/ptxas-blackwell",
+    "version": "13.1",
+    "sha256": "cdcbf106e11a09f4cc5ff6f064a060570103d7ab123e31b1b0b75a8dbbc43119"
+  },
+  "id": "modal-b200-gdn-bwd-observed-v1",
+  "provenance": {
+    "kind": "reconstructed_from_unmodified_reference",
+    "historical_autotune_selections_recovered": false,
+    "archive": "/scratch/zgh23/AccRL-exps/eval_runs/codex-gpt6-astra-xhigh-b200-modal-gdn-bwd-9turns-triton",
+    "ptxbench_revision": "053a2796900ccab54ca07676b9d04fa10a7f38e2",
+    "dataset_revision": "ec13ad481bb3dc8a4d32dd2b039274290058e127",
+    "input_blob_sha256": "f362a92141877c542c7cb8b699770af75ad47ea0974ec1e54ac68b12be0303c6",
+    "prompt_sha256": "2040fa3eb83e453eda40c648cc14dc9915e9ac6bf308054895631b84a14dcae0",
+    "evidence_root": "/scratch/zgh23/AccRL/fib_runtime/multiturn/construct_eval_scripts/test-sglang-sapling/.modal-launches/gdn-reference-reconstruction-20261024T173606Z",
+    "observed_record_sha256": "080abfa19fe40021830f68b4af7ed3b9bbcdd72293f90f6950f1bb04cf66fdec",
+    "passing_candidate_sha256": [
+      "6d87488dab9af27f38c15bdfa0bd6a06a3714ae7bff80688207b3458acf93ecc",
+      "a031015188f5bcf84e4b0faa918a078c3219a698b433f12c74d97312e0014a73",
+      "1c94b94734205223afffed1834e26236830630e8c6330d0c432743f84819688b",
+      "749a66e8a61d82e31b4904a148d0bd0c50bc56cc8b6c453a5d2732fd383e5685",
+      "9c62a80c853dd60ee275ac7c47dee5d1a4800583dd5f5a035b8b4d8207f66700",
+      "fc6582601d655137d356e1f914597d3241c5aad1b15cdfd73861825a9a363920"
+    ],
+    "archived_baseline_ms": 1.4572316666666667
+  },
+  "validation": {
+    "unmodified_reference_passed_submissions": [
+      2,
+      3,
+      4,
+      5,
+      7,
+      8
+    ],
+    "num_trials": 3,
+    "rtol": 0.01,
+    "atol": 0.01,
+    "required_matched_ratio": 1.0,
+    "paired_performance": {
+      "method": "PTXBench time_runnable; same inputs/device; 12 alternating paired blocks after one warm pair",
+      "warmup_runs": 10,
+      "iterations": 50,
+      "samples": [
+        {
+          "locked_ms": 1.504365,
+          "original_ms": 1.5487259999999998,
+          "locked_over_original": 0.9713564568555059
+        },
+        {
+          "original_ms": 1.5503195,
+          "locked_ms": 1.503117,
+          "locked_over_original": 0.9695530501938471
+        },
+        {
+          "locked_ms": 1.501903,
+          "original_ms": 1.5475775,
+          "locked_over_original": 0.9704864538286451
+        },
+        {
+          "original_ms": 1.5349279999999998,
+          "locked_ms": 1.500802,
+          "locked_over_original": 0.9777670353267385
+        },
+        {
+          "locked_ms": 1.498339,
+          "original_ms": 1.5483415,
+          "locked_over_original": 0.96770576775214
+        },
+        {
+          "original_ms": 1.546166,
+          "locked_ms": 1.498499,
+          "locked_over_original": 0.9691708393536012
+        },
+        {
+          "locked_ms": 1.5055885,
+          "original_ms": 1.5512299999999999,
+          "locked_over_original": 0.9705772193678566
+        },
+        {
+          "original_ms": 1.545011,
+          "locked_ms": 1.5054005,
+          "locked_over_original": 0.9743623184559851
+        },
+        {
+          "locked_ms": 1.5010379999999999,
+          "original_ms": 1.5480299999999998,
+          "locked_over_original": 0.9696439991473034
+        },
+        {
+          "original_ms": 1.5445630000000001,
+          "locked_ms": 1.5003045,
+          "locked_over_original": 0.9713456168508502
+        },
+        {
+          "locked_ms": 1.5043475000000002,
+          "original_ms": 1.5438045,
+          "locked_over_original": 0.9744417120172925
+        },
+        {
+          "original_ms": 1.5454135,
+          "locked_ms": 1.505009,
+          "locked_over_original": 0.9738552173900383
+        }
+      ],
+      "outputs_bitwise_equal": [
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "original_median_ms": 1.54687175,
+      "locked_median_ms": 1.50251,
+      "median_paired_ratio": 0.9709614181093533,
+      "within_five_percent": true
+    },
+    "source_patch_replay": {
+      "passed_submissions": [
+        2,
+        3,
+        4,
+        5,
+        7,
+        8
+      ],
+      "fresh_worker": true,
+      "clean_compilation_cache": true,
+      "actual_selections_match_manifest": true,
+      "reference_latency_ms": 1.4996708333333333
+    },
+    "archived_performance_comparison": {
+      "archived_reference_ms": 1.4572316666666667,
+      "locked_reference_ms": 1.4996708333333333,
+      "difference_percent": 2.9123143311690303,
+      "tolerance_percent": 5.0,
+      "passed": true
+    }
+  },
+  "sources": {
+    "fla/ops/common/chunk_delta_h.py": {
+      "original_sha256": "ff461bcc40e9cd0b2ca24af9ae9c3c6d99b2deae047c3737687c93b3fcd6ea57",
+      "patched_sha256": "3df2f2fa0c07d93a0c586f242db844a31244e9f3f80188facf64a0bc2682a267"
+    },
+    "fla/ops/common/chunk_o.py": {
+      "original_sha256": "f174d431ce67139204a0916f638b5af158dd5917e2cb37c0ca03f5ce735466a0",
+      "patched_sha256": "b1a308632c321a80f74998d578e5a204c25d7cbd1fbd0c9f30cb45d620b0ab4b"
+    },
+    "fla/ops/gated_delta_rule/wy_fast.py": {
+      "original_sha256": "bf24a66524ea56383fe6c9a97ae6b060ebe9490589c8499fba06d6172dc4510f",
+      "patched_sha256": "5b195544c33389d1d6cfce64a8e7843246e3620a4e56e1d239814d8c6aae02c2"
+    },
+    "fla/ops/utils/cumsum.py": {
+      "original_sha256": "0405701c46cee331088bfee395b3bf37f8384829dace0aa3a55a509844bcf4cb",
+      "patched_sha256": "7502ea5cd07549bc3e697bbf7ee8e4e3fe028ae741eab1f0d6d4a25ed5adc91a"
+    }
+  }
+}
