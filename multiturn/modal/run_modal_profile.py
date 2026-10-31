@@ -30,7 +30,9 @@ from urllib.parse import quote
 from urllib.request import urlopen
 import uuid
 
-from modal_profile_runtime import collect_reference_records, GPU_ARCH, MODAL_DOCKERFILE, SANDBOX_START, modal_base_image, modal_environment
+from modal_profile_runtime import (collect_reference_records, environment_options, GPU_ARCH,
+                                   MODAL_DOCKERFILE, modal_environment, read_dataset_provenance,
+                                   sandbox_image, sandbox_start)
 
 HERE = Path(__file__).resolve().parent
 MULTITURN = HERE.parent
@@ -91,6 +93,8 @@ def parse_args(argv=None):
     parser.add_argument('--gpu', choices=GPU_ARCH, required=True)
     parser.add_argument('--lock-gdn-bwd-reference', action='store_true',
                         help='pin the validated GDN backward reference configuration on B200')
+    parser.add_argument('--patch-fla-fp32-state-dot', action='store_true',
+                        help="accumulate FLA's GDN/KDA backward chunk-end state dot in FP32")
     parser.add_argument('--cpu', type=positive, required=True)
     parser.add_argument('--memory-mib', type=positive, required=True)
     parser.add_argument('--timeout-seconds', type=positive, required=True)
@@ -111,7 +115,7 @@ def parse_args(argv=None):
 
 def validate(args):
     try:
-        modal_environment(args.gpu, getattr(args, 'lock_gdn_bwd_reference', False))
+        modal_environment(args.gpu, **environment_options(args))
     except ValueError as exc:
         raise ConfigurationError(str(exc)) from exc
     if args.command.count(URL_TOKEN) != 1:
@@ -260,6 +264,9 @@ class Attempt:
         self.sandbox = self.process = None
         self.readers = []
         self.url = None
+        # The JSON runtime selects dataset workloads; the standalone CLI serves bundled data.
+        self.dataset = getattr(args, 'dataset', None)
+        self.startup = sandbox_start(self.dataset, getattr(args, 'runs', []))
         self.metadata = {
             'attempt': self.name, 'app_name': args.app_name,
             'sandbox_name': 'accrl-' + self.name,
@@ -273,7 +280,7 @@ class Attempt:
             'definitions': args.definitions, 'output_roots': list(map(str, args.output_roots)),
             'working_dir': str(args.working_dir),
             'supervisor_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
-            'startup_sha256': hashlib.sha256(SANDBOX_START.encode()).hexdigest(),
+            'startup_sha256': hashlib.sha256(self.startup.encode()).hexdigest(),
         }
         if getattr(args, 'experiment_config', None) is not None:
             config_path = self.directory / 'experiment_config.json'
@@ -304,7 +311,11 @@ class Attempt:
         # These are deterministic PTXBench input/setup errors, not candidate errors.
         fatal = ('has SHA-256', 'entrypoint changed:', 'unexpected workload',
                  'unexpected tensor keys', 'unexpected input layout', 'unexpected blob path',
-                 '[entrypoint] ERROR:', 'MODAL_PROFILE_FATAL:')
+                 '[entrypoint] ERROR:', 'MODAL_PROFILE_FATAL:',
+                 # profile_dataset.py selection errors and Hugging Face lookups that cannot pass on retry.
+                 'expected one definitions file', 'expected one workload', 'dataset returned the wrong',
+                 'dataset is missing referenced blobs', 'unsafe dataset blob path', 'unsafe metadata path',
+                 'RepositoryNotFoundError', 'RevisionNotFoundError')
         error = ConfigurationError if any(marker in logs for marker in fatal) else InfrastructureError
         raise error(f'profiler exited during preparation (rc={status}); see {self.directory}')
 
@@ -314,16 +325,16 @@ class Attempt:
         self.metadata['dockerfile_sha256'] = hashlib.sha256(MODAL_DOCKERFILE.encode()).hexdigest()
         self.save()  # Name is durable even if creation is interrupted before returning an ID.
         self.check_interrupted()
-        image = modal_base_image(modal)
+        image, options = sandbox_image(modal, self.dataset)
         app = modal.App.lookup(args.app_name, create_if_missing=True)
         log(f'requesting {args.gpu} sandbox {self.metadata["sandbox_name"]}; '
             f'allocation/startup budget={args.ready_timeout_seconds}s')
         async def create():
             task = asyncio.ensure_future(modal.Sandbox.create.aio(
-                'bash', '-c', SANDBOX_START, app=app, name=self.metadata['sandbox_name'],
+                'bash', '-c', self.startup, app=app, name=self.metadata['sandbox_name'],
                 image=image, gpu=args.gpu, cpu=args.cpu, memory=args.memory_mib,
                 timeout=args.timeout_seconds, encrypted_ports=[10000],
-                env=modal_environment(args.gpu, getattr(args, 'lock_gdn_bwd_reference', False))))
+                env=modal_environment(args.gpu, **environment_options(args)), **options))
             try:
                 while not task.done():
                     self.check_interrupted()
@@ -381,8 +392,23 @@ class Attempt:
         if probe.returncode:
             raise InfrastructureError('could not collect sandbox runtime provenance')
         self.metadata['runtime'] = runtime
+        if self.dataset:
+            self.record_dataset()
         self.save()
         log(f'profiling service ready: {self.url}')
+
+    def record_dataset(self):
+        """Every attempt of a run must serve the revision its first attempt resolved."""
+        try:
+            dataset = read_dataset_provenance(self.sandbox)
+        except (RuntimeError, ValueError) as exc:
+            raise InfrastructureError(f'could not read Modal dataset provenance: {exc}') from exc
+        self.metadata['dataset'] = dataset
+        path = self.args.state_dir / 'dataset_source.json'
+        if path.exists() and json.loads(path.read_text()) != dataset['source']:
+            raise ConfigurationError(f'dataset provenance changed since {path}; pin dataset.revision '
+                                     'or use a new state_dir and output roots')
+        write_json(path, dataset['source'])
 
     def interruptible_wait(self, seconds):
         deadline = time.monotonic() + seconds
