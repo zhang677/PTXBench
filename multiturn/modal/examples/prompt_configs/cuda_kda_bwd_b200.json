@@ -1,0 +1,8 @@
+[
+  {
+    "num_trajectories": 4,
+    "num_turns": 8,
+    "target_speedup": 2.0,
+    "prompt_tag": "cuda-blackwell-kda-bwd-unified"
+  }
+]

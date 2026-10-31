@@ -35,8 +35,27 @@ used by that runtime. Config paths resolve
 relative to the JSON file. Set `modal.gpu` to `B200`, `H100`, or `H200`; for
 coding agents, it must match `target_hardware`. The optional
 `modal.lock_gdn_bwd_reference` setting requires B200 and uses the bundled
-manifest. The coding-agent launcher optionally accepts `modal.dataset` in
-Hugging Face mode to download selected workloads.
+manifest. The optional `modal.patch_fla_fp32_state_dot` setting makes FLA's
+GDN/KDA backward reference accumulate its chunk-end state dot in FP32 on any
+GPU; it cannot be combined with the lock. Both launchers optionally accept a
+top-level `dataset` object in Hugging Face mode. The sandbox then downloads and
+serves only the selected workloads instead of the bundled data; `modal.dataset`
+is rejected. Multiturn tasks select theirs with `workload_uuid`, which must
+match the `DEFINITION_NAME` and `WORKLOAD_UUID` in their test script. Every
+attempt of a multiturn run must resolve the same dataset revision as its first
+attempt; pin `dataset.revision` to resume across dataset updates. Multiturn
+configs may also set `language` to `cuda` (the default) or `triton`.
+
+`examples/` holds B200 CUDA and Triton configs for GDN and KDA prefill/backward
+with the `*-blackwell-*-unified` prompt tags: GPT-6 coding agents and Gemini 3.1
+Pro multiturn runs. The multiturn configs use the tests under
+`multiturn/tests/{cuda,triton}/` and the prompt configs in
+`examples/prompt_configs/`, and write under `~/ptxbench-runs`, which must exist:
+
+```bash
+python multiturn/modal/run_modal_coding_agent.py multiturn/modal/examples/codex_gpt6_cuda_unified_b200.json
+python multiturn/modal/modal_profile_runtime.py multiturn/modal/examples/multiturn_gemini31_triton_unified_b200.json
+```
 
 Both launchers own and release their Modal sandbox. The multiturn watcher can
 resume a completed root after interruption; the coding-agent launcher follows

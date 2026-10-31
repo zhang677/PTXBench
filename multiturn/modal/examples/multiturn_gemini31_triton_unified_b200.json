@@ -1,0 +1,65 @@
+{
+  "run_name": "gemini31-modal-b200-unified-gdn-kda-triton",
+  "model": "gemini-3.1-pro-preview",
+  "gpu_arch": "blackwell",
+  "language": "triton",
+  "image": "ptxbench-multiturn-eval:latest",
+  "working_dir": "~/ptxbench-runs",
+  "max_parallel": 4,
+  "max_profiles": 1,
+  "timeout_seconds": 86400,
+  "turn_timeout_seconds": 980,
+  "llm_api_timeout_seconds": 3600,
+  "model_retry_attempts": 3,
+  "retry_interval_seconds": 10,
+  "dataset": {
+    "mode": "huggingface",
+    "repo_id": "AccRL/accrl-training",
+    "revision": "main",
+    "cache_dir": "/workspace/datasets",
+    "timeout_seconds": 3600
+  },
+  "modal": {
+    "app_name": "ptxbench-profile",
+    "gpu": "B200",
+    "cpu": 8,
+    "memory_mib": 32768,
+    "timeout_seconds": 86400,
+    "ready_timeout_seconds": 3600,
+    "poll_interval_seconds": 5,
+    "health_failure_threshold": 3,
+    "drain_timeout_seconds": 3700,
+    "state_dir": "~/ptxbench-runs/gemini31-modal-b200-unified-gdn-kda-triton-modal-state",
+    "patch_fla_fp32_state_dot": true
+  },
+  "tasks": [
+    {
+      "definition": "gdn_prefill_direct_gates_qk8_v16_d128_k_last",
+      "workload_uuid": "de745a1e-7ada-5da7-97ee-0b5815d80883",
+      "test_path": "../../tests/triton/gdn_prefill_direct_gates_qk8_v16_d128_k_last.py",
+      "prompt_config": "prompt_configs/triton_gdn_prefill_b200.json",
+      "output_root": "~/ptxbench-runs/gemini31-modal-b200-unified-gdn-kda-triton-gdn-prefill"
+    },
+    {
+      "definition": "kda_prefill_h96_d128_k_last",
+      "workload_uuid": "98795012-0be6-57e8-9859-2a68491df00b",
+      "test_path": "../../tests/triton/kda_prefill_h96_d128_k_last.py",
+      "prompt_config": "prompt_configs/triton_kda_prefill_b200.json",
+      "output_root": "~/ptxbench-runs/gemini31-modal-b200-unified-gdn-kda-triton-kda-prefill"
+    },
+    {
+      "definition": "gdn_bwd_qk8_v16_d128_k_last",
+      "workload_uuid": "42bead90-d0a9-5d61-9298-039d4332434f",
+      "test_path": "../../tests/triton/gdn_bwd_qk8_v16_d128_k_last.py",
+      "prompt_config": "prompt_configs/triton_gdn_bwd_b200.json",
+      "output_root": "~/ptxbench-runs/gemini31-modal-b200-unified-gdn-kda-triton-gdn-bwd"
+    },
+    {
+      "definition": "kda_bwd_h96_d128_k_last",
+      "workload_uuid": "a8c9b822-7a5a-523d-a3f4-cd8b2849cec1",
+      "test_path": "../../tests/triton/kda_bwd_h96_d128_k_last.py",
+      "prompt_config": "prompt_configs/triton_kda_bwd_b200.json",
+      "output_root": "~/ptxbench-runs/gemini31-modal-b200-unified-gdn-kda-triton-kda-bwd"
+    }
+  ]
+}

@@ -255,5 +255,39 @@
   "hopper-03": [
     "hopper-no-hint",
     "structural_doc/patterns/persistent_kernel.md"
+  ],
+  "cuda-blackwell-gdn-prefill-direct-unified": [
+    "b200-bf16",
+    "structural_doc/patterns/gdn_prefill_direct_unified.md"
+  ],
+  "cuda-blackwell-kda-prefill-unified": [
+    "b200-bf16",
+    "structural_doc/patterns/kda_prefill_unified.md"
+  ],
+  "cuda-blackwell-gdn-bwd-unified": [
+    "b200-bf16",
+    "structural_doc/headers/la_bwd_helpers_b200.h",
+    "structural_doc/patterns/gdn_bwd_numerical_unified.md"
+  ],
+  "cuda-blackwell-kda-bwd-unified": [
+    "b200-bf16",
+    "structural_doc/headers/la_bwd_helpers_b200.h",
+    "structural_doc/patterns/kda_bwd_numerical_unified.md"
+  ],
+  "triton-blackwell-gdn-prefill-direct-unified": [
+    "triton-blackwell",
+    "structural_doc/patterns/gdn_prefill_direct_unified.md"
+  ],
+  "triton-blackwell-kda-prefill-unified": [
+    "triton-blackwell",
+    "structural_doc/patterns/kda_prefill_unified.md"
+  ],
+  "triton-blackwell-gdn-bwd-unified": [
+    "triton-blackwell",
+    "structural_doc/patterns/gdn_bwd_numerical_unified.md"
+  ],
+  "triton-blackwell-kda-bwd-unified": [
+    "triton-blackwell",
+    "structural_doc/patterns/kda_bwd_numerical_unified.md"
   ]
 }

@@ -10,12 +10,17 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import tempfile
+import shlex
 import shutil
 import signal
 import subprocess
 import sys
 import time
+
+import fla_fp32_state_dot
+import profile_dataset
 
 GPU_ARCH = {'B200': '10.0a', 'H100': '9.0a', 'H200': '9.0a'}
 
@@ -45,15 +50,27 @@ def modal_base_image(modal):
 
 
 
-def modal_environment(gpu, lock_gdn_bwd_reference=False):
-    """Validate the opt-in reference lock and construct the shared sandbox env."""
+def modal_environment(gpu, lock_gdn_bwd_reference=False, patch_fla_fp32_state_dot=False):
+    """Validate the opt-in reference patches and construct the shared sandbox env."""
     if type(lock_gdn_bwd_reference) is not bool:
         raise ValueError('modal.lock_gdn_bwd_reference must be a boolean')
     if lock_gdn_bwd_reference and gpu != 'B200':
         raise ValueError('modal.lock_gdn_bwd_reference is supported only on B200')
+    if type(patch_fla_fp32_state_dot) is not bool:
+        raise ValueError('modal.patch_fla_fp32_state_dot must be a boolean')
+    if lock_gdn_bwd_reference and patch_fla_fp32_state_dot:
+        raise ValueError('modal.patch_fla_fp32_state_dot is independent of lock_gdn_bwd_reference; enable one')
     env = {'PROFILE_GPU': gpu, 'TVM_FFI_CUDA_ARCH_LIST': GPU_ARCH[gpu],
-           'LOCK_GDN_BWD_REFERENCE': '1' if lock_gdn_bwd_reference else '0'}
+           'LOCK_GDN_BWD_REFERENCE': '1' if lock_gdn_bwd_reference else '0',
+           'FLA_FP32_STATE_DOT': '1' if patch_fla_fp32_state_dot else '0'}
     return env
+
+
+def environment_options(settings):
+    """The modal_environment keywords from a modal config block or argparse namespace."""
+    get = settings.get if isinstance(settings, dict) else lambda key, default: getattr(settings, key, default)
+    return dict(lock_gdn_bwd_reference=get('lock_gdn_bwd_reference', False),
+                patch_fla_fp32_state_dot=get('patch_fla_fp32_state_dot', False))
 
 
 # Embed the validated source lock so all Modal launch paths use the same payload.
@@ -135,7 +152,8 @@ info = dict(gpu=name, cuda_capability=torch.cuda.get_device_capability(0),
 Path('/workspace/modal-runtime.json').write_text(json.dumps(info, indent=2))
 print(json.dumps(info), flush=True)
 PY
-# The compiler alias exists only after preparation; export it for subsequent
+# Apply or restore FLA's FP32 state dot (modal.patch_fla_fp32_state_dot) before any reference runs.
+''' + fla_fp32_state_dot.shell_step() + r'''# The compiler alias exists only after preparation; export it for subsequent
 # dataset/reference/candidate processes, including FlashInfer timing imports.
 if [ "$PROFILE_GPU" = B200 ] && [ "${LOCK_GDN_BWD_REFERENCE:-0}" = 1 ]; then
     export TRITON_PTXAS_BLACKWELL_PATH=/workspace/gdn-reference-ptxas
@@ -149,6 +167,51 @@ exec /workspace/acc/bin/flashinfer-bench serve --local /workspace/dataset \
     --config /workspace/flashinfer-bench-private/acc_config.yaml --timeout 30
 '''
 
+
+def sandbox_start(dataset=None, runs=()):
+    """Reuse Radix's selected-workload downloader when a dataset is configured."""
+    if dataset is None:
+        return SANDBOX_START
+    payload = dict(settings=dataset, selected=profile_dataset.selectors({'runs': list(runs)}))
+    generation = '\n'.join([
+        'env LD_LIBRARY_PATH= /workspace/acc/bin/python /workspace/dataset/generate_blobs.py ' + '\\',
+        '    --dataset-root /workspace/dataset --device cuda:0', '',
+    ])
+    read_path = shlex.quote('import json; print(json.load(open("/workspace/modal-dataset.json"))["dataset_dir"])')
+    prepare = '\n'.join([
+        f'timeout --signal=TERM --kill-after=10 {dataset["timeout_seconds"]} '
+        '/workspace/acc/bin/python /workspace/profile_dataset.py --worker '
+        "<<'MODAL_DATASET_CONFIG' > /workspace/modal-dataset.json",
+        json.dumps(payload), 'MODAL_DATASET_CONFIG',
+        'dataset_dir="$(/workspace/acc/bin/python -c ' + read_path + ')"',
+        'export FIB_DATASET_DIR="$dataset_dir" FIB_DATASET_DIRS="$dataset_dir"', '',
+    ])
+    if SANDBOX_START.count(generation) != 1 or SANDBOX_START.count('--local /workspace/dataset') != 1:
+        raise ValueError('Modal startup changed: cannot select the configured dataset')
+    return SANDBOX_START.replace(generation, prepare).replace(
+        '--local /workspace/dataset', '--local "$dataset_dir"')
+
+
+def sandbox_image(modal, dataset=None):
+    """The base image and Sandbox.create options; a dataset adds its preparer and HF_TOKEN."""
+    image, options = modal_base_image(modal), {}
+    if dataset:
+        image = image.add_local_file(profile_dataset.__file__, '/workspace/profile_dataset.py', copy=True)
+        if os.environ.get('HF_TOKEN'):
+            options['secrets'] = [modal.Secret.from_dict({'HF_TOKEN': os.environ['HF_TOKEN']})]
+    return image, options
+
+
+def read_dataset_provenance(sandbox):
+    """The preparer's {dataset_dir, source} record from a ready sandbox."""
+    probe = sandbox.exec('cat', '/workspace/modal-dataset.json', timeout=30)
+    dataset = json.loads(probe.stdout.read())
+    probe.wait()
+    if probe.returncode:
+        raise RuntimeError('could not read Modal dataset provenance')
+    return dataset
+
+
 HERE = Path(__file__).resolve().parent
 RUNNER = HERE.parent / 'run_parallel_v2.py'
 
@@ -156,6 +219,9 @@ RUNNER = HERE.parent / 'run_parallel_v2.py'
 def load_config(path):
     """Require explicit experiment settings; resolve paths beside the JSON file."""
     from run_modal_profile import ConfigurationError
+    if str(RUNNER.parent) not in sys.path:
+        sys.path.insert(0, str(RUNNER.parent))
+    from launcher_utils import load_config as load_prompt_config
 
     def unique_keys(pairs):
         result = {}
@@ -191,17 +257,19 @@ def load_config(path):
     numbers = ('max_parallel', 'max_profiles', 'timeout_seconds', 'turn_timeout_seconds',
                'llm_api_timeout_seconds', 'model_retry_attempts', 'retry_interval_seconds')
     fields(config, (*numbers, 'run_name', 'model', 'gpu_arch', 'image', 'working_dir',
-                    'modal', 'tasks'), 'config')
+                    'modal', 'tasks'), 'config', optional=('language', 'dataset'))
     for key in numbers:
         positive(config[key], key)
     for key in ('run_name', 'model', 'gpu_arch', 'image'):
         string(config[key], key)
+    if config.setdefault('language', 'cuda') not in ('cuda', 'triton'):
+        raise ConfigurationError('language must be cuda or triton')
     config['working_dir'] = resolve(config['working_dir'], 'working_dir')
     modal = config['modal']
     modal_numbers = ('cpu', 'memory_mib', 'timeout_seconds', 'ready_timeout_seconds',
                      'poll_interval_seconds', 'health_failure_threshold', 'drain_timeout_seconds')
     fields(modal, (*modal_numbers, 'app_name', 'gpu', 'state_dir'), 'modal',
-           optional=('lock_gdn_bwd_reference',))
+           optional=('lock_gdn_bwd_reference', 'patch_fla_fp32_state_dot'))
     for key in modal_numbers:
         positive(modal[key], f'modal.{key}')
     for key in ('app_name', 'gpu'):
@@ -211,7 +279,7 @@ def load_config(path):
     if modal['gpu'] not in GPU_ARCH:
         raise ConfigurationError(f'modal.gpu must be one of {list(GPU_ARCH)}')
     try:
-        modal_environment(modal['gpu'], modal.get('lock_gdn_bwd_reference', False))
+        modal_environment(modal['gpu'], **environment_options(modal))
     except ValueError as exc:
         raise ConfigurationError(str(exc)) from exc
     architecture = 'blackwell' if modal['gpu'] == 'B200' else 'hopper'
@@ -220,14 +288,50 @@ def load_config(path):
     if not isinstance(config['tasks'], list) or not config['tasks']:
         raise ConfigurationError('tasks must be a nonempty list')
     for index, task in enumerate(config['tasks']):
-        fields(task, ('definition', 'test_path', 'prompt_config', 'output_root'), f'tasks[{index}]')
+        fields(task, ('definition', 'test_path', 'prompt_config', 'output_root'), f'tasks[{index}]',
+               optional=('workload_uuid',))
         string(task['definition'], f'tasks[{index}].definition')
         for key in ('test_path', 'prompt_config', 'output_root'):
             task[key] = resolve(task[key], f'tasks[{index}].{key}')
         for key in ('test_path', 'prompt_config'):
             if not Path(task[key]).is_file():
                 raise ConfigurationError(f'missing {key}: {task[key]}')
+        # The runner checks the bundled docs only after the GPU is ready, and a retry cannot fix them.
+        try:
+            tags = {item['prompt_tag'] for item in load_prompt_config(Path(task['prompt_config']))}
+        except (ValueError, KeyError, TypeError) as exc:
+            raise ConfigurationError(f'tasks[{index}].prompt_config: {exc!r}') from exc
+        missing = sorted(str(tag) for tag in tags
+                         if not (RUNNER.parent / 'prompts/assembled' / f'{tag}.md').is_file())
+        if missing:
+            raise ConfigurationError(f'tasks[{index}]: missing bundled prompt docs {missing}')
+        if ('workload_uuid' in task) != ('dataset' in config):
+            raise ConfigurationError(f'tasks[{index}].workload_uuid is required with, '
+                                     'and only with, a top-level dataset')
+        if 'dataset' in config:
+            # The sandbox serves only the selected workloads; the test submits its own.
+            declared = dict(re.findall(r'^(DEFINITION_NAME|WORKLOAD_UUID) = "([^"\n]*)"$',
+                                       Path(task['test_path']).read_text(), re.M))
+            if declared != {'DEFINITION_NAME': task['definition'], 'WORKLOAD_UUID': task['workload_uuid']}:
+                raise ConfigurationError(f'tasks[{index}]: test_path declares {declared}, '
+                                         'not this definition and workload_uuid')
+    if 'dataset' in config:
+        if not isinstance(config['dataset'], dict):
+            raise ConfigurationError('dataset must be a Hugging Face dataset object')
+        try:
+            config['dataset'] = profile_dataset.dataset_settings({
+                'profile_service': {'dataset': config['dataset'],
+                                    'restart_script': '/workspace/scripts/restart_profiling.sh'},
+                'runs': dataset_runs(config),
+            })
+        except ValueError as exc:
+            raise ConfigurationError(str(exc)) from exc
     return config
+
+
+def dataset_runs(config):
+    return [{'definition': task['definition'], 'workload_uuid': task['workload_uuid']}
+            for task in config['tasks']]
 
 
 def supervisor_args(config):
@@ -243,7 +347,8 @@ def supervisor_args(config):
         command += ['--' + flag, *(task[key] for task in tasks)]
     for flag, key in [('timeout', 'timeout_seconds'), ('model', 'model'), ('gpu-arch', 'gpu_arch'),
                       ('max-parallel', 'max_parallel'), ('max-profiles', 'max_profiles'),
-                      ('turn-timeout', 'turn_timeout_seconds'), ('image', 'image')]:
+                      ('turn-timeout', 'turn_timeout_seconds'), ('image', 'image'),
+                      ('language', 'language')]:
         command += ['--' + flag, str(config[key])]
     command += ['--without-local-gpu', '--service-url', URL_TOKEN]
     settings = dict(config['modal'])
@@ -252,6 +357,8 @@ def supervisor_args(config):
     return argparse.Namespace(**settings, working_dir=Path(config['working_dir']),
                               definitions=[task['definition'] for task in tasks],
                               output_roots=[Path(task['output_root']) for task in tasks],
+                              dataset=config.get('dataset'),
+                              runs=dataset_runs(config) if 'dataset' in config else [],
                               command=command, experiment_config=config)
 
 

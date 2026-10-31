@@ -29,7 +29,9 @@ from urllib.request import urlopen
 import uuid
 
 PTXBENCH_GIT = 'https://github.com/zhang677/PTXBench.git'
-from modal_profile_runtime import collect_reference_records, GPU_ARCH, MODAL_DOCKERFILE, SANDBOX_START, modal_base_image, modal_environment
+from modal_profile_runtime import (collect_reference_records, environment_options, GPU_ARCH,
+                                   MODAL_DOCKERFILE, modal_environment, read_dataset_provenance,
+                                   sandbox_image, sandbox_start)
 import profile_dataset
 
 
@@ -118,13 +120,15 @@ def load_config(path, *, backend="modal"):
     if backend == 'modal':
         settings = config.setdefault('modal', {})
         if not isinstance(settings, dict) or set(settings) - {
-                'gpu', 'timeout_seconds', 'ready_timeout_seconds', 'dataset', 'lock_gdn_bwd_reference'}:
+                'gpu', 'timeout_seconds', 'ready_timeout_seconds', 'lock_gdn_bwd_reference',
+                'patch_fla_fp32_state_dot'}:
             raise ValueError('modal accepts gpu, timeout_seconds, ready_timeout_seconds, '
-                             'dataset, and lock_gdn_bwd_reference')
+                             'lock_gdn_bwd_reference, and patch_fla_fp32_state_dot; '
+                             'dataset is a top-level field')
         gpu = settings.setdefault('gpu', 'B200')
         if gpu not in GPU_ARCH or config.get('target_hardware') != [gpu]:
             raise ValueError('modal.gpu must be B200, H100, or H200 and match target_hardware')
-        modal_environment(gpu, settings.get('lock_gdn_bwd_reference', False))
+        modal_environment(gpu, **environment_options(settings))
         if config['language'] == 'cuda' and config['nvcc_gencode'] != (
                 f'arch=compute_{GPU_ARCH[gpu].replace(".", "")},code=sm_{GPU_ARCH[gpu].replace(".", "")}'):
             raise ValueError('nvcc_gencode must match the selected GPU architecture')
@@ -134,11 +138,11 @@ def load_config(path, *, backend="modal"):
                 raise ValueError(f'modal.{key} must be in 1..86400 seconds')
         if settings['ready_timeout_seconds'] > settings['timeout_seconds']:
             raise ValueError('Modal readiness timeout cannot exceed sandbox lifetime')
-        if 'dataset' in settings:
-            if not isinstance(settings['dataset'], dict):
-                raise ValueError('modal.dataset must be a Hugging Face dataset object')
-            settings['dataset'] = profile_dataset.dataset_settings({
-                'profile_service': {'dataset': settings['dataset'],
+        if 'dataset' in config:
+            if not isinstance(config['dataset'], dict):
+                raise ValueError('dataset must be a Hugging Face dataset object')
+            config['dataset'] = profile_dataset.dataset_settings({
+                'profile_service': {'dataset': config['dataset'],
                                     'restart_script': '/workspace/scripts/restart_profiling.sh'},
                 'runs': config.get('runs'),
             })
@@ -177,31 +181,6 @@ def load_config(path, *, backend="modal"):
         raise ValueError('run IDs must map to distinct Docker container names')
     config.pop('_config_dir', None)
     return config
-
-
-def sandbox_start(config):
-    """Reuse Radix's selected-workload downloader when a dataset is configured."""
-    settings = config['modal'].get('dataset')
-    if settings is None:
-        return SANDBOX_START
-    payload = dict(settings=settings, selected=profile_dataset.selectors(config))
-    generation = '\n'.join([
-        'env LD_LIBRARY_PATH= /workspace/acc/bin/python /workspace/dataset/generate_blobs.py ' + '\\',
-        '    --dataset-root /workspace/dataset --device cuda:0', '',
-    ])
-    read_path = shlex.quote('import json; print(json.load(open("/workspace/modal-dataset.json"))["dataset_dir"])')
-    prepare = '\n'.join([
-        f'timeout --signal=TERM --kill-after=10 {settings["timeout_seconds"]} '
-        '/workspace/acc/bin/python /workspace/profile_dataset.py --worker '
-        "<<'MODAL_DATASET_CONFIG' > /workspace/modal-dataset.json",
-        json.dumps(payload), 'MODAL_DATASET_CONFIG',
-        'dataset_dir="$(/workspace/acc/bin/python -c ' + read_path + ')"',
-        'export FIB_DATASET_DIR="$dataset_dir" FIB_DATASET_DIRS="$dataset_dir"', '',
-    ])
-    if SANDBOX_START.count(generation) != 1 or SANDBOX_START.count('--local /workspace/dataset') != 1:
-        raise ValueError('Modal startup changed: cannot select the configured dataset')
-    return SANDBOX_START.replace(generation, prepare).replace(
-        '--local /workspace/dataset', '--local "$dataset_dir"')
 
 
 def build_images(config):
@@ -269,18 +248,14 @@ class ModalBackend:
         modal = self.modal
         if self.sandbox is not None:
             raise RuntimeError('previous Modal sandbox has not been released')
-        image = modal_base_image(modal)
-        options = {}
-        if settings.get('dataset'):
-            image = image.add_local_file(profile_dataset.__file__, '/workspace/profile_dataset.py', copy=True)
-            if os.environ.get('HF_TOKEN'):
-                options['secrets'] = [modal.Secret.from_dict({'HF_TOKEN': os.environ['HF_TOKEN']})]
+        image, options = sandbox_image(modal, config.get('dataset'))
         app = modal.App.lookup('ptxbench-profile', create_if_missing=True)
         with modal.enable_output():
             self.sandbox = modal.Sandbox.create(
-                'bash', '-c', sandbox_start(config), app=app, image=image, gpu=settings['gpu'],
-                cpu=8, memory=32768, timeout=settings['timeout_seconds'], encrypted_ports=[10000],
-                env=modal_environment(settings['gpu'], settings.get('lock_gdn_bwd_reference', False)),
+                'bash', '-c', sandbox_start(config.get('dataset'), config['runs']), app=app,
+                image=image, gpu=settings['gpu'], cpu=8, memory=32768,
+                timeout=settings['timeout_seconds'], encrypted_ports=[10000],
+                env=modal_environment(settings['gpu'], **environment_options(settings)),
                 **options)
         from ptxbench_eval.codex_persistent_runner import save_json
         metadata = {'sandbox_id': self.sandbox.object_id, 'gpu': settings['gpu'],
@@ -299,7 +274,7 @@ class ModalBackend:
         wait_ready(config['profile_base_url'], ready, lambda: self.sandbox.poll() is None,
                    settings['ready_timeout_seconds'])
         for remote, target in [('modal-runtime.json', 'runtime.json'),
-                               *([('modal-dataset.json', 'dataset.json')] if settings.get('dataset') else [])]:
+                               *([('modal-dataset.json', 'dataset.json')] if config.get('dataset') else [])]:
             result = self.sandbox.exec('cat', '/workspace/' + remote, timeout=30)
             payload = json.loads(result.stdout.read())
             result.wait()
@@ -369,19 +344,15 @@ def execute(config, modal):
         os.environ['PATH'] = str(directory) + os.pathsep + old_path
         try:
             # Modal ignores EXPOSE; port publication is specified on Sandbox.create.
-            image = modal_base_image(modal)
-            sandbox_options = {}
-            if settings.get('dataset'):
-                image = image.add_local_file(profile_dataset.__file__, '/workspace/profile_dataset.py', copy=True)
-                if os.environ.get('HF_TOKEN'):
-                    sandbox_options['secrets'] = [modal.Secret.from_dict({'HF_TOKEN': os.environ['HF_TOKEN']})]
+            image, sandbox_options = sandbox_image(modal, config.get('dataset'))
             app = modal.App.lookup('ptxbench-profile', create_if_missing=True)
             with modal.enable_output():
                 sandbox = modal.Sandbox.create(
-                    'bash', '-c', sandbox_start(config), app=app, image=image, gpu=settings['gpu'],
-                    cpu=8, memory=32768, timeout=settings['timeout_seconds'],
+                    'bash', '-c', sandbox_start(config.get('dataset'), config['runs']), app=app,
+                    image=image, gpu=settings['gpu'], cpu=8, memory=32768,
+                    timeout=settings['timeout_seconds'],
                     encrypted_ports=[10000],
-                    env=modal_environment(settings['gpu'], settings.get('lock_gdn_bwd_reference', False)),
+                    env=modal_environment(settings['gpu'], **environment_options(settings)),
                     **sandbox_options)
             metadata = {'sandbox_id': sandbox.object_id, 'gpu': settings['gpu'],
                         'dockerfile_sha256': hashlib.sha256(MODAL_DOCKERFILE.encode()).hexdigest()}
@@ -406,12 +377,8 @@ def execute(config, modal):
             probe.wait()
             if probe.returncode:
                 raise RuntimeError('could not read Modal runtime provenance')
-            if settings.get('dataset'):
-                probe = sandbox.exec('cat', '/workspace/modal-dataset.json', timeout=30)
-                dataset = json.loads(probe.stdout.read())
-                probe.wait()
-                if probe.returncode:
-                    raise RuntimeError('could not read Modal dataset provenance')
+            if config.get('dataset'):
+                dataset = read_dataset_provenance(sandbox)
                 (root / 'dataset_source.json').write_text(json.dumps(dataset['source'], indent=2) + '\n')
                 metadata['dataset_dir'] = dataset['dataset_dir']
                 metadata['dataset_preparer_sha256'] = hashlib.sha256(

@@ -1,0 +1,75 @@
+{
+  "experiment_root": "~/ptxbench-runs/codex-gpt6-astra-xhigh-b200-modal-unified-prefill-bwd-9turns-cuda",
+  "agent": "codex-persistent",
+  "agent_image": "ptxbench-codex:0.162.1",
+  "codex_version": "0.162.1",
+  "model": "gpt-6-astra",
+  "effort": "xhigh",
+  "codex_auth_file": "~/.codex/auth.json",
+  "token_budget": 5000000,
+  "max_turns": 9,
+  "codex_use_mcp": false,
+  "disable_web": true,
+  "add_goal_command": false,
+  "feedback_style": "multiturn",
+  "task_view": "multiturn",
+  "max_parallel": 2,
+  "max_profiles": 1,
+  "gateway_url": "http://127.0.0.1:18110",
+  "language": "cuda",
+  "binding": "tvm-ffi",
+  "tvm_ffi_example": "../../prompts/examples/cuda.cu",
+  "nvcc_gencode": "arch=compute_100a,code=sm_100a",
+  "target_hardware": [
+    "B200"
+  ],
+  "target_speedup": 2.0,
+  "prompt_hub": "../../prompts/hub.json",
+  "prompt_files_root": "../../prompts/fragments",
+  "gateway_image": "ptxbench-eval-gateway:dev",
+  "print_timeout": "24h",
+  "build_images": true,
+  "status_interval_seconds": 30,
+  "runs": [
+    {
+      "task_id": "gdn_prefill_direct_gates_qk8_v16_d128_k_last_S3271-p0",
+      "definition": "gdn_prefill_direct_gates_qk8_v16_d128_k_last",
+      "workload_uuid": "de745a1e-7ada-5da7-97ee-0b5815d80883",
+      "run_id": "exp_gdn_prefill_cuda_b200_gpt6_000",
+      "prompt_tag": "cuda-blackwell-gdn-prefill-direct-unified"
+    },
+    {
+      "task_id": "kda_prefill_h96_d128_k_last-p0",
+      "definition": "kda_prefill_h96_d128_k_last",
+      "workload_uuid": "98795012-0be6-57e8-9859-2a68491df00b",
+      "run_id": "exp_kda_prefill_cuda_b200_gpt6_000",
+      "prompt_tag": "cuda-blackwell-kda-prefill-unified"
+    },
+    {
+      "task_id": "gdn_bwd_qk8_v16_d128_k_last_S4096-p0",
+      "definition": "gdn_bwd_qk8_v16_d128_k_last",
+      "workload_uuid": "42bead90-d0a9-5d61-9298-039d4332434f",
+      "run_id": "exp_gdn_bwd_cuda_b200_gpt6_000",
+      "prompt_tag": "cuda-blackwell-gdn-bwd-unified"
+    },
+    {
+      "task_id": "kda_bwd_h96_d128_k_last_S4096-p0",
+      "definition": "kda_bwd_h96_d128_k_last",
+      "workload_uuid": "a8c9b822-7a5a-523d-a3f4-cd8b2849cec1",
+      "run_id": "exp_kda_bwd_cuda_b200_gpt6_000",
+      "prompt_tag": "cuda-blackwell-kda-bwd-unified"
+    }
+  ],
+  "dataset": {
+    "mode": "huggingface",
+    "repo_id": "AccRL/accrl-training",
+    "revision": "main",
+    "cache_dir": "/workspace/datasets",
+    "timeout_seconds": 3600
+  },
+  "modal": {
+    "gpu": "B200",
+    "timeout_seconds": 86400,
+    "patch_fla_fp32_state_dot": true
+  }
+}

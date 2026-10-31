@@ -372,6 +372,16 @@ tcgen05.commit.cta_group.completion_mechanism{.shared::cluster}{.multicast}.b64 
 .multicast     = { .multicast::cluster }
 ```
 
+Single-CTA completion:
+
+```ptx
+tcgen05.commit.cta_group::1.mbarrier::arrive::one.shared::cluster.b64 [mbar];
+```
+
+For `tcgen05.commit`, the explicit shared-memory state-space qualifier is
+`.shared::cluster`, including with `cta_group::1`. `.shared::cta` is invalid.
+The CTA-group qualifier and address-space qualifier serve different purposes.
+
 The instruction `tcgen05.commit` is an asynchronous instruction which makes the mbarrier object,
 specified by the address operand `mbar` , track the completion of all the prior asynchronous `tcgen05` operations, as listed in [mbarrier based completion mechanism](#tcgen05-memory-consistency-model-mbarrier-completion) ,
 initiated by the executing thread. Upon the completion of the tracked asynchronous `tcgen05` operations, the signal specified by the `.completion_mechanism` is triggered by the system on the mbarrier object.
@@ -404,6 +414,12 @@ __device__ __forceinline__ void umma_commit_2sm_fn(uint64_t* bar) {
         :: "r"(a), "h"((uint16_t)0x3)); // It hardcodes ctaMask=0x3 (CTAs 0 and 1 only). This works only for cluster_size=2.
 }
 
+// This SWIZZLE_128B helper leaves the matrix base offset (bits [51:49]) zero.
+// It requires the swizzle pattern to start on a 1024-byte boundary;
+// 128-byte alignment alone is insufficient. For other pattern starts, set
+// bits [51:49] to (pattern_start_addr >> 7) & 7 before using the descriptor.
+// pattern_start_addr is the swizzle pattern's shared-memory byte address,
+// not an arbitrary interior submatrix pointer.
 __device__ __forceinline__ uint64_t make_smem_desc_sm100_fn(void* smem_ptr, uint32_t lbo, uint32_t sbo) {
     // Build SM100 UMMA SMEM descriptor (version=1, SWIZZLE_128B).
     uint64_t d = 0;
