@@ -4,10 +4,18 @@ atol: 1e-2
 definition_config:
   # dk and dg cancel to near-zero elements; one FP32 rounding-order difference in the
   # reverse state (FMA32 vs MUL32+ADD32) moves ~0.006% of them past atol/rtol.
+  # Benign dk/dg-only misses observed up to dk 0.999899 / dg 0.999889; real bugs
+  # seen so far have dk <= 0.9987 and also fail db or dq.
   gdn_bwd_qk8_v16_d128_k_last:
     per_output_required_matched_ratio:
-      dk: 0.9999
-      dg: 0.9999
+      dk: 0.99988
+      dg: 0.99988
+  # final_state-only misses from reordered BF16 rounding of the recurrence: 2-59 of
+  # 9,437,184 elements (one BF16 ulp, near-zero reference). 0.99999 allows 94 and
+  # still rejects a buggy final_state at 0.999947. output stays at 1.0.
+  kda_prefill_h96_d128_k_last:
+    per_output_required_matched_ratio:
+      final_state: 0.99999
 
 # Fraction of total HBM for observed occupancy plus the next task reservation.
 # Serve checks every task and verifies process/memory cleanup before replacement.
