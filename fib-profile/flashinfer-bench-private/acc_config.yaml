@@ -1,6 +1,14 @@
 rtol: 1e-2
 atol: 1e-2
 
+definition_config:
+  # dk and dg cancel to near-zero elements; one FP32 rounding-order difference in the
+  # reverse state (FMA32 vs MUL32+ADD32) moves ~0.006% of them past atol/rtol.
+  gdn_bwd_qk8_v16_d128_k_last:
+    per_output_required_matched_ratio:
+      dk: 0.9999
+      dg: 0.9999
+
 # Fraction of total HBM for observed occupancy plus the next task reservation.
 # Serve checks every task and verifies process/memory cleanup before replacement.
 # Remaining headroom covers candidate scratch; arbitrary allocations can still OOM.

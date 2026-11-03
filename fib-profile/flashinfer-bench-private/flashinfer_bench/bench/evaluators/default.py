@@ -204,7 +204,7 @@ class DefaultEvaluator(Evaluator):
 
                 # Compute error statistics
                 abs_err, rel_err, exceeds_tol, matched_ratio = compute_error_stats(
-                    sol_tensor, ref_tensor, cfg
+                    sol_tensor, ref_tensor, cfg, output_name=output_name
                 )
                 output_metrics = per_output.setdefault(
                     output_name,
