@@ -95,7 +95,10 @@ def normalize_outputs(
 
 
 def compute_error_stats(
-    output: torch.Tensor, reference: torch.Tensor, cfg: ResolvedEvalConfig
+    output: torch.Tensor,
+    reference: torch.Tensor,
+    cfg: ResolvedEvalConfig,
+    output_name: Optional[str] = None,
 ) -> Tuple[float, float, bool, float]:
     x = output.to(torch.float32)
     y = reference.to(torch.float32)
@@ -108,9 +111,11 @@ def compute_error_stats(
     if total_elements == 0:
         return 0.0, 0.0, False, 1.0
 
-    required_matched_ratio = (
-        cfg.required_matched_ratio if cfg.required_matched_ratio is not None else 1.0
+    required_matched_ratio = cfg.per_output_required_matched_ratio.get(
+        output_name, cfg.required_matched_ratio
     )
+    if required_matched_ratio is None:
+        required_matched_ratio = 1.0
     exceeds_tol_mask = (abs_error > cfg.atol) & (rel_error > cfg.rtol)
     exceeds_count = float(exceeds_tol_mask.sum().item())
     matched_ratio = 1.0 - (exceeds_count / float(total_elements))

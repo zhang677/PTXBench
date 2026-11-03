@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Annotated, Any, Dict, List, Optional
 
 import yaml
 from pydantic import BaseModel, Field, model_validator
@@ -25,6 +25,10 @@ class EvalConfig(BaseModel):
     """Absolute tolerance for numerical checks. `None` means inherit."""
     required_matched_ratio: Optional[float] = Field(default=None, gt=0, le=1)
     """Minimum fraction of elements that must be within tolerance. `None` means inherit."""
+    per_output_required_matched_ratio: Optional[
+        Dict[str, Annotated[float, Field(gt=0, le=1)]]
+    ] = None
+    """Per-output-name overrides of `required_matched_ratio`. `None` means inherit."""
     extra: Dict[str, Any] = Field(default_factory=dict)
     """Evaluator-specific parameters that do not belong in the shared schema."""
 
@@ -44,6 +48,8 @@ class ResolvedEvalConfig(BaseModel):
     """Absolute tolerance for numerical checks."""
     required_matched_ratio: Optional[float] = None
     """Minimum fraction of elements that must be within tolerance."""
+    per_output_required_matched_ratio: Dict[str, float] = Field(default_factory=dict)
+    """Per-output-name overrides of `required_matched_ratio`."""
     profile_baseline: bool = True
     """Whether to profile the reference implementation for baseline latency."""
     run_baseline: bool = True
@@ -178,5 +184,14 @@ class BenchmarkConfig(BaseModel):
             merged["run_baseline"] = run_baseline
         if not merged["run_baseline"]:
             merged["profile_baseline"] = False
+
+        unknown = set(merged.get("per_output_required_matched_ratio") or {}) - set(
+            definition.outputs
+        )
+        if unknown:
+            raise ValueError(
+                f"per_output_required_matched_ratio for {definition.name} names unknown "
+                f"outputs {sorted(unknown)}; outputs are {sorted(definition.outputs)}"
+            )
 
         return ResolvedEvalConfig(**merged)
