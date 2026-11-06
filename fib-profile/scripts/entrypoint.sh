@@ -11,6 +11,8 @@ VENV_DIR="${VENV_DIR:-$WORKDIR/acc}"
 FIB_DATASET_MODE="${FIB_DATASET_MODE:-existing}"
 FLASH_KDA_REPO_URL="https://github.com/MoonshotAI/FlashKDA.git"
 FLASH_KDA_DIR="${FLASH_KDA_DIR:-$WORKDIR/flash-kda}"
+DEEPGEMM_REPO_URL="https://github.com/deepseek-ai/DeepGEMM.git"
+DEEPGEMM_DIR="${DEEPGEMM_DIR:-$WORKDIR/DeepGEMM}"
 
 case "$FIB_DATASET_MODE" in
     existing) ;;
@@ -40,24 +42,31 @@ uv pip install --index-strategy unsafe-best-match \
     --extra-index-url https://download.pytorch.org/whl/cu130 \
     -e "$BENCH_ROOT[serve,profile-cu130]"
 
-# Build FlashKDA from the default branch on a fresh clone. Reuse an existing
-# checkout as-is; there is no commit pin or automatic branch change.
-if [ ! -e "$FLASH_KDA_DIR" ]; then
-    git clone "$FLASH_KDA_REPO_URL" "$FLASH_KDA_DIR"
-elif [ ! -e "$FLASH_KDA_DIR/.git" ]; then
-    echo "[entrypoint] ERROR: $FLASH_KDA_DIR exists but is not a git checkout" >&2
-    exit 1
-fi
-git -C "$FLASH_KDA_DIR" submodule update --init --recursive
-(
-    cd "$FLASH_KDA_DIR"
-    uv pip install -v --no-build-isolation .
-)
+# Build source-only GPU packages from the default branch on a fresh clone. Reuse
+# an existing checkout as-is; there is no commit pin or automatic branch change.
+build_from_git() {
+    local url="$1" dir="$2"
+    if [ ! -e "$dir" ]; then
+        git clone "$url" "$dir"
+    elif [ ! -e "$dir/.git" ]; then
+        echo "[entrypoint] ERROR: $dir exists but is not a git checkout" >&2
+        exit 1
+    fi
+    git -C "$dir" submodule update --init --recursive
+    (
+        cd "$dir"
+        uv pip install -v --no-build-isolation .
+    )
+}
+build_from_git "$FLASH_KDA_REPO_URL" "$FLASH_KDA_DIR"
+# DeepGEMM backs the fp8_gemm_nt_* reference implementations.
+build_from_git "$DEEPGEMM_REPO_URL" "$DEEPGEMM_DIR"
 
 python - <<'PY'
 import torch
 import triton
 import flash_kda
+import deep_gemm
 
 assert torch.__version__ == "2.12.1+cu130", torch.__version__
 assert triton.__version__ == "3.7.1", triton.__version__
