@@ -13,6 +13,9 @@ FLASH_KDA_REPO_URL="https://github.com/MoonshotAI/FlashKDA.git"
 FLASH_KDA_DIR="${FLASH_KDA_DIR:-$WORKDIR/flash-kda}"
 DEEPGEMM_REPO_URL="https://github.com/deepseek-ai/DeepGEMM.git"
 DEEPGEMM_DIR="${DEEPGEMM_DIR:-$WORKDIR/DeepGEMM}"
+# DeepGEMM's host extension needs C++20 <format> (GCC 13+); the default compiler stays.
+DEEPGEMM_CC="${DEEPGEMM_CC:-gcc-13}"
+DEEPGEMM_CXX="${DEEPGEMM_CXX:-g++-13}"
 
 case "$FIB_DATASET_MODE" in
     existing) ;;
@@ -46,6 +49,7 @@ uv pip install --index-strategy unsafe-best-match \
 # an existing checkout as-is; there is no commit pin or automatic branch change.
 build_from_git() {
     local url="$1" dir="$2"
+    shift 2
     if [ ! -e "$dir" ]; then
         git clone "$url" "$dir"
     elif [ ! -e "$dir/.git" ]; then
@@ -55,12 +59,18 @@ build_from_git() {
     git -C "$dir" submodule update --init --recursive
     (
         cd "$dir"
-        uv pip install -v --no-build-isolation .
+        env "$@" uv pip install -v --no-build-isolation .
     )
 }
 build_from_git "$FLASH_KDA_REPO_URL" "$FLASH_KDA_DIR"
 # DeepGEMM backs the fp8_gemm_nt_* reference implementations.
-build_from_git "$DEEPGEMM_REPO_URL" "$DEEPGEMM_DIR"
+for compiler in "$DEEPGEMM_CC" "$DEEPGEMM_CXX"; do
+    if ! command -v "$compiler" >/dev/null; then
+        echo "[entrypoint] ERROR: DeepGEMM needs $compiler (GCC 13+); rebuild the image with fib-profile/scripts/build.sh" >&2
+        exit 1
+    fi
+done
+build_from_git "$DEEPGEMM_REPO_URL" "$DEEPGEMM_DIR" CC="$DEEPGEMM_CC" CXX="$DEEPGEMM_CXX"
 
 python - <<'PY'
 import torch

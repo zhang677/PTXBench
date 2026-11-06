@@ -28,6 +28,7 @@ class EntrypointTests(unittest.TestCase):
 if [ "${3:-}" = -v ]; then
     package=$(basename "$PWD")
     printf '%s install %s\\n' "$package" "$*" >> "$TEST_LOG"
+    printf '%s CC=%s CXX=%s\\n' "$package" "${CC:-}" "${CXX:-}" >> "$TEST_COMPILER_LOG"
     [ "${TEST_INSTALL_FAIL:-}" = "$package" ] && exit 1
     exit 0
 fi
@@ -56,6 +57,8 @@ fi
 printf 'generate %s LD_LIBRARY_PATH=%s\n' "$*" "$LD_LIBRARY_PATH" >> "$TEST_LOG"
 exit "${TEST_GENERATE_EXIT:-0}"
 ''')
+        for compiler in ("gcc-13", "g++-13"):
+            self.write(self.bin / compiler, "#!/bin/sh\n")
         self.write(self.scripts / "restart_profiling.sh", '#!/bin/sh\nprintf "serve\\n" >> "$TEST_LOG"\n')
         self.write(self.scripts / "gpu_preflight.sh", '''profile_service_filter_cool_gpu_devices() {
     printf 'filter %s\n' "$2" >> "$TEST_LOG"
@@ -65,14 +68,17 @@ exit "${TEST_GENERATE_EXIT:-0}"
 ''')
         self.log = self.root / "startup.log"
         self.uv_log = self.root / "uv.log"
+        self.compiler_log = self.root / "compiler.log"
         self.env = dict(os.environ, WORKDIR=str(self.root), VENV_DIR=str(self.root / "acc"),
                         FIB_DIR="flashinfer-bench-private", FIB_DATASET_DIR=str(self.root / "dataset"),
                         FIB_DEVICES="cuda:1,cuda:2", LD_LIBRARY_PATH="/unwanted/cuda",
                         FLASH_KDA_DIR=str(self.root / "flash-kda"),
                         DEEPGEMM_DIR=str(self.root / "DeepGEMM"),
                         TEST_LOG=str(self.log), TEST_UV_LOG=str(self.uv_log),
+                        TEST_COMPILER_LOG=str(self.compiler_log),
                         UV_CACHE_DIR=str(self.root / "cache"))
-        self.env.pop("FIB_DATASET_MODE", None)
+        for variable in ("FIB_DATASET_MODE", "CC", "CXX", "DEEPGEMM_CC", "DEEPGEMM_CXX"):
+            self.env.pop(variable, None)
         self.install_steps = [
             "install",
             "git clone https://github.com/MoonshotAI/FlashKDA.git " + str(self.root / "flash-kda"),
@@ -165,6 +171,18 @@ exit "${TEST_GENERATE_EXIT:-0}"
                 result = self.run_entrypoint(**{variable: value})
                 self.assertNotEqual(result.returncode, 0)
                 self.assertNotIn("serve", self.log.read_text().splitlines())
+
+    def test_deepgemm_alone_builds_with_gcc13(self):
+        result = self.run_entrypoint()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.compiler_log.read_text().splitlines(),
+                         ["flash-kda CC= CXX=", "DeepGEMM CC=gcc-13 CXX=g++-13"])
+
+    def test_missing_deepgemm_compiler_fails_before_clone(self):
+        result = self.run_entrypoint(DEEPGEMM_CXX="missing-g++")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("DeepGEMM needs missing-g++", result.stderr)
+        self.assertEqual(self.log.read_text().splitlines(), self.install_steps[:4])
 
     def test_deepgemm_failure_skips_validation(self):
         result = self.run_entrypoint(TEST_INSTALL_FAIL="DeepGEMM")
