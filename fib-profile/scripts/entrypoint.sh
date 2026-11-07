@@ -77,6 +77,7 @@ import torch
 import triton
 import flash_kda
 import deep_gemm
+import quack
 
 assert torch.__version__ == "2.12.1+cu130", torch.__version__
 assert triton.__version__ == "3.7.1", triton.__version__

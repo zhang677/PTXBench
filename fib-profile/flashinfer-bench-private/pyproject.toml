@@ -64,6 +64,8 @@ profile-cu130 = [
   "triton==3.7.1",
   "flashinfer-python==0.7.2",
   "nvidia-cutlass-dsl==4.6.2",
+  # Backs the rmsnorm_h65536_bf16 reference; 0.6.4 pins nvidia-cutlass-dsl==4.6.2.
+  "quack-kernels==0.6.4",
   # Validated with the bundled cuDNN 9.20 backend for MHA forward/backward.
   "nvidia-cudnn-frontend==1.31.0",
   "cuda-python==13.0.3",
