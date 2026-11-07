@@ -11,6 +11,9 @@ REQUIRED_INSTS = {
     "arch=compute_90a,code=sm_90a": {"cp.async.bulk.tensor", "wgmma."},
     "arch=compute_100a,code=sm_100a": {"cp.async.bulk.tensor", "tcgen05"},
 }
+# Memory-bound reduction prompts: TMA tensor copies and tensor-core MMA are not
+# the right target, so these prompt tags get no instruction warning.
+NO_INSTRUCTION_WARNING_PROMPT_TAGS = {"hopper-reduce", "blackwell-reduce"}
 
 
 def compile_source(
@@ -18,6 +21,7 @@ def compile_source(
     *,
     nvcc_gencode: str,
     tvm_ffi_dir: str | None = None,
+    prompt_tag: str | None = None,
 ) -> dict[str, Any]:
     """Compile untrusted candidate source inside the controlled endpoint."""
     with tempfile.TemporaryDirectory(prefix="ptxbench-compile-") as directory:
@@ -27,6 +31,7 @@ def compile_source(
             kernel_path,
             nvcc_gencode=nvcc_gencode,
             tvm_ffi_dir=tvm_ffi_dir,
+            prompt_tag=prompt_tag,
         )
 
 
@@ -35,6 +40,7 @@ def compile_kernel(
     *,
     nvcc_gencode: str,
     tvm_ffi_dir: str | None = None,
+    prompt_tag: str | None = None,
 ) -> dict[str, Any]:
     tvm_ffi_dir = tvm_ffi_dir or os.environ.get(
         "PTXBENCH_TVM_FFI_DIR", "/usr/local/lib/python3.12/dist-packages/tvm_ffi"
@@ -87,7 +93,8 @@ def compile_kernel(
             "command": command,
             "infrastructure_error": False,
         }
-    warning = _instruction_warning(kernel_path, nvcc_gencode, tvm_ffi_dir)
+    warning = ("" if prompt_tag in NO_INSTRUCTION_WARNING_PROMPT_TAGS
+               else _instruction_warning(kernel_path, nvcc_gencode, tvm_ffi_dir))
     return {
         "ok": True,
         "output": output,

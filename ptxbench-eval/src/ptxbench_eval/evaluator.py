@@ -213,6 +213,7 @@ class Evaluator:
             compile_result = compile_source(
                 source,
                 nvcc_gencode=manifest.data["nvcc_gencode"],
+                prompt_tag=record.get("prompt_tag"),
             )
             log.emit("compilation_completed", result=compile_result)
             if compile_result.get("infrastructure_error"):
