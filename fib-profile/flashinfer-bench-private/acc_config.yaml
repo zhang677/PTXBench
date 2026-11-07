@@ -17,6 +17,16 @@ definition_config:
   kda_prefill_h96_d128_k_last:
     per_output_required_matched_ratio:
       final_state: 0.99999
+  # Heavy-tailed inputs (|Q|,|K|,|V| up to 440, L up to 10,614) put elements with
+  # true value ~1 under bf16 dS/P rounding noise from |K|~400 terms. cuDNN itself
+  # misses the fp64 truth on dQ 23,963 / dK 12,947 / dV 19,289 of 75,497,472.
+  # Kernels as accurate as cuDNN miss it on up to dQ 46,441 / dK 30,909 /
+  # dV 20,847; 0.999 allows 75,497 and rejects a dQ-aliasing bug at 0.068.
+  mha_bwd_d96:
+    per_output_required_matched_ratio:
+      dQ: 0.999
+      dK: 0.999
+      dV: 0.999
 
 # Fraction of total HBM for observed occupancy plus the next task reservation.
 # Serve checks every task and verifies process/memory cleanup before replacement.
