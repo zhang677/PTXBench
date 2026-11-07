@@ -1,8 +1,10 @@
 # Modal launchers
 
-These scripts run PTXBench experiments with one Modal profiling GPU. The sandbox
-clones the default branch of PTXBench on startup and records the revision in
-`modal-runtime.json`. The host does not need a second PTXBench checkout or a
+These scripts run PTXBench experiments with one Modal profiling GPU. At launch
+they resolve PTXBench `main` on GitHub to a commit, build the sandbox image from
+that commit's `fib-profile/scripts/Dockerfile`, and the sandbox checks out the
+same commit on startup. The commit is recorded in `modal-runtime.json` and the
+launcher metadata. The host does not need a second PTXBench checkout or a
 local profiling GPU.
 
 Install the host requirements in the existing `acc` environment, including

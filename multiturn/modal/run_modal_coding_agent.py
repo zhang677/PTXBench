@@ -30,7 +30,7 @@ import uuid
 
 PTXBENCH_GIT = 'https://github.com/zhang677/PTXBench.git'
 from modal_profile_runtime import (collect_reference_records, environment_options, GPU_ARCH,
-                                   MODAL_DOCKERFILE, modal_environment, read_dataset_provenance,
+                                   image_metadata, modal_environment, read_dataset_provenance,
                                    sandbox_image, sandbox_start)
 import profile_dataset
 
@@ -259,7 +259,7 @@ class ModalBackend:
                 **options)
         from ptxbench_eval.codex_persistent_runner import save_json
         metadata = {'sandbox_id': self.sandbox.object_id, 'gpu': settings['gpu'],
-                    'dockerfile_sha256': hashlib.sha256(MODAL_DOCKERFILE.encode()).hexdigest()}
+                    **image_metadata()}
         save_json(folder / 'modal.json', metadata)
         print(f'Modal sandbox: {self.sandbox.object_id}', flush=True)
         for stream, name in [(self.sandbox.stdout, 'modal.stdout.log'), (self.sandbox.stderr, 'modal.stderr.log')]:
@@ -355,7 +355,7 @@ def execute(config, modal):
                     env=modal_environment(settings['gpu'], **environment_options(settings)),
                     **sandbox_options)
             metadata = {'sandbox_id': sandbox.object_id, 'gpu': settings['gpu'],
-                        'dockerfile_sha256': hashlib.sha256(MODAL_DOCKERFILE.encode()).hexdigest()}
+                        **image_metadata()}
             metadata_path = root / 'modal.json'
             metadata_path.write_text(json.dumps(metadata, indent=2) + '\n')
             print(f'Modal sandbox: {sandbox.object_id}; logs: {root}', flush=True)

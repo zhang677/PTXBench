@@ -31,7 +31,7 @@ from urllib.request import urlopen
 import uuid
 
 from modal_profile_runtime import (collect_reference_records, environment_options, GPU_ARCH,
-                                   MODAL_DOCKERFILE, modal_environment, read_dataset_provenance,
+                                   image_metadata, modal_environment, read_dataset_provenance,
                                    sandbox_image, sandbox_start)
 
 HERE = Path(__file__).resolve().parent
@@ -322,7 +322,7 @@ class Attempt:
     def start(self):
         args, modal = self.args, self.modal
         deadline = time.monotonic() + args.ready_timeout_seconds
-        self.metadata['dockerfile_sha256'] = hashlib.sha256(MODAL_DOCKERFILE.encode()).hexdigest()
+        self.metadata.update(image_metadata())
         self.save()  # Name is durable even if creation is interrupted before returning an ID.
         self.check_interrupted()
         image, options = sandbox_image(modal, self.dataset)

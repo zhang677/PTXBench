@@ -6,6 +6,7 @@ The GPU startup constants are also shared with the coding-agent launcher.
 from __future__ import annotations
 
 import argparse
+import functools
 import hashlib
 import json
 import os
@@ -19,32 +20,50 @@ import subprocess
 import sys
 import time
 
+from urllib.request import urlopen
+
 import fla_fp32_state_dot
 import profile_dataset
 
 GPU_ARCH = {'B200': '10.0a', 'H100': '9.0a', 'H200': '9.0a'}
 
-# The sandbox clones PTXBench on startup; its base image needs only CUDA and
-# tools for installing that clone. Keep this recipe beside the launchers.
-MODAL_DOCKERFILE = '''FROM nvidia/cuda:13.0.2-devel-ubuntu22.04
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    vim git python3-pip python3-dev curl tmux openssh-client ca-certificates libdw-dev \
-    && rm -rf /var/lib/apt/lists/*
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.local/bin:${PATH}" PROFILE_PORT=10000 WORKDIR=/workspace \
-    FIB_DIR=flashinfer-bench-private FIB_DATASET_DIR=/workspace/dataset \
-    FIB_DATASET_DIRS=/workspace/dataset UV_CACHE_DIR=/workspace/.cache/uv
-WORKDIR /workspace
-EXPOSE 10000
-'''
+PTXBENCH_GIT = 'https://github.com/zhang677/PTXBench.git'
+PTXBENCH_RAW = 'https://raw.githubusercontent.com/zhang677/PTXBench'
+PROFILE_DOCKERFILE = 'fib-profile/scripts/Dockerfile'
+REVISION_TOKEN = '__PTXBENCH_REVISION__'
+
+
+@functools.cache
+def ptxbench_revision():
+    """GitHub main's commit, resolved once per launch so image and clone match."""
+    result = subprocess.run(['git', 'ls-remote', PTXBENCH_GIT, 'refs/heads/main'],
+                            check=True, capture_output=True, text=True, timeout=60)
+    fields = result.stdout.split()
+    if len(fields) != 2 or not re.fullmatch(r'[0-9a-f]{40}', fields[0]):
+        raise RuntimeError(f'could not resolve PTXBench main: {result.stdout!r}')
+    return fields[0]
+
+
+@functools.cache
+def modal_dockerfile():
+    """The profiling Dockerfile from PTXBench main, at the resolved commit."""
+    url = f'{PTXBENCH_RAW}/{ptxbench_revision()}/{PROFILE_DOCKERFILE}'
+    with urlopen(url, timeout=60) as response:
+        return response.read().decode()
+
+
+def image_metadata():
+    """Provenance of the sandbox image and the PTXBench commit it runs."""
+    return {'ptxbench_revision': ptxbench_revision(),
+            'dockerfile_sha256': hashlib.sha256(modal_dockerfile().encode()).hexdigest()}
 
 
 def modal_base_image(modal):
-    digest = hashlib.sha256(MODAL_DOCKERFILE.encode()).hexdigest()[:16]
+    text = modal_dockerfile()
+    digest = hashlib.sha256(text.encode()).hexdigest()[:16]
     dockerfile = Path(tempfile.gettempdir()) / f'ptxbench-modal-{digest}.Dockerfile'
-    if not dockerfile.exists() or dockerfile.read_text() != MODAL_DOCKERFILE:
-        dockerfile.write_text(MODAL_DOCKERFILE)
+    if not dockerfile.exists() or dockerfile.read_text() != text:
+        dockerfile.write_text(text)
     return modal.Image.from_dockerfile(dockerfile, context_dir=dockerfile.parent,
                                        ignore=lambda _: True)
 
@@ -117,7 +136,10 @@ def collect_reference_records(sandbox, directory):
 # package versions or modify PTXBench's entrypoint. Generation runs on the GPU.
 SANDBOX_START = r'''set -euo pipefail
 exec 2>&1
-git clone --depth 1 https://github.com/zhang677/PTXBench.git /workspace/PTXBench
+# Check out the main commit whose Dockerfile built this image.
+git init -q /workspace/PTXBench
+git -C /workspace/PTXBench fetch -q --depth 1 https://github.com/zhang677/PTXBench.git __PTXBENCH_REVISION__
+git -C /workspace/PTXBench checkout -q FETCH_HEAD
 for part in flashinfer-bench-private dataset scripts; do
     ln -s "/workspace/PTXBench/fib-profile/$part" "/workspace/$part"
 done
@@ -170,8 +192,9 @@ exec /workspace/acc/bin/flashinfer-bench serve --local /workspace/dataset \
 
 def sandbox_start(dataset=None, runs=()):
     """Reuse Radix's selected-workload downloader when a dataset is configured."""
+    start = SANDBOX_START.replace(REVISION_TOKEN, ptxbench_revision())
     if dataset is None:
-        return SANDBOX_START
+        return start
     payload = dict(settings=dataset, selected=profile_dataset.selectors({'runs': list(runs)}))
     generation = '\n'.join([
         'env LD_LIBRARY_PATH= /workspace/acc/bin/python /workspace/dataset/generate_blobs.py ' + '\\',
@@ -186,9 +209,9 @@ def sandbox_start(dataset=None, runs=()):
         'dataset_dir="$(/workspace/acc/bin/python -c ' + read_path + ')"',
         'export FIB_DATASET_DIR="$dataset_dir" FIB_DATASET_DIRS="$dataset_dir"', '',
     ])
-    if SANDBOX_START.count(generation) != 1 or SANDBOX_START.count('--local /workspace/dataset') != 1:
+    if start.count(generation) != 1 or start.count('--local /workspace/dataset') != 1:
         raise ValueError('Modal startup changed: cannot select the configured dataset')
-    return SANDBOX_START.replace(generation, prepare).replace(
+    return start.replace(generation, prepare).replace(
         '--local /workspace/dataset', '--local "$dataset_dir"')
 
 
