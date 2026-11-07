@@ -102,6 +102,7 @@
         ptr,
         K, M,
         ATOM_KMODE_DIM, ATOM_MMODE_DIM,
+        CU_TENSOR_MAP_DATA_TYPE_BFLOAT16,
         CU_TENSOR_MAP_SWIZZLE_128B, 
         CU_TENSOR_MAP_L2_PROMOTION_NONE, 
         CU_TENSOR_MAP_FLOAT_OOB_FILL_NONE
@@ -120,6 +121,7 @@
         ptr,
         K, M,
         ATOM_KMODE_DIM, ATOM_MMODE_DIM,
+        CU_TENSOR_MAP_DATA_TYPE_BFLOAT16,
         CU_TENSOR_MAP_SWIZZLE_NONE,
         CU_TENSOR_MAP_L2_PROMOTION_NONE,
         CU_TENSOR_MAP_FLOAT_OOB_FILL_NONE
@@ -139,6 +141,7 @@
         ptr,
         M, K,
         ATOM_MMODE_DIM, ATOM_KMODE_DIM,
+        CU_TENSOR_MAP_DATA_TYPE_BFLOAT16,
         CU_TENSOR_MAP_SWIZZLE_128B,
         CU_TENSOR_MAP_L2_PROMOTION_NONE,
         CU_TENSOR_MAP_FLOAT_OOB_FILL_NONE
@@ -157,6 +160,7 @@
         ptr,
         M, K,
         ATOM_MMODE_DIM, ATOM_KMODE_DIM,
+        CU_TENSOR_MAP_DATA_TYPE_BFLOAT16,
         CU_TENSOR_MAP_SWIZZLE_NONE,
         CU_TENSOR_MAP_L2_PROMOTION_NONE,
         CU_TENSOR_MAP_FLOAT_OOB_FILL_NONE
@@ -178,7 +182,7 @@
     void run(tvm::ffi::TensorView A, ...) {     
         ...
         // 1. Create TMA descriptors for A
-        CUtensorMap dA;
+        CUtensorMap tma_A;
         __nv_bfloat16* a_ptr = static_cast<__nv_bfloat16*>(A.data_ptr());
         create_tma_2d_descriptor_2B(&tma_A, a_ptr, K, M, ATOM_KMODE_DIM, ATOM_MMODE_DIM, 
         CU_TENSOR_MAP_DATA_TYPE_BFLOAT16,
@@ -187,11 +191,11 @@
         CU_TENSOR_MAP_FLOAT_OOB_FILL_NONE);
         ...
         // 2. CTA Launch — pass by value, no cudaMalloc needed
-        cta_gemm_kernel<<<grid, block, 0, stream>>>(dA, ...);
+        cta_gemm_kernel<<<grid, block, 0, stream>>>(tma_A, ...);
     }
     Note: `create_tma_2d_descriptor_2B` returns `CUresult`, not `cudaError_t`. Use a separate check macro.
 */
-CUresult create_tma_2d_descriptor_2B(CUtensorMap* d, void* globalAddress, uint64_t gmem_inner_dim, uint64_t gmem_outer_dim, uint32_t smem_inner_dim, uint32_t smem_outer_dim, CUtensorMapSwizzle swizzle, CUtensorMapL2promotion l2Promotion, CUtensorMapFloatOOBfill oobFill) {
+CUresult create_tma_2d_descriptor_2B(CUtensorMap* d, void* globalAddress, uint64_t gmem_inner_dim, uint64_t gmem_outer_dim, uint32_t smem_inner_dim, uint32_t smem_outer_dim, CUtensorMapDataType dataType, CUtensorMapSwizzle swizzle, CUtensorMapL2promotion l2Promotion, CUtensorMapFloatOOBfill oobFill) {
     cuuint64_t globalDim[2] = {gmem_inner_dim, gmem_outer_dim};
     cuuint64_t globalStrides[1] = {gmem_inner_dim * 2};
     cuuint32_t boxDim[2] = {smem_inner_dim, smem_outer_dim};
