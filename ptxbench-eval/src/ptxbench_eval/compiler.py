@@ -11,9 +11,19 @@ REQUIRED_INSTS = {
     "arch=compute_90a,code=sm_90a": {"cp.async.bulk.tensor", "wgmma."},
     "arch=compute_100a,code=sm_100a": {"cp.async.bulk.tensor", "tcgen05"},
 }
-# Memory-bound reduction prompts: TMA tensor copies and tensor-core MMA are not
-# the right target, so these prompt tags get no instruction warning.
-NO_INSTRUCTION_WARNING_PROMPT_TAGS = {"hopper-reduce", "blackwell-reduce"}
+# Per-prompt-tag instruction sets; they replace the arch default above.
+# Memory-bound reduction prompts target cluster/DSMEM stores, not TMA tensor
+# copies or tensor-core MMA.
+PROMPT_TAG_REQUIRED_INSTS = {
+    "hopper-reduce": {"st.async"},
+    "blackwell-reduce": {"st.async"},
+}
+
+
+def required_instructions(nvcc_gencode: str, prompt_tag: str | None = None) -> set[str]:
+    if prompt_tag in PROMPT_TAG_REQUIRED_INSTS:
+        return PROMPT_TAG_REQUIRED_INSTS[prompt_tag]
+    return REQUIRED_INSTS.get(nvcc_gencode, set())
 
 
 def compile_source(
@@ -93,8 +103,8 @@ def compile_kernel(
             "command": command,
             "infrastructure_error": False,
         }
-    warning = ("" if prompt_tag in NO_INSTRUCTION_WARNING_PROMPT_TAGS
-               else _instruction_warning(kernel_path, nvcc_gencode, tvm_ffi_dir))
+    warning = _instruction_warning(kernel_path, nvcc_gencode, tvm_ffi_dir,
+                                   required_instructions(nvcc_gencode, prompt_tag))
     return {
         "ok": True,
         "output": output,
@@ -104,8 +114,9 @@ def compile_kernel(
     }
 
 
-def _instruction_warning(kernel_path: Path, nvcc_gencode: str, tvm_ffi_dir: str) -> str:
-    if nvcc_gencode not in REQUIRED_INSTS:
+def _instruction_warning(kernel_path: Path, nvcc_gencode: str, tvm_ffi_dir: str,
+                         required: set[str]) -> str:
+    if not required:
         return ""
     ptx_gencode = nvcc_gencode.replace("code=sm_", "code=compute_")
     ptx_path = kernel_path.resolve().parent / "kernel.ptx"
@@ -131,11 +142,11 @@ def _instruction_warning(kernel_path: Path, nvcc_gencode: str, tvm_ffi_dir: str)
     if result.returncode != 0:
         return ""
     text = ptx_path.read_text(errors="replace")
-    missing = [instruction for instruction in REQUIRED_INSTS[nvcc_gencode] if instruction not in text]
+    missing = [instruction for instruction in required if instruction not in text]
     if not missing:
         return ""
     return (
         "INSTRUCTION WARNING: the kernel might not be fully exercising the specialized "
         "hardware units. Please try these instructions if they can accelerate the kernel: "
-        f"{REQUIRED_INSTS[nvcc_gencode]}."
+        f"{required}."
     )
