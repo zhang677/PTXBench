@@ -145,7 +145,13 @@ class Scheduler:
 
     @property
     def queue_size(self) -> int:
+        """Tasks waiting for a worker (not counting the ones being executed)."""
         return self._queue.qsize()
+
+    @property
+    def running_count(self) -> int:
+        """Tasks the workers are executing right now."""
+        return sum(1 for w in self._workers if w.is_processing)
 
     @property
     def workers(self) -> List["_GPUWorkerThread"]:
@@ -357,6 +363,12 @@ class _GPUWorkerThread(threading.Thread):
     @property
     def is_healthy(self) -> bool:
         return self._gpu_worker is not None and self._gpu_worker.is_healthy()
+
+    @property
+    def is_processing(self) -> bool:
+        """True while this worker executes a task (the dispatcher counts it as load)."""
+        with self._worker_lock:
+            return self._processing_task
 
     @property
     def is_available(self) -> bool:

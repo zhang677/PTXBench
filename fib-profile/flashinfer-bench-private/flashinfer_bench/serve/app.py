@@ -84,7 +84,8 @@ class WorkerInfo(BaseModel):
 class HealthResponse(BaseModel):
     status: str
     workers: List[WorkerInfo]
-    queue_size: int
+    queue_size: int  # tasks waiting for a worker
+    running: int = 0  # tasks being executed; the dispatcher routes by queue_size + running
 
 
 class ProfileRequest(BaseModel):
@@ -376,7 +377,9 @@ async def get_task(task_id: str, timeout: float = Query(default=0, ge=0, le=3600
 async def health():
     sched = _get_scheduler()
     workers = [WorkerInfo(device=w.device, healthy=w.is_available) for w in sched.workers]
-    return HealthResponse(status="ok", workers=workers, queue_size=sched.queue_size)
+    return HealthResponse(
+        status="ok", workers=workers, queue_size=sched.queue_size, running=sched.running_count
+    )
 
 
 @app.post("/shutdown")

@@ -2,7 +2,7 @@
 
 Fronts N backend servers (each running ``flashinfer_bench serve``) behind a single
 endpoint. Submit endpoints (/evaluate, /profile, /sanitize, /debug) are routed
-to the least-loaded backend by queue size, and the returned task_id is recorded
+to the least-loaded backend (waiting plus running tasks), and the returned task_id is recorded
 so that subsequent /tasks/{task_id} lookups go to the backend that owns the task.
 
 Usage:
@@ -49,10 +49,14 @@ class Dispatcher:
     async def close(self) -> None:
         await asyncio.gather(self.client.aclose(), self.health_client.aclose())
 
-    async def queue_sizes(self) -> List[Tuple[Optional[int], str]]:
-        """Return (queue_size, url) per backend. queue_size is None if unhealthy."""
+    async def backend_states(self) -> List[Tuple[Optional[Dict[str, int]], str]]:
+        """Return ({"queue_size", "running"}, url) per backend; the state is None if unhealthy.
 
-        async def probe(url: str) -> Tuple[Optional[int], str]:
+        queue_size counts tasks waiting in a backend's queue and running counts the
+        tasks its workers are executing (0 from backends that do not report it).
+        """
+
+        async def probe(url: str) -> Tuple[Optional[Dict[str, int]], str]:
             try:
                 r = await self.health_client.get(f"{url}/health", timeout=5.0)
                 if r.status_code == 200:
@@ -61,7 +65,11 @@ class Dispatcher:
                     if isinstance(workers, list) and workers:
                         if not any(bool(w.get("healthy")) for w in workers if isinstance(w, dict)):
                             return None, url
-                    return body.get("queue_size", 0), url
+                    state = {
+                        "queue_size": int(body.get("queue_size") or 0),
+                        "running": int(body.get("running") or 0),
+                    }
+                    return state, url
             except Exception as e:
                 logger.debug("health probe failed for %s: %s", url, e)
             return None, url
@@ -69,9 +77,14 @@ class Dispatcher:
         return list(await asyncio.gather(*(probe(u) for u in self.urls)))
 
     async def pick_submit_backend(self) -> str:
-        """Pick the least-loaded healthy backend; round-robin among ties."""
-        sizes = await self.queue_sizes()
-        healthy = [(s, u) for s, u in sizes if s is not None]
+        """Pick the healthy backend with the fewest waiting plus running tasks.
+
+        Running tasks must count: a backend busy with a long task has an empty
+        queue, so ranking by queue size alone queues new work behind it while
+        other GPUs sit idle. Ties are broken round-robin.
+        """
+        states = await self.backend_states()
+        healthy = [(s["queue_size"] + s["running"], u) for s, u in states if s is not None]
         if healthy:
             min_size = min(s for s, _ in healthy)
             candidates = [u for s, u in healthy if s == min_size]
@@ -155,14 +168,22 @@ async def root() -> Dict[str, Any]:
 @app.get("/health")
 async def health() -> Dict[str, Any]:
     d = _get_dispatcher()
-    sizes = await d.queue_sizes()
-    backends = [{"url": u, "queue_size": s, "healthy": s is not None} for s, u in sizes]
-    total = sum(s for s, _ in sizes if s is not None)
-    any_healthy = any(s is not None for s, _ in sizes)
+    states = await d.backend_states()
+    backends = [
+        {
+            "url": u,
+            "queue_size": s["queue_size"] if s else None,
+            "running": s["running"] if s else None,
+            "healthy": s is not None,
+        }
+        for s, u in states
+    ]
+    healthy = [s for s, _ in states if s is not None]
     return {
-        "status": "ok" if any_healthy else "unhealthy",
+        "status": "ok" if healthy else "unhealthy",
         "backends": backends,
-        "queue_size": total,
+        "queue_size": sum(s["queue_size"] for s in healthy),
+        "running": sum(s["running"] for s in healthy),
     }
 
 
