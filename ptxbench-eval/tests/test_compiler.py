@@ -37,19 +37,13 @@ def test_other_prompt_tags_use_arch_instructions(fake_nvcc, prompt_tag):
 
 
 @pytest.mark.parametrize("gencode,prompt_tag", [(H100, "hopper-reduce"), (B200, "blackwell-reduce")])
-def test_reduce_prompt_tags_use_st_async(fake_nvcc, gencode, prompt_tag):
-    fake_nvcc["ptx"] = "ld.global.v4.u32"
-    text = warning(gencode, prompt_tag, fake_nvcc["ptx"])
-    assert text.startswith("INSTRUCTION WARNING")
-    assert "st.async" in text and "wgmma." not in text and "tcgen05" not in text
-
-
-def test_reduce_prompt_tag_satisfied_by_st_async(fake_nvcc):
-    fake_nvcc["ptx"] = "st.async.shared::cluster.mbarrier::complete_tx::bytes.u32"
-    assert warning(H100, "hopper-reduce", fake_nvcc["ptx"]) == ""
+@pytest.mark.parametrize("ptx", ["ld.global.v4.u32", "st.async.shared::cluster.u32"])
+def test_reduce_prompt_tags_have_no_instruction_warning(fake_nvcc, gencode, prompt_tag, ptx):
+    fake_nvcc["ptx"] = ptx
+    assert warning(gencode, prompt_tag, ptx) == ""
 
 
 def test_required_instructions_lookup():
-    assert compiler.required_instructions(H100, "hopper-reduce") == {"st.async"}
+    assert compiler.required_instructions(H100, "hopper-reduce") == set()
     assert compiler.required_instructions(H100, "h100-fp8") == compiler.REQUIRED_INSTS[H100]
     assert compiler.required_instructions("arch=compute_80,code=sm_80") == set()

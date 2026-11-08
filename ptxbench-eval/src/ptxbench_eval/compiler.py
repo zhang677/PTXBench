@@ -11,12 +11,12 @@ REQUIRED_INSTS = {
     "arch=compute_90a,code=sm_90a": {"cp.async.bulk.tensor", "wgmma."},
     "arch=compute_100a,code=sm_100a": {"cp.async.bulk.tensor", "tcgen05"},
 }
-# Per-prompt-tag instruction sets; they replace the arch default above.
-# Memory-bound reduction prompts target cluster/DSMEM stores, not TMA tensor
-# copies or tensor-core MMA.
+# Per-prompt-tag instruction sets; they replace the arch default above. An empty
+# set means no instruction warning: memory-bound reduction (RMSNorm) prompts have
+# no instruction the kernel must use, so they get none.
 PROMPT_TAG_REQUIRED_INSTS = {
-    "hopper-reduce": {"st.async"},
-    "blackwell-reduce": {"st.async"},
+    "hopper-reduce": set(),
+    "blackwell-reduce": set(),
 }
 
 
